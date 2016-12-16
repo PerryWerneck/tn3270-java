@@ -32,13 +32,6 @@ AC_PROG_LN_S
 AC_LANG([C++])
 
 dnl ---------------------------------------------------------------------------
-dnl Initialize defaults
-dnl ---------------------------------------------------------------------------
-DLLFLAGS="-shared -Wl,-soname,\$(@F)"
-DBG_CFLAGS="-DDEBUG=1"
-RLS_CFLAGS="-DNDEBUG=1"
-
-dnl ---------------------------------------------------------------------------
 dnl Check for OS specifics
 dnl ---------------------------------------------------------------------------
 
@@ -248,8 +241,6 @@ fi
 
 if test "$app_cv_java" = "yes" ; then
 
-	EXTENSIONS="$EXTENSIONS java"
-	PLUGINS="$PLUGINS j3270"
 	AC_MSG_NOTICE([jdk is present and enabled.])
 
 else
