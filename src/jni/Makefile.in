@@ -1,0 +1,97 @@
+#
+# "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
+# (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
+# aplicativos mainframe. Registro no INPI sob o nome G3270.
+#
+# Copyright (C) <2008> <Banco do Brasil S.A.>
+#
+# Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
+# os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
+# Free Software Foundation.
+#
+# Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
+# GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
+# A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
+# obter mais detalhes.
+#
+# Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
+# programa;  se  não, escreva para a Free Software Foundation, Inc., 59 Temple
+# Place, Suite 330, Boston, MA, 02111-1307, USA
+#
+# Contatos:
+#
+# perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
+# erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
+#
+
+SOURCES=actions.cc clipboard.cc cursor.cc field.cc info.cc main.cc \
+			call.cc connect.cc dialog.cc getset.cc keyboard.cc startstop.cc
+
+LIBNAME=lib3270-java@DLLEXT@
+
+#---[ Configuration values ]-------------------------------------------------------------
+
+PACKAGE_NAME=@PACKAGE_NAME@
+PACKAGE_VERSION=@PACKAGE_VERSION@
+PACKAGE_TARNAME=@PACKAGE_TARNAME@
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+sbindir=@sbindir@
+libdir=@libdir@
+
+BASEDIR=@BASEDIR@
+SRCDIR=$(BASEDIR)/.src/$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)
+
+OBJDIR=$(BASEDIR)/.obj
+OBJDBG=$(OBJDIR)/Debug
+OBJRLS=$(OBJDIR)/Release
+
+BINDIR=$(BASEDIR)/.bin
+BINDBG=$(BINDIR)/Debug
+BINRLS=$(BINDIR)/Release
+
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+
+LN_S=@LN_S@
+
+AMTAR=@AMTAR@
+SHELL=@SHELL@
+MKDIR=@MKDIR_P@
+
+CXX=@CXX@
+CC=@CC@
+LD=@CXX@
+
+LIBS=-lpw3270cpp @LIBS@ @LIBICONV@
+CXXFLAGS=@CXXFLAGS@ @JNI_CPPFLAGS@
+LDFLAGS=@LDFLAGS@
+
+#---[ Rules ]----------------------------------------------------------------------------
+
+DEPENDS=*.h Makefile
+
+$(OBJDBG)/%.o: \
+	%.cc \
+	$(DEPENDS)
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@$(CXX) $(CFLAGS)	-fstack-check -DDEBUG=1 \
+						-DBUILD_DATE=`date +"0x%Y%m%d"`\
+						-g -o $@ -c $<
+
+$(OBJRLS)/%.o: \
+	%.cc \
+	$(DEPENDS)
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@$(CXX) $(CFLAGS)	-DNDEBUG=1 \
+						-DBUILD_DATE=`date +"0x%Y%m%d"` \
+						-o $@ -c $<
+
+
