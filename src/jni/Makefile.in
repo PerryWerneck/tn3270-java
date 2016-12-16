@@ -63,8 +63,9 @@ SHELL=@SHELL@
 MKDIR=@MKDIR_P@
 
 CXX=@CXX@
-CC=@CC@
 LD=@CXX@
+JAVAH=@JAVAH@
+JAVAC=@JAVAC@
 
 LIBS=-lpw3270cpp @LIBS@ @LIBICONV@
 CXXFLAGS=@CXXFLAGS@ @JNI_CPPFLAGS@
@@ -72,26 +73,55 @@ LDFLAGS=@LDFLAGS@
 
 #---[ Rules ]----------------------------------------------------------------------------
 
-DEPENDS=*.h Makefile
+DEPENDS=../include/*.h Makefile
 
 $(OBJDBG)/%.o: \
 	%.cc \
+	jni3270.h \
 	$(DEPENDS)
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
 	@$(CXX) $(CFLAGS)	-fstack-check -DDEBUG=1 \
-						-DBUILD_DATE=`date +"0x%Y%m%d"`\
-						-g -o $@ -c $<
+				-DBUILD_DATE=`date +"0x%Y%m%d"`\
+				-g -o $@ -c $<
 
 $(OBJRLS)/%.o: \
 	%.cc \
+	jni3270.h \
 	$(DEPENDS)
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
 	@$(CXX) $(CFLAGS)	-DNDEBUG=1 \
-						-DBUILD_DATE=`date +"0x%Y%m%d"` \
-						-o $@ -c $<
+				-DBUILD_DATE=`date +"0x%Y%m%d"` \
+				-o $@ -c $<
 
+$(BINDIR)/java/pw3270/%.class: \
+	../%.java
+
+	@echo $< ...
+	@mkdir -p `dirname $@`
+	@$(JAVAC) -encoding utf-8 -d $(BINDIR)/java $^
+
+
+jni3270.h: \
+	$(BINDIR)/java/pw3270/terminal.class
+
+	@echo $< ...
+	@mkdir -p `dirname $@`
+	@$(JAVAH) -o $@ -classpath $(BINDIR)/java pw3270.terminal
+
+
+#---[ Debug Targets ]--------------------------------------------------------------------
+
+Debug: \
+	$(BINDBG)/$(LIBNAME)
+
+$(BINDBG)/$(LIBNAME): \
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o)
+
+	@echo $(basename $@) ...
+	@$(MKDIR) `dirname $@`
+	@$(LD) -shared -Wl,-soname,$(notdir $@) $(LDFLAGS) -o $@ $^ $(LIBS)
 
