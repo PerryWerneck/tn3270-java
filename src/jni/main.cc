@@ -30,25 +30,21 @@
  #include "jni3270.h"
  #include "private.h"
 
+ using namespace PW3270_NAMESPACE;
+
+
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
-namespace PW3270_NAMESPACE {
-
-	jfieldID java::getHandleField(JNIEnv *env, jobject obj) {
-		jclass c = env->GetObjectClass(obj);
-		// J is the type signature for long:
-		return env->GetFieldID(c, "nativeHandle", "J");
-	}
-
-	session * java::getHandle(JNIEnv *env, jobject obj) {
-		jlong handle = env->GetLongField(obj, getHandleField(env, obj));
-		return reinterpret_cast<PW3270_NAMESPACE::session *>(handle);
-	}
-
+jfieldID getHandleField(JNIEnv *env, jobject obj) {
+	jclass c = env->GetObjectClass(obj);
+	// J is the type signature for long:
+	return env->GetFieldID(c, "nativeHandle", "J");
 }
 
-using namespace PW3270_NAMESPACE;
-using namespace PW3270_NAMESPACE::java;
+PW3270_NAMESPACE::session * getHandle(JNIEnv *env, jobject obj) {
+	jlong handle = env->GetLongField(obj, getHandleField(env, obj));
+	return reinterpret_cast<PW3270_NAMESPACE::session *>(handle);
+}
 
 JNIEXPORT jint JNICALL Java_pw3270_terminal_init__(JNIEnv *env, jobject obj) {
 

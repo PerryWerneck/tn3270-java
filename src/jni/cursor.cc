@@ -40,7 +40,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_set_1cursor_1position(JNIEnv *env, j
 
 	try {
 
-		rc = java::getHandle(env,obj)->set_cursor_position((int) row, (int) col);
+		rc = getHandle(env,obj)->set_cursor_position((int) row, (int) col);
 
 	} catch(std::exception &e) {
 
@@ -59,7 +59,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_set_1cursor_1addr(JNIEnv *env, jobje
 
 	try {
 
-		rc = java::getHandle(env,obj)->set_cursor_addr((int) addr);
+		rc = getHandle(env,obj)->set_cursor_addr((int) addr);
 
 	} catch(std::exception &e) {
 
@@ -79,7 +79,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_get_1cursor_1addr(JNIEnv *env, jobje
 
 	try {
 
-		rc = java::getHandle(env,obj)->get_cursor_addr();
+		rc = getHandle(env,obj)->get_cursor_addr();
 
 	} catch(std::exception &e) {
 

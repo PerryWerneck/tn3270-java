@@ -40,7 +40,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_enter(JNIEnv *env, jobject obj) {
 
 	try {
 
-		rc = java::getHandle(env,obj)->enter();
+		rc = getHandle(env,obj)->enter();
 
 	} catch(std::exception &e) {
 
@@ -59,7 +59,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_pfkey(JNIEnv *env, jobject obj, jint
 
 	try {
 
-		rc = java::getHandle(env,obj)->pfkey((int) key);
+		rc = getHandle(env,obj)->pfkey((int) key);
 
 	} catch(std::exception &e) {
 
@@ -78,7 +78,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_pakey(JNIEnv *env, jobject obj, jint
 
 	try {
 
-		rc = java::getHandle(env,obj)->pakey((int) key);
+		rc = getHandle(env,obj)->pakey((int) key);
 
 	} catch(std::exception &e) {
 

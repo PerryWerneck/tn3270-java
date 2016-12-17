@@ -41,7 +41,7 @@ JNIEXPORT jstring JNICALL Java_pw3270_terminal_toString(JNIEnv *env, jobject obj
 
 	try {
 
-		str = java::getHandle(env,obj)->get_string();
+		str = getHandle(env,obj)->get_string();
 
 	} catch(std::exception &e) {
 
@@ -59,7 +59,7 @@ JNIEXPORT jstring JNICALL Java_pw3270_terminal_get_1string(JNIEnv *env, jobject 
 
 	try {
 
-		str = java::getHandle(env,obj)->get_string((int) baddr, (int) len);
+		str = getHandle(env,obj)->get_string((int) baddr, (int) len);
 
 
 	} catch(std::exception &e) {
@@ -78,7 +78,7 @@ JNIEXPORT jstring JNICALL Java_pw3270_terminal_get_1string_1at(JNIEnv *env, jobj
 
 	try {
 
-		str = java::getHandle(env,obj)->get_string_at((int) row, (int) col, (int) sz);
+		str = getHandle(env,obj)->get_string_at((int) row, (int) col, (int) sz);
 
 
 	} catch(std::exception &e) {
@@ -98,7 +98,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_set_1string_1at(JNIEnv *env, jobject
 
 	try {
 
-		rc = java::getHandle(env,obj)->set_string_at((int) row, (int) col, str);
+		rc = getHandle(env,obj)->set_string_at((int) row, (int) col, str);
 
 	} catch(std::exception &e) {
 
@@ -121,7 +121,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_cmp_1string_1at(JNIEnv *env, jobject
 
 	try {
 
-		rc = java::getHandle(env,obj)->cmp_string_at((int) row, (int) col, str);
+		rc = getHandle(env,obj)->cmp_string_at((int) row, (int) col, str);
 
 	} catch(std::exception &e) {
 
@@ -145,7 +145,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_wait_1for_1string_1at(JNIEnv *env, j
 
 	try {
 
-		rc = java::getHandle(env,obj)->wait_for_string_at((int) row, (int) col, str, timeout);
+		rc = getHandle(env,obj)->wait_for_string_at((int) row, (int) col, str, timeout);
 
 	} catch(std::exception &e) {
 
@@ -168,7 +168,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_input_1string(JNIEnv *env, jobject o
 
 	try {
 
-		rc = java::getHandle(env,obj)->input_string(str);
+		rc = getHandle(env,obj)->input_string(str);
 
 	} catch(std::exception &e) {
 
@@ -189,7 +189,7 @@ JNIEXPORT jboolean JNICALL Java_pw3270_terminal_is_1connected(JNIEnv *env, jobje
 
 	try {
 
-		rc = java::getHandle(env,obj)->is_connected();
+		rc = getHandle(env,obj)->is_connected();
 
 	} catch(std::exception &e) {
 
@@ -209,7 +209,7 @@ JNIEXPORT jboolean JNICALL Java_pw3270_terminal_is_1ready(JNIEnv *env, jobject o
 
 	try {
 
-		rc = java::getHandle(env,obj)->is_ready();
+		rc = getHandle(env,obj)->is_ready();
 
 	} catch(std::exception &e) {
 
@@ -226,7 +226,7 @@ JNIEXPORT void JNICALL Java_pw3270_terminal_set_1unlock_1delay(JNIEnv *env, jobj
 
 	try {
 
-		java::getHandle(env,obj)->set_unlock_delay((unsigned short) ms);
+		getHandle(env,obj)->set_unlock_delay((unsigned short) ms);
 
 	} catch(std::exception &e) {
 

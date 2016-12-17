@@ -249,6 +249,7 @@ else
 
 fi
 
+CXXFLAGS="$CXXFLAGS -I$JDK_HOME/include -I$jniinc"
 
 AC_SUBST(JVM_LIBS,$jvm_libs)
 
@@ -263,7 +264,6 @@ AC_SUBST(JAR)
 AC_SUBST(jvm_arch)
 AC_SUBST(JDK_HOME)
 AC_SUBST(JRE_HOME)
-AC_SUBST(JNI_CPPFLAGS,"-I$JDK_HOME/include -I$jniinc")
 
 
 dnl ---------------------------------------------------------------------------
@@ -408,7 +408,7 @@ AC_ARG_ENABLE([pic],
 ])
 
 if test "$app_cv_pic" == "yes"; then
-	CFLAGS="$CFLAGS -fPIC"
+	CXXFLAGS="$CXXFLAGS -fPIC"
 fi
 
 dnl ---------------------------------------------------------------------------

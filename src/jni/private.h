@@ -18,7 +18,7 @@
  * programa;  se  não, escreva para a Free Software Foundation, Inc., 59 Temple
  * Place, Suite 330, Boston, MA, 02111-1307, USA
  *
- * Este programa está nomeado como info.cc e possui - linhas de código.
+ * Este programa está nomeado como private.h e possui - linhas de código.
  *
  * Contatos:
  *
@@ -27,47 +27,15 @@
  *
  */
 
- #include "jni3270.h"
- #include "private.h"
+ #ifndef PRIVATE_H_INCLUDED
 
-/*---[ Implement ]----------------------------------------------------------------------------------*/
+	#define PRIVATE_H_INCLUDED
 
-using namespace PW3270_NAMESPACE;
+	 #include <pw3270cpp.h>
+	 #include <jni.h>
+	 #include "jni3270.h"
 
-JNIEXPORT jint JNICALL Java_pw3270_terminal_connect(JNIEnv *env, jobject obj, jstring j_host, jint seconds) {
+	extern PW3270_NAMESPACE::session * getHandle(JNIEnv *env, jobject obj);
+	extern jfieldID getHandleField(JNIEnv *env, jobject obj);
 
-	const char	* host = env->GetStringUTFChars(j_host, 0);
-	jint 		  rc	= -1;
-
-	try {
-
-		rc = getHandle(env,obj)->connect(host,(time_t) seconds);
-
-	} catch(std::exception &e) {
-
-		env->ReleaseStringUTFChars( j_host, host);
-		env->ThrowNew(env->FindClass("java/lang/Exception"), e.what());
-		return -1;
-
-	}
-
-	env->ReleaseStringUTFChars( j_host, host);
-	return rc;
-
-}
-
-JNIEXPORT jint JNICALL Java_pw3270_terminal_disconnect(JNIEnv *env, jobject obj) {
-
-	try {
-
-		return (jint) getHandle(env,obj)->disconnect();
-
-	} catch(std::exception &e) {
-
-		env->ThrowNew(env->FindClass("java/lang/Exception"), e.what());
-
-	}
-
-	return -1;
-
-}
+#endif // PRIVATE_H_INCLUDED

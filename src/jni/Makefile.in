@@ -25,9 +25,9 @@
 #
 
 SOURCES=actions.cc clipboard.cc cursor.cc field.cc info.cc main.cc \
-			call.cc connect.cc dialog.cc getset.cc keyboard.cc startstop.cc
+			connect.cc dialog.cc getset.cc keyboard.cc
 
-LIBNAME=lib3270-java@DLLEXT@
+LIBNAME=jni3270@DLLEXT@
 
 #---[ Configuration values ]-------------------------------------------------------------
 
@@ -68,7 +68,7 @@ JAVAH=@JAVAH@
 JAVAC=@JAVAC@
 
 LIBS=-lpw3270cpp @LIBS@ @LIBICONV@
-CXXFLAGS=@CXXFLAGS@ @JNI_CPPFLAGS@
+CXXFLAGS=@CXXFLAGS@
 LDFLAGS=@LDFLAGS@
 
 #---[ Rules ]----------------------------------------------------------------------------
@@ -82,7 +82,7 @@ $(OBJDBG)/%.o: \
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
-	@$(CXX) $(CFLAGS)	-fstack-check -DDEBUG=1 \
+	@$(CXX) $(CXXFLAGS)	-fstack-check -DDEBUG=1 \
 				-DBUILD_DATE=`date +"0x%Y%m%d"`\
 				-g -o $@ -c $<
 
@@ -93,7 +93,7 @@ $(OBJRLS)/%.o: \
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
-	@$(CXX) $(CFLAGS)	-DNDEBUG=1 \
+	@$(CXX) $(CXXFLAGS)	-DNDEBUG=1 \
 				-DBUILD_DATE=`date +"0x%Y%m%d"` \
 				-o $@ -c $<
 
@@ -124,4 +124,9 @@ $(BINDBG)/$(LIBNAME): \
 	@echo $(basename $@) ...
 	@$(MKDIR) `dirname $@`
 	@$(LD) -shared -Wl,-soname,$(notdir $@) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+clean:
+
+	@rm -f jni3270.h
+	@rm -fr $(BINDIR)/java
 

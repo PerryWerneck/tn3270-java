@@ -43,7 +43,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_popup_1dialog(JNIEnv *env, jobject o
 
 	try {
 
-		rc = (jint) java::getHandle(env,obj)->popup_dialog((LIB3270_NOTIFY) id, title, message, secondary);
+		rc = (jint) getHandle(env,obj)->popup_dialog((LIB3270_NOTIFY) id, title, message, secondary);
 
 	} catch(std::exception &e) {
 
@@ -71,7 +71,7 @@ JNIEXPORT jstring JNICALL Java_pw3270_terminal_file_1chooser_1dialog(JNIEnv *env
 
 	try {
 
-		str = java::getHandle(env,obj)->file_chooser_dialog((int) action, title, extension, filename);
+		str = getHandle(env,obj)->file_chooser_dialog((int) action, title, extension, filename);
 
 	} catch(std::exception &e) {
 

@@ -40,7 +40,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_get_1field_1start (JNIEnv *env, jobj
 
 	try {
 
-		rc = java::getHandle(env,obj)->get_field_start((int) baddr);
+		rc = getHandle(env,obj)->get_field_start((int) baddr);
 
 
 	} catch(std::exception &e) {
@@ -59,7 +59,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_get_1field_1len (JNIEnv *env, jobjec
 
 	try {
 
-		rc = java::getHandle(env,obj)->get_field_len((int) baddr);
+		rc = getHandle(env,obj)->get_field_len((int) baddr);
 
 
 	} catch(std::exception &e) {
@@ -78,7 +78,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_get_1next_1unprotected(JNIEnv *env, 
 
 	try {
 
-		rc = java::getHandle(env,obj)->get_next_unprotected((int) baddr);
+		rc = getHandle(env,obj)->get_next_unprotected((int) baddr);
 
 
 	} catch(std::exception &e) {
@@ -98,7 +98,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_get_1is_1protected(JNIEnv *env, jobj
 
 	try {
 
-		rc = java::getHandle(env,obj)->get_is_protected((int) baddr);
+		rc = getHandle(env,obj)->get_is_protected((int) baddr);
 
 
 	} catch(std::exception &e) {
@@ -118,7 +118,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_get_1is_1protected_1at(JNIEnv *env, 
 
 	try {
 
-		rc = java::getHandle(env,obj)->get_is_protected_at((int) row, (int) col);
+		rc = getHandle(env,obj)->get_is_protected_at((int) row, (int) col);
 
 	} catch(std::exception &e) {
 

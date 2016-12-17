@@ -27,8 +27,7 @@
  *
  */
 
- #include "jni3270.h"
- #include "private.h"
+#include "private.h"
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
@@ -40,7 +39,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_quit(JNIEnv *env, jobject obj) {
 
 	try {
 
-		rc = java::getHandle(env,obj)->quit();
+		rc = getHandle(env,obj)->quit();
 
 	} catch(std::exception &e) {
 
@@ -59,7 +58,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_erase_1eof(JNIEnv *env, jobject obj)
 
 	try {
 
-		rc = java::getHandle(env,obj)->erase_eof();
+		rc = getHandle(env,obj)->erase_eof();
 
 	} catch(std::exception &e) {
 
@@ -78,7 +77,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_erase(JNIEnv *env, jobject obj) {
 
 	try {
 
-		rc = java::getHandle(env,obj)->erase();
+		rc = getHandle(env,obj)->erase();
 
 	} catch(std::exception &e) {
 
@@ -96,7 +95,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_erase_1eol(JNIEnv *env, jobject obj)
 
 	try {
 
-		rc = java::getHandle(env,obj)->erase_eol();
+		rc = getHandle(env,obj)->erase_eol();
 
 	} catch(std::exception &e) {
 
@@ -115,7 +114,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_erase_1input(JNIEnv *env, jobject ob
 
 	try {
 
-		rc = java::getHandle(env,obj)->erase_input();
+		rc = getHandle(env,obj)->erase_input();
 
 	} catch(std::exception &e) {
 
@@ -135,7 +134,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_print(JNIEnv *env, jobject obj) {
 
 	try {
 
-		rc = java::getHandle(env,obj)->print();
+		rc = getHandle(env,obj)->print();
 
 	} catch(std::exception &e) {
 
@@ -155,7 +154,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_action(JNIEnv *env, jobject obj, jst
 
 	try {
 
-		rc = java::getHandle(env,obj)->action(name);
+		rc = getHandle(env,obj)->action(name);
 
 	} catch(std::exception &e) {
 

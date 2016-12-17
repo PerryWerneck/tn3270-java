@@ -37,21 +37,21 @@ using namespace PW3270_NAMESPACE;
 
 JNIEXPORT jstring JNICALL Java_pw3270_terminal_get_1version (JNIEnv *env, jobject obj) {
 
-	session *s = java::getHandle(env,obj);
+	session *s = getHandle(env,obj);
 	return env->NewStringUTF(s->get_version().c_str());
 
 }
 
 JNIEXPORT jstring JNICALL Java_pw3270_terminal_get_1revision(JNIEnv *env, jobject obj) {
 
-	session *s = java::getHandle(env,obj);
+	session *s = getHandle(env,obj);
 	return env->NewStringUTF(s->get_revision().c_str());
 
 }
 
 JNIEXPORT jstring JNICALL Java_pw3270_terminal_get_1encoding(JNIEnv *env, jobject obj) {
 
-	session *s = java::getHandle(env,obj);
+	session *s = getHandle(env,obj);
 	return env->NewStringUTF(s->get_encoding());
 
 }
@@ -62,7 +62,7 @@ JNIEXPORT jint JNICALL Java_pw3270_terminal_get_1secure(JNIEnv *env, jobject obj
 
 	try {
 
-		rc = java::getHandle(env,obj)->get_secure();
+		rc = getHandle(env,obj)->get_secure();
 
 	} catch(std::exception &e) {
 
