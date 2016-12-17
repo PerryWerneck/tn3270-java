@@ -27,7 +27,7 @@
 SOURCES=actions.cc clipboard.cc cursor.cc field.cc info.cc main.cc \
 			connect.cc dialog.cc getset.cc keyboard.cc
 
-LIBNAME=jni3270@DLLEXT@
+LIBNAME=@DLLPREFIX@jni3270@DLLEXT@
 
 #---[ Configuration values ]-------------------------------------------------------------
 
