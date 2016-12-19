@@ -27,14 +27,24 @@
  *
  */
 
- #ifndef PRIVATE_H_INCLUDED
+#ifndef JAVA3270_H_INCLUDED
 
-	#define PRIVATE_H_INCLUDED
+	#define JAVA3270_H_INCLUDED 1
 
-	#include <java3270.h>
-	#include "jni3270.h"
+	#include <config.h>
+	#include <pw3270cpp.h>
+	#include <jni.h>
 
-	extern PW3270_NAMESPACE::session * getHandle(JNIEnv *env, jobject obj);
-	extern jfieldID getHandleField(JNIEnv *env, jobject obj);
+/*--[ 3270 Session ]-----------------------------------------------------------------------------------------*/
 
-#endif // PRIVATE_H_INCLUDED
+#ifdef __cplusplus
+	extern "C" {
+#endif
+
+	LIB3270_EXPORT void java3270_set_session(H3270 *session);
+
+#ifdef __cplusplus
+	}
+#endif
+
+#endif // JAVA3270_H_INCLUDED

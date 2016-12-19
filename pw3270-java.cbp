@@ -33,6 +33,7 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="src/include/config.h" />
+		<Unit filename="src/include/java3270.h" />
 		<Unit filename="src/jni/Makefile.in" />
 		<Unit filename="src/jni/actions.cc" />
 		<Unit filename="src/jni/call.cc" />

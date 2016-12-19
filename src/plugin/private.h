@@ -34,9 +34,9 @@
 
 	#define PRIVATE_H_INCLUDED
 
+	#include <java3270.h>
+	#include <string>
 	#include <jni.h>
-
-	#include <exception>
 
 	#include <malloc.h>
 	#include <libintl.h>
@@ -54,6 +54,5 @@
 	G_GNUC_INTERNAL bool trylock();
 	G_GNUC_INTERNAL void failed(GtkWidget *widget, const char *msg, const char *format, ...);
 
-	using namespace std;
 
 #endif // PRIVATE_H_INCLUDED

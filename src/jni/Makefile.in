@@ -44,7 +44,7 @@ libdir=@libdir@
 BASEDIR=@BASEDIR@
 SRCDIR=$(BASEDIR)/.src/$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)
 
-OBJDIR=$(BASEDIR)/.obj
+OBJDIR=$(BASEDIR)/.obj/jni
 OBJDBG=$(OBJDIR)/Debug
 OBJRLS=$(OBJDIR)/Release
 
@@ -68,7 +68,7 @@ JAVAH=@JAVAH@
 JAVAC=@JAVAC@
 
 LIBS=-lpw3270cpp @LIBS@ @LIBICONV@
-CXXFLAGS=@CXXFLAGS@
+CXXFLAGS=@CXXFLAGS@ -I../include
 LDFLAGS=@LDFLAGS@
 
 #---[ Rules ]----------------------------------------------------------------------------

@@ -104,19 +104,15 @@ using namespace PW3270_NAMESPACE;
 
 extern "C" {
 
-	static PW3270_NAMESPACE::session * factory(const char *name) {
-		return session::create_local(lib3270_get_default_session_handle());
-	}
-
 	LIB3270_EXPORT int pw3270_plugin_start(GtkWidget *window, GtkWidget *terminal) {
 
 		trace("JAVA: %s",__FUNCTION__);
 
-		#if GTK_CHECK_VERSION(2,32,0)
-			g_mutex_init(&mutex);
-		#endif // GTK_CHECK_VERSION
+#if GTK_CHECK_VERSION(2,32,0)
+		g_mutex_init(&mutex);
+#endif // GTK_CHECK_VERSION
 
-		session::set_plugin(factory);
+		java3270_set_session(lib3270_get_default_session_handle());
 
 		return 0;
 	}

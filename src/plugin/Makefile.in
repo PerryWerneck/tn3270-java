@@ -68,7 +68,7 @@ CC=@CC@
 LD=@CXX@
 
 LIBS=-lpw3270cpp @LIBS@ @GTK_LIBS@
-CXXFLAGS=@CXXFLAGS@ @GTK_CFLAGS@
+CXXFLAGS=@CXXFLAGS@ @GTK_CFLAGS@ -I../include
 LDFLAGS=@LDFLAGS@
 
 #---[ Rules ]----------------------------------------------------------------------------

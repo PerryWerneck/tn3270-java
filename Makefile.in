@@ -103,7 +103,7 @@ all: \
 	doc
 
 install: \
-	install-extension \
+	install-jni \
 	install-plugin \
 	install-doc
 
