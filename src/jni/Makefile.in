@@ -29,6 +29,20 @@ SOURCES=actions.cc clipboard.cc cursor.cc field.cc info.cc main.cc \
 
 LIBNAME=@DLLPREFIX@jni3270@DLLEXT@
 
+#---[ Paths ]------------------------------------------------------------------
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+sbindir=@sbindir@
+libdir=@libdir@
+datadir=@datadir@
+includedir=@includedir@
+sysconfdir=@sysconfdir@
+jnidir=@jnidir@
+jvmjardir=@jvmjardir@
+javadocdir=@javadocdir@
+
 #---[ Configuration values ]-------------------------------------------------------------
 
 PACKAGE_NAME=@PACKAGE_NAME@
@@ -113,10 +127,21 @@ jni3270.h: \
 	@$(JAVAH) -o $@ -classpath $(BINDIR)/java pw3270.terminal
 
 
-#---[ Debug Targets ]--------------------------------------------------------------------
+#---[ Targets ]--------------------------------------------------------------------------
+
+Release: \
+	$(BINRLS)/$(LIBNAME) \
+	$(BINRLS)/pw3270.jar
 
 Debug: \
 	$(BINDBG)/$(LIBNAME)
+
+$(BINRLS)/$(LIBNAME): \
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
+
+	@echo $(basename $@) ...
+	@$(MKDIR) `dirname $@`
+	@$(LD) -shared -Wl,-soname,$(notdir $@) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 $(BINDBG)/$(LIBNAME): \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o)
@@ -124,6 +149,12 @@ $(BINDBG)/$(LIBNAME): \
 	@echo $(basename $@) ...
 	@$(MKDIR) `dirname $@`
 	@$(LD) -shared -Wl,-soname,$(notdir $@) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+install: \
+	$(BINRLS)$(LIBNAME)
+
+	@$(MKDIR) $(DESTDIR)/$(jnidir)
+	@$(INSTALL_PROGRAM) $(BINRLS)$(LIBNAME) $(DESTDIR)/$(jnidir)
 
 clean:
 
