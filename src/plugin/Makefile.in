@@ -67,8 +67,8 @@ CXX=@CXX@
 CC=@CC@
 LD=@CXX@
 
-LIBS=-lpw3270cpp @LIBS@ @GTK_LIBS@ @REXX_LIBS@
-CFLAGS=-I$(BASEDIR)/src/include @CFLAGS@ @GTK_CFLAGS@
+LIBS=-lpw3270cpp @LIBS@ @GTK_LIBS@
+CXXFLAGS=@CXXFLAGS@ @GTK_CFLAGS@
 LDFLAGS=@LDFLAGS@
 
 #---[ Rules ]----------------------------------------------------------------------------
@@ -80,7 +80,7 @@ $(OBJDBG)/%.o: \
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
-	@$(CXX) $(CFLAGS)	-fstack-check -DDEBUG=1 \
+	@$(CXX) $(CXXFLAGS)	-fstack-check -DDEBUG=1 \
 						-DBUILD_DATE=`date +"0x%Y%m%d"`\
 						-g -o $@ -c $<
 
@@ -91,7 +91,7 @@ $(OBJRLS)/%.o: \
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
-	@$(CXX) $(CFLAGS)	-DNDEBUG=1 \
+	@$(CXX) $(CXXFLAGS)	-DNDEBUG=1 \
 						-DBUILD_DATE=`date +"0x%Y%m%d"` \
 						-o $@ -c $<
 

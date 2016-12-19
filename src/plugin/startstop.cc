@@ -131,111 +131,68 @@ extern "C" {
  }
 
 
- namespace PW3270_NAMESPACE {
+JavaVM	* jvm		= NULL;
+JNIEnv	* env		= NULL;
 
-	JavaVM	* java::jvm		= NULL;
-	JNIEnv	* java::env		= NULL;
-#ifdef _WIN32
-	HMODULE	  java::hModule	= NULL;
-#endif // _WIN32
+void failed(GtkWidget *widget, const char *msg, const char *format, ...) {
 
-	void java::failed(GtkWidget *widget, const char *msg, const char *format, ...) {
+	GtkWidget *dialog = gtk_message_dialog_new(	GTK_WINDOW(gtk_widget_get_toplevel(widget)),
+												GTK_DIALOG_DESTROY_WITH_PARENT,
+												GTK_MESSAGE_ERROR,
+												GTK_BUTTONS_OK_CANCEL,
+												"%s", msg );
 
-		GtkWidget *dialog = gtk_message_dialog_new(	GTK_WINDOW(gtk_widget_get_toplevel(widget)),
-													GTK_DIALOG_DESTROY_WITH_PARENT,
-													GTK_MESSAGE_ERROR,
-													GTK_BUTTONS_OK_CANCEL,
-													"%s", msg );
+	gtk_window_set_title(GTK_WINDOW(dialog), _( "Java error" ));
 
-		gtk_window_set_title(GTK_WINDOW(dialog), _( "Java error" ));
+	if(format) {
 
-		if(format) {
-
-			va_list arg_ptr;
-			va_start(arg_ptr, format);
-			gchar *msg = g_strdup_vprintf(format,arg_ptr);
-			va_end(arg_ptr);
-			gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),"%s",msg);
-			g_free(msg);
-
-		}
-
-		if(gtk_dialog_run(GTK_DIALOG (dialog)) == GTK_RESPONSE_CANCEL)
-			gtk_main_quit();
-		gtk_widget_destroy(dialog);
+		va_list arg_ptr;
+		va_start(arg_ptr, format);
+		gchar *msg = g_strdup_vprintf(format,arg_ptr);
+		va_end(arg_ptr);
+		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),"%s",msg);
+		g_free(msg);
 
 	}
+
+	if(gtk_dialog_run(GTK_DIALOG (dialog)) == GTK_RESPONSE_CANCEL)
+		gtk_main_quit();
+	gtk_widget_destroy(dialog);
+
+}
 
 
 #ifdef WIN32
 
-	bool java::load_jvm(GtkWidget *widget) {
+bool load_jvm(GtkWidget *widget) {
 
-		if(jvm != NULL) {
-			return true;
-		}
+	if(jvm != NULL) {
+		return true;
+	}
 
-		// Dynamically load jvm library to avoid naming and path problems.
-		HMODULE		  kernel;
-		HANDLE 		  WINAPI (*AddDllDirectory)(PCWSTR NewDirectory);
-		BOOL 	 	  WINAPI (*RemoveDllDirectory)(HANDLE Cookie);
+	// Dynamically load jvm library to avoid naming and path problems.
+	HMODULE		  kernel;
+	HANDLE 		  WINAPI (*AddDllDirectory)(PCWSTR NewDirectory);
+	BOOL 	 	  WINAPI (*RemoveDllDirectory)(HANDLE Cookie);
 
-		struct _dlldir {
-			const gchar	* env;
-			const gchar	* path;
-			HANDLE		  cookie;
-		} dlldir[] = {
-			{ "JRE_HOME", "bin\\client", 		0 },
-			{ "JDK_HOME", "jre\\bin\\client",	0 }
-		};
+	struct _dlldir {
+		const gchar	* env;
+		const gchar	* path;
+		HANDLE		  cookie;
+	} dlldir[] = {
+		{ "JRE_HOME", "bin\\client", 		0 },
+		{ "JDK_HOME", "jre\\bin\\client",	0 }
+	};
 
-		kernel = LoadLibrary("kernel32.dll");
+	kernel = LoadLibrary("kernel32.dll");
 
-		if(kernel) {
+	if(kernel) {
 
-			AddDllDirectory	= (HANDLE WINAPI (*)(PCWSTR)) GetProcAddress(kernel,"AddDllDirectory");
-			if(AddDllDirectory) {
+		AddDllDirectory	= (HANDLE WINAPI (*)(PCWSTR)) GetProcAddress(kernel,"AddDllDirectory");
+		if(AddDllDirectory) {
 
-				// Acrescenta mais caminhos para achar a dll
-				for(size_t f = 0; f < G_N_ELEMENTS(dlldir); f++) {
-
-					const char *env = getenv(dlldir[f].env);
-
-					debug("%s=\"%s\"",dlldir[f].env,env);
-
-					if(env) {
-
-						gchar *p = g_build_filename(env,dlldir[f].path,NULL);
-
-						lib3270_trace_event(v3270_get_session(widget),"Adding \"%s\" to DLL search path",p);
-
-						wchar_t	*path = (wchar_t *) malloc(4096*sizeof(wchar_t));
-						mbstowcs(path, p, 4095);
-						dlldir[f].cookie = AddDllDirectory(path);
-						free(path);
-
-						g_free(p);
-
-					}
-				}
-
-			} else {
-
-				lib3270_trace_event(v3270_get_session(widget),"Can't find %s: %s","AddDllDirectory",session::win32_strerror(GetLastError()).c_str());
-
-			}
-
-		} else {
-
-			lib3270_trace_event(v3270_get_session(widget),"Can't load %s: %s\n","kernel32.dll",session::win32_strerror(GetLastError()).c_str());
-
-		}
-
-		hModule = LoadLibrary("jvm.dll");
-		if(!hModule) {
-			lib3270_trace_event(v3270_get_session(widget),"Can't load %s\n","jvm.dll",session::win32_strerror(GetLastError()).c_str());
-
-			for(size_t f = 0; !hModule && f < G_N_ELEMENTS(dlldir); f++) {
+			// Acrescenta mais caminhos para achar a dll
+			for(size_t f = 0; f < G_N_ELEMENTS(dlldir); f++) {
 
 				const char *env = getenv(dlldir[f].env);
 
@@ -243,177 +200,214 @@ extern "C" {
 
 				if(env) {
 
-					gchar *p = g_build_filename(env,dlldir[f].path,"jvm.dll",NULL);
-					hModule = LoadLibrary(p);
-					if(!hModule) {
-						lib3270_trace_event(v3270_get_session(widget),"Can't load %s: %s\n",p,session::win32_strerror(GetLastError()).c_str());
-					}
+					gchar *p = g_build_filename(env,dlldir[f].path,NULL);
+
+					lib3270_trace_event(v3270_get_session(widget),"Adding \"%s\" to DLL search path",p);
+
+					wchar_t	*path = (wchar_t *) malloc(4096*sizeof(wchar_t));
+					mbstowcs(path, p, 4095);
+					dlldir[f].cookie = AddDllDirectory(path);
+					free(path);
+
 					g_free(p);
 
 				}
 			}
-		}
-
-		if(!hModule) {
-			failed(widget, _(  "Can't load java virtual machine" ), "%s", session::win32_strerror(GetLastError()).c_str());
-		}
-
-		if(kernel) {
-
-			RemoveDllDirectory	= (BOOL WINAPI (*)(HANDLE)) GetProcAddress(kernel,"RemoveDllDirectory");
-			if(RemoveDllDirectory) {
-
-				for(size_t f = 0; f < G_N_ELEMENTS(dlldir); f++) {
-
-					if(dlldir[f].cookie) {
-
-						RemoveDllDirectory(dlldir[f].cookie);
-
-					}
-				}
-
-			}
-
-			FreeLibrary(kernel);
-
-		}
-
-		if(!hModule) {
-			return false;
-		}
-
-		// Consegui carregar a JVM, obtenho o método de controle
-		jint JNICALL (*CreateJavaVM)(JavaVM **, void **, void *) = (jint JNICALL (*)(JavaVM **, void **, void *)) GetProcAddress(hModule,"JNI_CreateJavaVM");
-
-		if(!CreateJavaVM) {
-			failed(widget, _(  "Can't load java virtual machine creation method" ), "%s", session::win32_strerror(GetLastError()).c_str());
-			return false;
-		}
-
-		// Crio a JVM
-		JavaVMInitArgs	  vm_args;
-		JavaVMOption	  options[5];
-
-		jint			  rc		= 0;
-
-		memset(&vm_args,0,sizeof(vm_args));
-		memset(options,0,sizeof(options));
-
-		vm_args.version				= JNI_VERSION_1_4;
-		vm_args.nOptions			= 0;
-		vm_args.options 			= options;
-		vm_args.ignoreUnrecognized	= JNI_FALSE;
-
-		options[vm_args.nOptions].optionString = g_strdup("vfprintf");
-		options[vm_args.nOptions].extraInfo = (void *) jni_vfprintf;
-		vm_args.nOptions++;
-
-		gchar	* exports = NULL;
-		char	  buffer[1024];
-		gchar 	* myDir;
-
-		if(GetModuleFileName(NULL,buffer,sizeof(buffer)) < sizeof(buffer)) {
-
-			gchar * ptr = strrchr(buffer,G_DIR_SEPARATOR);
-			if(ptr) {
-				*ptr = 0;
-				myDir = g_strdup(buffer);
-			} else {
-				myDir = g_strdup(".");
-			}
-
 
 		} else {
 
-			myDir = g_strdup(".");
+			lib3270_trace_event(v3270_get_session(widget),"Can't find %s: %s","AddDllDirectory",session::win32_strerror(GetLastError()).c_str());
 
 		}
 
-		debug("myDir=%s",myDir);
+	} else {
 
-		exports = g_build_filename(myDir,"jvm-exports",NULL);
-		g_mkdir_with_parents(exports,0777);
-
-		lib3270_trace_event(v3270_get_session(widget),"java.class.path=%s",exports);
-		lib3270_trace_event(v3270_get_session(widget),"java.library.path=%s",myDir);
-
-		options[vm_args.nOptions++].optionString = g_strdup_printf("-Djava.class.path=%s",exports);
-		options[vm_args.nOptions++].optionString = g_strdup_printf("-Djava.library.path=%s",myDir);
-
-		g_free(myDir);
-		g_free(exports);
-
-		rc = CreateJavaVM(&jvm,(void **)&env,&vm_args);
-		if(rc < 0) {
-			failed(widget, _(  "Can't create java VM" ), _( "The error code was %d" ), (int) rc);
-			jvm = NULL;
-		}
-
-		for(int f=0;f<vm_args.nOptions;f++) {
-			trace("Releasing option %d: %s",f,options[f].optionString);
-			g_free(options[f].optionString);
-		}
-
-
-		return jvm != NULL;
+		lib3270_trace_event(v3270_get_session(widget),"Can't load %s: %s\n","kernel32.dll",session::win32_strerror(GetLastError()).c_str());
 
 	}
+
+	hModule = LoadLibrary("jvm.dll");
+	if(!hModule) {
+		lib3270_trace_event(v3270_get_session(widget),"Can't load %s\n","jvm.dll",session::win32_strerror(GetLastError()).c_str());
+
+		for(size_t f = 0; !hModule && f < G_N_ELEMENTS(dlldir); f++) {
+
+			const char *env = getenv(dlldir[f].env);
+
+			debug("%s=\"%s\"",dlldir[f].env,env);
+
+			if(env) {
+
+				gchar *p = g_build_filename(env,dlldir[f].path,"jvm.dll",NULL);
+				hModule = LoadLibrary(p);
+				if(!hModule) {
+					lib3270_trace_event(v3270_get_session(widget),"Can't load %s: %s\n",p,session::win32_strerror(GetLastError()).c_str());
+				}
+				g_free(p);
+
+			}
+		}
+	}
+
+	if(!hModule) {
+		failed(widget, _(  "Can't load java virtual machine" ), "%s", session::win32_strerror(GetLastError()).c_str());
+	}
+
+	if(kernel) {
+
+		RemoveDllDirectory	= (BOOL WINAPI (*)(HANDLE)) GetProcAddress(kernel,"RemoveDllDirectory");
+		if(RemoveDllDirectory) {
+
+			for(size_t f = 0; f < G_N_ELEMENTS(dlldir); f++) {
+
+				if(dlldir[f].cookie) {
+
+					RemoveDllDirectory(dlldir[f].cookie);
+
+				}
+			}
+
+		}
+
+		FreeLibrary(kernel);
+
+	}
+
+	if(!hModule) {
+		return false;
+	}
+
+	// Consegui carregar a JVM, obtenho o método de controle
+	jint JNICALL (*CreateJavaVM)(JavaVM **, void **, void *) = (jint JNICALL (*)(JavaVM **, void **, void *)) GetProcAddress(hModule,"JNI_CreateJavaVM");
+
+	if(!CreateJavaVM) {
+		failed(widget, _(  "Can't load java virtual machine creation method" ), "%s", session::win32_strerror(GetLastError()).c_str());
+		return false;
+	}
+
+	// Crio a JVM
+	JavaVMInitArgs	  vm_args;
+	JavaVMOption	  options[5];
+
+	jint			  rc		= 0;
+
+	memset(&vm_args,0,sizeof(vm_args));
+	memset(options,0,sizeof(options));
+
+	vm_args.version				= JNI_VERSION_1_4;
+	vm_args.nOptions			= 0;
+	vm_args.options 			= options;
+	vm_args.ignoreUnrecognized	= JNI_FALSE;
+
+	options[vm_args.nOptions].optionString = g_strdup("vfprintf");
+	options[vm_args.nOptions].extraInfo = (void *) jni_vfprintf;
+	vm_args.nOptions++;
+
+	gchar	* exports = NULL;
+	char	  buffer[1024];
+	gchar 	* myDir;
+
+	if(GetModuleFileName(NULL,buffer,sizeof(buffer)) < sizeof(buffer)) {
+
+		gchar * ptr = strrchr(buffer,G_DIR_SEPARATOR);
+		if(ptr) {
+			*ptr = 0;
+			myDir = g_strdup(buffer);
+		} else {
+			myDir = g_strdup(".");
+		}
+
+
+	} else {
+
+		myDir = g_strdup(".");
+
+	}
+
+	debug("myDir=%s",myDir);
+
+	exports = g_build_filename(myDir,"jvm-exports",NULL);
+	g_mkdir_with_parents(exports,0777);
+
+	lib3270_trace_event(v3270_get_session(widget),"java.class.path=%s",exports);
+	lib3270_trace_event(v3270_get_session(widget),"java.library.path=%s",myDir);
+
+	options[vm_args.nOptions++].optionString = g_strdup_printf("-Djava.class.path=%s",exports);
+	options[vm_args.nOptions++].optionString = g_strdup_printf("-Djava.library.path=%s",myDir);
+
+	g_free(myDir);
+	g_free(exports);
+
+	rc = CreateJavaVM(&jvm,(void **)&env,&vm_args);
+	if(rc < 0) {
+		failed(widget, _(  "Can't create java VM" ), _( "The error code was %d" ), (int) rc);
+		jvm = NULL;
+	}
+
+	for(int f=0;f<vm_args.nOptions;f++) {
+		trace("Releasing option %d: %s",f,options[f].optionString);
+		g_free(options[f].optionString);
+	}
+
+
+	return jvm != NULL;
+
+}
 
 
 
 #else
 
-	bool java::load_jvm(GtkWidget *widget) {
+bool load_jvm(GtkWidget *widget) {
 
-		if(jvm != NULL) {
-			return true;
-		}
+	if(jvm != NULL) {
+		return true;
+	}
 
-		// Start JNI
-		JavaVMInitArgs	  vm_args;
-		JavaVMOption	  options[5];
-		jint			  rc		= 0;
+	// Start JNI
+	JavaVMInitArgs	  vm_args;
+	JavaVMOption	  options[5];
+	jint			  rc		= 0;
 
 
-		memset(&vm_args,0,sizeof(vm_args));
-		memset(options,0,sizeof(options));
+	memset(&vm_args,0,sizeof(vm_args));
+	memset(options,0,sizeof(options));
 
-		vm_args.version				= JNI_VERSION_1_4;
-		vm_args.nOptions			= 0;
-		vm_args.options 			= options;
-		vm_args.ignoreUnrecognized	= JNI_FALSE;
+	vm_args.version				= JNI_VERSION_1_4;
+	vm_args.nOptions			= 0;
+	vm_args.options 			= options;
+	vm_args.ignoreUnrecognized	= JNI_FALSE;
 
-		options[vm_args.nOptions].optionString = g_strdup("vfprintf");
-		options[vm_args.nOptions].extraInfo = (void *) jni_vfprintf;
-		vm_args.nOptions++;
+	options[vm_args.nOptions].optionString = g_strdup("vfprintf");
+	options[vm_args.nOptions].extraInfo = (void *) jni_vfprintf;
+	vm_args.nOptions++;
 
 #if defined(DEBUG)
 
 //		options[vm_args.nOptions++].optionString = g_strdup("-verbose");
-		options[vm_args.nOptions++].optionString = g_strdup_printf("-Djava.library.path=.bin/Debug:.bin/Debug/lib:%s",JNIDIR);
-		options[vm_args.nOptions++].optionString = g_strdup_printf("-Djava.class.path=./src/java:.bin/java:%s",JARDIR);
+	options[vm_args.nOptions++].optionString = g_strdup_printf("-Djava.library.path=.bin/Debug:.bin/Debug/lib:%s",JNIDIR);
+	options[vm_args.nOptions++].optionString = g_strdup_printf("-Djava.class.path=./src/java:.bin/java:%s",JARDIR);
 
 #else
 
-		options[vm_args.nOptions++].optionString = g_strdup_printf("-Djava.library.path=%s",JNIDIR);
-		options[vm_args.nOptions++].optionString = g_strdup_printf("-Djava.class.path=%s",JARDIR);
+	options[vm_args.nOptions++].optionString = g_strdup_printf("-Djava.library.path=%s",JNIDIR);
+	options[vm_args.nOptions++].optionString = g_strdup_printf("-Djava.class.path=%s",JARDIR);
 
 #endif // JNIDIR
 
-		// Linux, just create JVM
-		rc = JNI_CreateJavaVM(&jvm,(void **)&env,&vm_args);
+	// Linux, just create JVM
+	rc = JNI_CreateJavaVM(&jvm,(void **)&env,&vm_args);
 
-		if(rc) {
-			jvm = NULL;
-			failed(widget, _( "Can't create java virtual machine" ), _( "The return code was %d" ), (int) rc);
-		}
-
-		return jvm != NULL;
+	if(rc) {
+		jvm = NULL;
+		failed(widget, _( "Can't create java virtual machine" ), _( "The return code was %d" ), (int) rc);
 	}
+
+	return jvm != NULL;
+}
 
 
 #endif // WIN32
 
- }
 
 

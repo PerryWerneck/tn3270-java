@@ -211,7 +211,8 @@ $(BINRLS)/$(PLUGIN): \
 	@make -C src/plugin $@
 
 Debug: \
-	$(BINDBG)/$(LIBNAME)
+	$(BINDBG)/$(LIBNAME) \
+	$(BINDBG)/$(PLUGIN)
 
 run: \
 	$(BINDBG)/$(LIBNAME) \
@@ -232,6 +233,9 @@ $(BINDBG)/$(PLUGIN): \
 	src/include/*.h
 
 	@make -C src/plugin $@
+
+cleanDebug: \
+	clean
 
 clean:
 	@rm -fr $(BINDIR)

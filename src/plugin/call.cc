@@ -29,137 +29,99 @@
 
 
  #include "private.h"
- #include <v3270.h>
+ #include <lib3270.h>
  #include <lib3270/trace.h>
  #include <lib3270/log.h>
+ #include <pw3270/v3270.h>
 
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
-namespace PW3270_NAMESPACE {
+void call(GtkWidget *widget, const char *classname) {
 
+	debug("%s(%s)",__FUNCTION__,classname);
 
-	void java::call(GtkWidget *widget, const char *classname) {
+	if(!trylock()) {
 
-		debug("%s(%s)",__FUNCTION__,classname);
+		failed(widget, _( "Can't access java virtual machine" ), "%s", strerror(EBUSY));
+		return;
 
-		if(!trylock()) {
+	}
 
-			failed(widget, _( "Can't access java virtual machine" ), "%s", strerror(EBUSY));
-			return;
+	if(jvm || load_jvm(widget)) {
 
-		}
+		v3270_set_script(widget,'J',TRUE);
 
-		if(jvm || load_jvm(widget)) {
+		try {
 
-			v3270_set_script(widget,'J',TRUE);
+			jclass		cls;
+			jmethodID	mid;
 
-			try {
+			// Get application entry point.
+			cls = env->FindClass(classname);
+			if(!cls) {
+				throw exception( _(  "Can't find class %s" ), classname);
+			}
 
-				jclass		cls;
-				jmethodID	mid;
+			mid = env->GetStaticMethodID(cls, "main", "([Ljava/lang/String;)V");
+			if(!mid) {
+				throw exception( _(  "Can't find method %s/%s" ), classname, "main");
+			}
 
-				/*
+			// Build arguments
+			jobjectArray args = env->NewObjectArray(0, env->FindClass("java/lang/String"), env->NewStringUTF(""));
 
-				DONT WORK!!
-				http://stackoverflow.com/questions/271506/why-cant-system-setproperty-change-the-classpath-at-runtime
+			// Call main()
+			env->CallStaticVoidMethod(cls, mid, args);
 
-				// Atualizar o classpath
-				cls = env->FindClass("java/lang/System");
-				if(!cls) {
-					throw exception( _(  "Can't find class %s" ), "java/lang/System");
+			// Check for exception
+			jthrowable exc = env->ExceptionOccurred();
+			env->ExceptionClear();
+
+			if (exc) {
+				jclass throwable_class = env->FindClass("java/lang/Throwable");
+
+				jmethodID jni_getMessage = env->GetMethodID(throwable_class,"getMessage","()Ljava/lang/String;");
+				jstring j_msg = (jstring) env->CallObjectMethod(exc,jni_getMessage);
+
+				GtkWidget *dialog = gtk_message_dialog_new(	GTK_WINDOW(gtk_widget_get_toplevel(widget)),
+															GTK_DIALOG_DESTROY_WITH_PARENT,
+															GTK_MESSAGE_ERROR,
+															GTK_BUTTONS_OK_CANCEL,
+															_(  "Java application \"%s\" has failed." ), classname );
+
+				gtk_window_set_title(GTK_WINDOW(dialog), _( "Java error" ));
+
+				if(!env->IsSameObject(j_msg,NULL)) {
+
+					const char	* msg = env->GetStringUTFChars(j_msg, 0);
+
+					gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),"%s",msg);
+
+					env->ReleaseStringUTFChars( j_msg, msg);
 				}
 
-				mid = env->GetStaticMethodID(cls, "setProperty", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;");
-				if(!mid) {
-					throw exception( _(  "Can't find method %s/%s" ), "java/lang/System","setProperty");
-				}
+				if(gtk_dialog_run(GTK_DIALOG (dialog)) == GTK_RESPONSE_CANCEL)
+					gtk_main_quit();
+				gtk_widget_destroy(dialog);
 
-				lib3270_trace_event(v3270_get_session(widget),"java.class.path=%s\n",classpath);
-
-				jstring name = env->NewStringUTF("java.class.path");
-				jstring path = env->NewStringUTF(classpath);
-
-				jstring rc = (jstring) env->CallObjectMethod(cls,mid,name,path);
-
-				env->DeleteLocalRef(name);
-				env->DeleteLocalRef(path);
-				env->DeleteLocalRef(rc);
-				*/
-
-				// Get application entry point.
-				cls = env->FindClass(classname);
-				if(!cls) {
-					throw exception( _(  "Can't find class %s" ), classname);
-				}
-
-				mid = env->GetStaticMethodID(cls, "main", "([Ljava/lang/String;)V");
-				if(!mid) {
-					throw exception( _(  "Can't find method %s/%s" ), classname, "main");
-				}
-
-				// Build arguments
-				jobjectArray args = env->NewObjectArray(0, env->FindClass("java/lang/String"), env->NewStringUTF(""));
-
-				// Call main()
-				env->CallStaticVoidMethod(cls, mid, args);
-
-				// Check for exception
-				jthrowable exc = env->ExceptionOccurred();
-				env->ExceptionClear();
-
-				if (exc) {
-					jclass throwable_class = env->FindClass("java/lang/Throwable");
-
-					jmethodID jni_getMessage = env->GetMethodID(throwable_class,"getMessage","()Ljava/lang/String;");
-					jstring j_msg = (jstring) env->CallObjectMethod(exc,jni_getMessage);
-
-					GtkWidget *dialog = gtk_message_dialog_new(	GTK_WINDOW(gtk_widget_get_toplevel(widget)),
-																GTK_DIALOG_DESTROY_WITH_PARENT,
-																GTK_MESSAGE_ERROR,
-																GTK_BUTTONS_OK_CANCEL,
-																_(  "Java application \"%s\" has failed." ), classname );
-
-					gtk_window_set_title(GTK_WINDOW(dialog), _( "Java error" ));
-
-					if(!env->IsSameObject(j_msg,NULL)) {
-
-						const char	* msg = env->GetStringUTFChars(j_msg, 0);
-
-						gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),"%s",msg);
-
-						env->ReleaseStringUTFChars( j_msg, msg);
-					}
-
-					if(gtk_dialog_run(GTK_DIALOG (dialog)) == GTK_RESPONSE_CANCEL)
-						gtk_main_quit();
-					gtk_widget_destroy(dialog);
-
-
-				}
-
-				// And finish
-				env->DeleteLocalRef(args);
-
-			} catch(std::exception &e) {
-
-				failed(widget,_("Can't start java application"),"%s", e.what());
 
 			}
 
-/*
-			g_free(dirname);
-			g_free(classname);
-			g_free(classpath);
-*/
+			// And finish
+			env->DeleteLocalRef(args);
 
-			v3270_set_script(widget,'J',FALSE);
+		} catch(std::exception &e) {
+
+			failed(widget,_("Can't start java application"),"%s", e.what());
 
 		}
 
-		unlock();
-
+		v3270_set_script(widget,'J',FALSE);
 
 	}
+
+	unlock();
+
 
 }

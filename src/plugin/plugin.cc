@@ -51,12 +51,11 @@
 
  #include <pw3270.h>
  #include <pw3270/plugin.h>
- #include <v3270.h>
+ #include <pw3270/v3270.h>
  #include <lib3270/actions.h>
  #include <lib3270/log.h>
  #include <lib3270/trace.h>
  #include <lib3270/charset.h>
- #include <pw3270/class.h>
  #include <pw3270/trace.h>
 
 
@@ -75,7 +74,7 @@
 
 namespace PW3270_NAMESPACE {
 
-	void java::lock() {
+	void lock() {
 #if GTK_CHECK_VERSION(2,32,0)
 		g_mutex_lock(&mutex);
 #else
@@ -83,7 +82,7 @@ namespace PW3270_NAMESPACE {
 #endif // GTK_CHECK_VERSION
 	}
 
-	void java::unlock() {
+	void unlock() {
 #if GTK_CHECK_VERSION(2,32,0)
 		g_mutex_unlock(&mutex);
 #else
@@ -91,7 +90,7 @@ namespace PW3270_NAMESPACE {
 #endif // GTK_CHECK_VERSION
 	}
 
-	bool java::trylock() {
+	bool trylock() {
 #if GTK_CHECK_VERSION(2,32,0)
 		return g_mutex_trylock(&mutex);
 #else
