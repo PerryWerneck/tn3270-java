@@ -43,7 +43,7 @@ datarootdir=@datarootdir@
 BASEDIR=@BASEDIR@
 SRCDIR=$(BASEDIR)/.src/$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)
 
-OBJDIR=$(BASEDIR)/.obj
+OBJDIR=$(BASEDIR)/.obj/plugin
 OBJDBG=$(OBJDIR)/Debug
 OBJRLS=$(OBJDIR)/Release
 
@@ -73,11 +73,10 @@ LDFLAGS=@LDFLAGS@
 
 #---[ Rules ]----------------------------------------------------------------------------
 
-DEPENDS=../include/*.h Makefile
-
 $(OBJDBG)/%.o: \
 	%.cc \
-	$(DEPENDS)
+	Makefile \
+	../include/*.h
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
@@ -87,7 +86,8 @@ $(OBJDBG)/%.o: \
 
 $(OBJRLS)/%.o: \
 	%.cc \
-	$(DEPENDS)
+	Makefile \
+	../include/*.h
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`

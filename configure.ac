@@ -265,6 +265,16 @@ AC_SUBST(jvm_arch)
 AC_SUBST(JDK_HOME)
 AC_SUBST(JRE_HOME)
 
+dnl ---------------------------------------------------------------------------
+dnl Check for GTK
+dnl ---------------------------------------------------------------------------
+
+PKG_CHECK_MODULES( [GTK], [gtk+-3.0], AC_DEFINE(HAVE_GTK))
+
+AC_SUBST(GTK_LIBS)
+AC_SUBST(GTK_CFLAGS)
+AC_SUBST(GTK_VERSION,`$PKG_CONFIG --modversion gtk+-3.0`)
+
 
 dnl ---------------------------------------------------------------------------
 dnl Check for integer types & library functions
