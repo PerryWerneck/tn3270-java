@@ -428,6 +428,7 @@ dnl ---------------------------------------------------------------------------
 
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(src/jni/Makefile)
+AC_CONFIG_FILES(src/plugin/Makefile)
 
 dnl ---------------------------------------------------------------------------
 dnl Output the generated config.status script.

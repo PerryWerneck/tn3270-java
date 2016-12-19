@@ -1,0 +1,128 @@
+#
+# "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
+# (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
+# aplicativos mainframe. Registro no INPI sob o nome G3270.
+#
+# Copyright (C) <2008> <Banco do Brasil S.A.>
+#
+# Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
+# os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
+# Free Software Foundation.
+#
+# Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
+# GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
+# A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
+# obter mais detalhes.
+#
+# Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
+# programa;  se  não, escreva para a Free Software Foundation, Inc., 59 Temple
+# Place, Suite 330, Boston, MA, 02111-1307, USA
+#
+# Contatos:
+#
+# perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
+# erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
+#
+
+SOURCES=call.cc plugin.cc startstop.cc
+LIBNAME=j3270@DLLEXT@
+
+#---[ Configuration values ]-------------------------------------------------------------
+
+PACKAGE_NAME=@PACKAGE_NAME@
+PACKAGE_VERSION=@PACKAGE_VERSION@
+PACKAGE_TARNAME=@PACKAGE_TARNAME@
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+sbindir=@sbindir@
+libdir=@libdir@
+datarootdir=@datarootdir@
+
+BASEDIR=@BASEDIR@
+SRCDIR=$(BASEDIR)/.src/$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)
+
+OBJDIR=$(BASEDIR)/.obj
+OBJDBG=$(OBJDIR)/Debug
+OBJRLS=$(OBJDIR)/Release
+
+BINDIR=$(BASEDIR)/.bin
+BINDBG=$(BINDIR)/Debug
+BINRLS=$(BINDIR)/Release
+
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+
+LN_S=@LN_S@
+
+VALGRIND=@VALGRIND@
+AMTAR=@AMTAR@
+SHELL=@SHELL@
+STRIP=@STRIP@
+MKDIR=@MKDIR_P@
+
+CXX=@CXX@
+CC=@CC@
+LD=@CXX@
+
+LIBS=-lpw3270cpp @LIBS@ @GTK_LIBS@ @REXX_LIBS@
+CFLAGS=-I$(BASEDIR)/src/include @CFLAGS@ @GTK_CFLAGS@
+LDFLAGS=@LDFLAGS@
+
+#---[ Rules ]----------------------------------------------------------------------------
+
+DEPENDS=../include/*.h Makefile
+
+$(OBJDBG)/%.o: \
+	%.cc \
+	$(DEPENDS)
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@$(CXX) $(CFLAGS)	-fstack-check -DDEBUG=1 \
+						-DBUILD_DATE=`date +"0x%Y%m%d"`\
+						-g -o $@ -c $<
+
+$(OBJRLS)/%.o: \
+	%.cc \
+	$(DEPENDS)
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@$(CXX) $(CFLAGS)	-DNDEBUG=1 \
+						-DBUILD_DATE=`date +"0x%Y%m%d"` \
+						-o $@ -c $<
+
+#---[ Release Targets ]------------------------------------------------------------------
+
+all: \
+	$(BINRLS)/$(LIBNAME)
+
+Release: \
+	$(BINRLS)/$(LIBNAME)
+
+install: \
+	$(BINRLS)/$(LIBNAME)
+
+$(BINRLS)/$(LIBNAME): \
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
+
+	@echo $(basename $@) ...
+	@$(MKDIR) `dirname $@`
+	@$(LD) -shared -Wl,-soname,$(LIBNAME) -L$(BINRLS) $(LDFLAGS) -o $@ $^ -ljni3270 $(LIBS)
+
+#---[ Debug Targets ]--------------------------------------------------------------------
+
+Debug: \
+	$(BINDBG)/$(LIBNAME)
+
+$(BINDBG)/$(LIBNAME): \
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o)
+
+	@echo $(basename $@) ...
+	@$(MKDIR) `dirname $@`
+	@$(LD) -shared -Wl,-soname,$(LIBNAME) -L$(BINDBG) $(LDFLAGS) -o $@ $^ -ljni3270 $(LIBS)
+
+

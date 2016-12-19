@@ -27,6 +27,20 @@
 LIBNAME=@DLLPREFIX@jni3270@DLLEXT@
 PLUGIN=j3270@DLLEXT@
 
+#---[ Paths ]------------------------------------------------------------------
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+sbindir=@sbindir@
+libdir=@libdir@
+datadir=@datadir@
+includedir=@includedir@
+sysconfdir=@sysconfdir@
+jnidir=@jnidir@
+jvmjardir=@jvmjardir@
+javadocdir=@javadocdir@
+
 #---[ Configuration values ]-------------------------------------------------------------
 
 BASEDIR=@BASEDIR@
@@ -48,6 +62,7 @@ LN_S=@LN_S@
 JAVA=@JAVA@
 JAVAC=@JAVAC@
 MKDIR=@MKDIR_P@
+JAVADOC=@JAVADOC@
 
 #---[ Rules ]----------------------------------------------------------------------------
 
@@ -84,16 +99,29 @@ install-%: \
 
 all: \
 	$(BINRLS)/$(LIBNAME) \
-	$(BINRLS)/$(PLUGIN)
+	$(BINRLS)/$(PLUGIN) \
+	doc
 
 install: \
 	install-extension \
-	install-plugin
+	install-plugin \
+	install-doc
+
+install-doc: \
+	doc
+
+	@$(MKDIR) $(DESTDIR)/$(javadocdir)/$(PACKAGE_NAME)
+	@cp -r javadoc/* $(DESTDIR)/$(javadocdir)/$(PACKAGE_NAME)
+	@find $(DESTDIR)/$(javadocdir)/$(PACKAGE_NAME) -type f -exec chmod 644 {} \;
+	@find $(DESTDIR)/$(javadocdir)/$(PACKAGE_NAME) -type d -exec chmod 755 {} \;
 
 
 Release: \
 	$(BINRLS)/$(LIBNAME) \
 	$(BINRLS)/$(PLUGIN)
+
+doc: src/terminal.java
+	@$(JAVADOC) -encoding utf-8 -d $@ $^
 
 rpm: \
 	$(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.bz2
@@ -144,8 +172,8 @@ $(SRCDIR): \
 	@cp LICENCA $(SRCDIR)
 	@cp LICENSE $(SRCDIR)
 
-#	@$(MKDIR) $(SRCDIR)/testprograms
-#	@cp testprograms/* $(SRCDIR)/testprograms
+	@$(MKDIR) $(SRCDIR)/testprograms
+	@cp testprograms/* $(SRCDIR)/testprograms
 
 	@$(MKDIR) $(SRCDIR)/scripts
 	@cp scripts/* $(SRCDIR)/scripts
