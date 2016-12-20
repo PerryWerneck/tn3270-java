@@ -34,7 +34,7 @@
  #include <lib3270/log.h>
  #include <pw3270/v3270.h>
 
- using j3270::exception;
+ using PW3270_NAMESPACE::exception;
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 

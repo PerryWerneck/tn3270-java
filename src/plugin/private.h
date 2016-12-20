@@ -44,8 +44,8 @@
 	#include <glib/gi18n.h>
 	#include <gtk/gtk.h>
 
-	G_GNUC_INTERNAL JavaVM   * jvm;
-	G_GNUC_INTERNAL JNIEnv   * env;
+	extern JavaVM   * jvm;
+	extern JNIEnv   * env;
 
 	G_GNUC_INTERNAL bool load_jvm(GtkWidget *widget);
 	G_GNUC_INTERNAL void call(GtkWidget *widget, const char *classname);

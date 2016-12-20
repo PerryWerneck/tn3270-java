@@ -39,6 +39,8 @@ bindir=@bindir@
 sbindir=@sbindir@
 libdir=@libdir@
 datarootdir=@datarootdir@
+jardir=@jvmjardir@
+jnidir=@jnidir@
 
 BASEDIR=@BASEDIR@
 SRCDIR=$(BASEDIR)/.src/$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)
@@ -68,7 +70,11 @@ CC=@CC@
 LD=@CXX@
 
 LIBS=-lpw3270cpp @LIBS@ @GTK_LIBS@
-CXXFLAGS=@CXXFLAGS@ @GTK_CFLAGS@ -I../include
+CXXFLAGS=@CXXFLAGS@ @GTK_CFLAGS@ \
+			-I../include \
+			-DJARDIR="\"${jardir}\"" \
+			-DJNIDIR="\"${jnidir}\""
+
 LDFLAGS=@LDFLAGS@
 
 #---[ Rules ]----------------------------------------------------------------------------

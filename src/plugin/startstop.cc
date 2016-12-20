@@ -50,7 +50,7 @@
 
  #include <pw3270.h>
  #include <pw3270/plugin.h>
- #include <v3270.h>
+ #include <pw3270/v3270.h>
  #include <lib3270/actions.h>
  #include <lib3270/log.h>
  #include <lib3270/trace.h>
@@ -59,8 +59,6 @@
  #include <pw3270/trace.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
-
-using namespace PW3270_NAMESPACE::java;
 
 extern "C" {
 
@@ -106,7 +104,7 @@ extern "C" {
 
 		gchar *classname = (gchar *) g_object_get_data(G_OBJECT(action),"src");
 
-		lib3270_trace_event(v3270_get_session(widget),"Action %s activated on widget %p\n",gtk_action_get_name(action),widget);
+//		lib3270_trace_event(v3270_get_session(widget),"Action %s activated on widget %p\n",gtk_action_get_name(action),widget);
 
 		if(classname)
 		{

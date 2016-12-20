@@ -72,35 +72,31 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
-namespace PW3270_NAMESPACE {
-
-	void lock() {
+void lock() {
 #if GTK_CHECK_VERSION(2,32,0)
-		g_mutex_lock(&mutex);
+	g_mutex_lock(&mutex);
 #else
-		g_static_mutex_lock(&mutex);
+	g_static_mutex_lock(&mutex);
 #endif // GTK_CHECK_VERSION
-	}
-
-	void unlock() {
-#if GTK_CHECK_VERSION(2,32,0)
-		g_mutex_unlock(&mutex);
-#else
-		g_static_mutex_unlock(&mutex);
-#endif // GTK_CHECK_VERSION
-	}
-
-	bool trylock() {
-#if GTK_CHECK_VERSION(2,32,0)
-		return g_mutex_trylock(&mutex);
-#else
-		return g_static_mutex_trylock(&mutex);
-#endif // GTK_CHECK_VERSION
-	}
-
 }
 
-using namespace PW3270_NAMESPACE;
+void unlock() {
+#if GTK_CHECK_VERSION(2,32,0)
+	g_mutex_unlock(&mutex);
+#else
+	g_static_mutex_unlock(&mutex);
+#endif // GTK_CHECK_VERSION
+}
+
+bool trylock() {
+#if GTK_CHECK_VERSION(2,32,0)
+	return g_mutex_trylock(&mutex);
+#else
+	return g_static_mutex_trylock(&mutex);
+#endif // GTK_CHECK_VERSION
+}
+
+using PW3270_NAMESPACE::exception;
 
 extern "C" {
 
@@ -119,14 +115,14 @@ extern "C" {
 
 	LIB3270_EXPORT int pw3270_plugin_stop(GtkWidget *window, GtkWidget *terminal) {
 
-		java::lock();
+		lock();
 
-		if(java::jvm) {
-			java::jvm->DestroyJavaVM();
-			java::jvm = NULL;
+		if(jvm) {
+			jvm->DestroyJavaVM();
+			jvm = NULL;
 		}
 
-		java::unlock();
+		unlock();
 
 		#if GTK_CHECK_VERSION(2,32,0)
 			g_mutex_clear(&mutex);
