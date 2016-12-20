@@ -112,6 +112,9 @@ Release: \
 install: \
 	$(BINRLS)/$(LIBNAME)
 
+	@$(MKDIR) $(DESTDIR)/$(libdir)/pw3270-plugins
+	@$(INSTALL_PROGRAM) $(BINRLS)/$(LIBNAME) $(DESTDIR)/$(libdir)/pw3270-plugins
+
 $(BINRLS)/$(LIBNAME): \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
 

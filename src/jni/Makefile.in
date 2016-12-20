@@ -80,6 +80,7 @@ CXX=@CXX@
 LD=@CXX@
 JAVAH=@JAVAH@
 JAVAC=@JAVAC@
+JAR=@JAR@
 
 LIBS=-lpw3270cpp @LIBS@ @LIBICONV@
 CXXFLAGS=@CXXFLAGS@ -I../include
@@ -119,6 +120,13 @@ $(BINDIR)/java/pw3270/%.class: \
 	@$(JAVAC) -encoding utf-8 -d $(BINDIR)/java $^
 
 
+$(BINRLS)/pw3270.jar: \
+	$(BINDIR)/java/pw3270/terminal.class
+
+	@echo $@ ...
+	@mkdir -p `dirname $@`
+	@$(JAR) -cvf "$@" -C "$(BINDIR)/java" "pw3270"
+
 jni3270.h: \
 	$(BINDIR)/java/pw3270/terminal.class
 
@@ -151,10 +159,15 @@ $(BINDBG)/$(LIBNAME): \
 	@$(LD) -shared -Wl,-soname,$(notdir $@) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 install: \
-	$(BINRLS)$(LIBNAME)
+	$(BINRLS)/$(LIBNAME) \
+	$(BINRLS)/pw3270.jar
+
 
 	@$(MKDIR) $(DESTDIR)/$(jnidir)
-	@$(INSTALL_PROGRAM) $(BINRLS)$(LIBNAME) $(DESTDIR)/$(jnidir)
+	@$(INSTALL_PROGRAM) $(BINRLS)/$(LIBNAME) $(DESTDIR)/$(jnidir)
+
+	@$(MKDIR) $(DESTDIR)/$(jvmjardir)
+	@$(INSTALL_DATA) $(BINRLS)/pw3270.jar $(DESTDIR)/$(jvmjardir)
 
 clean:
 

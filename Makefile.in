@@ -43,6 +43,9 @@ javadocdir=@javadocdir@
 
 #---[ Configuration values ]-------------------------------------------------------------
 
+PACKAGE_NAME=pw3270
+PACKAGE_TARNAME=pw3270-java
+
 BASEDIR=@BASEDIR@
 SRCDIR=$(BASEDIR)/.src/$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)
 
@@ -111,14 +114,15 @@ install-doc: \
 	doc
 
 	@$(MKDIR) $(DESTDIR)/$(javadocdir)/$(PACKAGE_NAME)
-	@cp -r javadoc/* $(DESTDIR)/$(javadocdir)/$(PACKAGE_NAME)
+	@cp -rv ./doc/* $(DESTDIR)/$(javadocdir)/$(PACKAGE_NAME)
 	@find $(DESTDIR)/$(javadocdir)/$(PACKAGE_NAME) -type f -exec chmod 644 {} \;
 	@find $(DESTDIR)/$(javadocdir)/$(PACKAGE_NAME) -type d -exec chmod 755 {} \;
 
 
 Release: \
 	$(BINRLS)/$(LIBNAME) \
-	$(BINRLS)/$(PLUGIN)
+	$(BINRLS)/$(PLUGIN) \
+	doc
 
 doc: src/terminal.java
 	@$(JAVADOC) -encoding utf-8 -d $@ $^
