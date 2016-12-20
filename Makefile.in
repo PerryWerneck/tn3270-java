@@ -44,7 +44,8 @@ javadocdir=@javadocdir@
 #---[ Configuration values ]-------------------------------------------------------------
 
 PACKAGE_NAME=pw3270
-PACKAGE_TARNAME=pw3270-java
+PACKAGE_TARNAME=pw3270-plugin-java
+PACKAGE_VERSION=@PACKAGE_VERSION@
 
 BASEDIR=@BASEDIR@
 SRCDIR=$(BASEDIR)/.src/$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)
@@ -66,6 +67,8 @@ JAVA=@JAVA@
 JAVAC=@JAVAC@
 MKDIR=@MKDIR_P@
 JAVADOC=@JAVADOC@
+AMTAR=@AMTAR@
+RPMBUILD=@RPMBUILD@
 
 #---[ Rules ]----------------------------------------------------------------------------
 
@@ -160,7 +163,7 @@ $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar: \
 		--owner=root \
 		--group=root \
 		--file=$@ \
-		$(PACKAGE_TARNAME)-@PACKAGE_VERSION@
+		$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)
 
 
 $(SRCDIR): \
@@ -192,13 +195,14 @@ $(SRCDIR): \
 	@cp src/include/*.h $(SRCDIR)/src/include
 
 	@$(MKDIR) $(SRCDIR)/src/jni  
+	@cp src/jni/*.h $(SRCDIR)/src/jni
 	@cp src/jni/*.in $(SRCDIR)/src/jni
 	@cp src/jni/*.cc $(SRCDIR)/src/jni
 
 	@$(MKDIR) $(SRCDIR)/src/plugin  
+	@cp src/plugin/*.h $(SRCDIR)/src/plugin
 	@cp src/plugin/*.in $(SRCDIR)/src/plugin
 	@cp src/plugin/*.cc $(SRCDIR)/src/plugin
-	@cp src/plugin/*.xml $(SRCDIR)/src/plugin
 
 
 $(BINRLS)/$(LIBNAME): \
