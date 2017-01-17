@@ -174,10 +174,13 @@ $(SRCDIR): \
 	@cp *.in $(SRCDIR)
 	@cp *.cbp $(SRCDIR)
 	@cp *.sh $(SRCDIR)
-	@cp *.spec $(SRCDIR)
 	@cp README.md $(SRCDIR)
 	@cp LICENCA $(SRCDIR)
 	@cp LICENSE $(SRCDIR)
+	@cp rpm/*.spec $(SRCDIR)
+
+	@$(MKDIR) $(SRCDIR)/debian
+	@cp debian/* $(SRCDIR)/debian
 
 	@$(MKDIR) $(SRCDIR)/testprograms
 	@cp testprograms/* $(SRCDIR)/testprograms

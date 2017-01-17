@@ -21,7 +21,7 @@ Version:		5.1
 Release:		0
 License:		GPL-2.0
 Source:			%{name}-%{version}.tar.bz2
-URL:			https://portal.softwarepublico.gov.br/social/pw3270/
+URL:			https://softwarepublico.gov.br/gitlab/pw3270/pw3270-java
 Group: 			Development/Languages/Java
 
 BuildRoot:		/var/tmp/%{name}-%{version}
@@ -33,7 +33,7 @@ BuildRequires:  coreutils
 BuildRequires:  gcc-c++
 BuildRequires:  m4
 BuildRequires:  pkgconfig
-BuildRequires:	pw3270-devel >= 5.1
+BuildRequires:	pkgconfig(pw3270) >= 5.1
 
 BuildRequires:  java-devel
 BuildRequires:  javapackages-tools

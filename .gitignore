@@ -15,7 +15,6 @@ stamp-h1
 *.zip
 *.tar
 *.bz2
-rpm
 *.depend
 ChangeLog
 revision
@@ -23,3 +22,10 @@ revision.m4
 *.ini
 jni3270.h
 doc
+rpm/BUILD
+rpm/BUILDROOT
+rpm/RPMS
+rpm/SOURCES
+rpm/SPECS
+rpm/SRPMS
+
