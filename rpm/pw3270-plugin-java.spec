@@ -37,6 +37,7 @@ BuildRequires:	pkgconfig(pw3270) >= 5.1
 
 BuildRequires:  java-devel
 BuildRequires:  javapackages-tools
+BuildRequires:	fdupes
 
 Requires:		pw3270 >= 5.1
 Requires:		java-extension-tn3270 = %{version}
