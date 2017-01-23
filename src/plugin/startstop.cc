@@ -55,7 +55,7 @@
  #include <lib3270/log.h>
  #include <lib3270/trace.h>
  #include <lib3270/charset.h>
- #include <pw3270/class.h>
+ #include <pw3270cpp.h>
  #include <pw3270/trace.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
