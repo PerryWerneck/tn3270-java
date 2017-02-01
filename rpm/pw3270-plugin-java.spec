@@ -91,7 +91,7 @@ make Release
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%makeinstall
+%make_install
 
 %fdupes $RPM_BUILD_ROOT
 
