@@ -177,6 +177,7 @@ $(SRCDIR): \
 	@cp README.md $(SRCDIR)
 	@cp LICENCA $(SRCDIR)
 	@cp LICENSE $(SRCDIR)
+	@cp AUTHORS $(SRCDIR)
 	@cp rpm/*.spec $(SRCDIR)
 
 	@$(MKDIR) $(SRCDIR)/debian
