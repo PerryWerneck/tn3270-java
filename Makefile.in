@@ -106,7 +106,7 @@ install-%: \
 all: \
 	$(BINRLS)/$(LIBNAME) \
 	$(BINRLS)/$(PLUGIN) \
-	doc
+	javadoc
 
 install: \
 	install-jni \
@@ -114,20 +114,49 @@ install: \
 	install-doc
 
 install-doc: \
-	doc
+	javadoc
 
 	@$(MKDIR) $(DESTDIR)/$(javadocdir)/$(PACKAGE_NAME)
-	@cp -rv ./doc/* $(DESTDIR)/$(javadocdir)/$(PACKAGE_NAME)
+	@cp -rv ./javadoc/* $(DESTDIR)/$(javadocdir)/$(PACKAGE_NAME)
 	@find $(DESTDIR)/$(javadocdir)/$(PACKAGE_NAME) -type f -exec chmod 644 {} \;
 	@find $(DESTDIR)/$(javadocdir)/$(PACKAGE_NAME) -type d -exec chmod 755 {} \;
-
 
 Release: \
 	$(BINRLS)/$(LIBNAME) \
 	$(BINRLS)/$(PLUGIN) \
-	doc
+	javadoc
 
-doc: src/terminal.java
+zip: \
+	pw3270-java-@PACKAGE_VERSION@.@host@.zip
+
+
+pw3270-java-@PACKAGE_VERSION@.@host@.zip: \
+	$(BINRLS)/$(LIBNAME) \
+	$(BINRLS)/$(PLUGIN) \
+	$(BINRLS)/pw3270.jar \
+	javadoc
+
+	@rm -f $@
+	@zip -9 -r $@ ./javadoc
+
+	@$(MKDIR) ./jvm-exports
+	@$(INSTALL_DATA) $(BINRLS)/pw3270.jar ./jvm-exports
+	@zip -9 -m -r $@ ./jvm-exports
+	@rm -fr ./jvm-exports
+
+	@$(MKDIR) ./plugin
+	@$(INSTALL_PROGRAM) $(BINRLS)/$(PLUGIN) ./plugin
+	@zip -9 -m -r $@ ./plugin/
+	@rm -fr ./plugin
+
+	@$(MKDIR) ./jni
+	@$(INSTALL_PROGRAM) $(BINRLS)/$(LIBNAME) ./jni
+	@zip -9 -m -r $@ ./jni
+	@rm -fr ./jni
+
+	@zip -9 -r $@ ./testprograms
+
+javadoc: src/terminal.java
 	@$(JAVADOC) -encoding utf-8 -d $@ $^
 
 rpm: \
@@ -208,6 +237,12 @@ $(SRCDIR): \
 	@cp src/plugin/*.in $(SRCDIR)/src/plugin
 	@cp src/plugin/*.cc $(SRCDIR)/src/plugin
 
+$(BINRLS)/pw3270.jar: \
+	src/jni/*.cc \
+	src/include/*.h
+
+	@make -C src/jni $@
+
 
 $(BINRLS)/$(LIBNAME): \
 	src/jni/*.cc \
@@ -253,6 +288,8 @@ clean:
 	@rm -fr $(BINDIR)
 	@rm -fr $(OBJDIR)
 	@rm -fr $(SRCDIR)
+	@rm -fr jni
+	@rm -fr javadoc
 
 
 

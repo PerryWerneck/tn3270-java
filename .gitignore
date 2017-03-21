@@ -21,7 +21,8 @@ revision
 revision.m4
 *.ini
 jni3270.h
-doc
+javadoc
+jni
 rpm/BUILD
 rpm/BUILDROOT
 rpm/RPMS
