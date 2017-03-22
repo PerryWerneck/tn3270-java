@@ -245,7 +245,7 @@ if test "$app_cv_java" = "yes" ; then
 
 else
 
-	AC_MSG_NOTICE([jdk is NOT present or disabled.])
+	AC_MSG_ERROR([jdk is NOT present or disabled.])
 
 fi
 
@@ -275,6 +275,21 @@ AC_SUBST(GTK_LIBS)
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_VERSION,`$PKG_CONFIG --modversion gtk+-3.0`)
 
+dnl ---------------------------------------------------------------------------
+dnl Check for lib3270
+dnl ---------------------------------------------------------------------------
+
+PKG_CHECK_MODULES( [LIB3270], [lib3270], AC_DEFINE(HAVE_LIB3270), AC_MSG_ERROR([Can't find lib3270 devel.]))
+AC_SUBST(LIB3270_LIBS)
+AC_SUBST(LIB3270_CFLAGS)
+
+dnl ---------------------------------------------------------------------------
+dnl Check for PW3270
+dnl ---------------------------------------------------------------------------
+
+PKG_CHECK_MODULES( [PW3270], [pw3270], AC_DEFINE(HAVE_PW3270), AC_MSG_ERROR([Can't find lib3270 devel.]))
+AC_SUBST(PW3270_LIBS)
+AC_SUBST(PW3270_CFLAGS)
 
 dnl ---------------------------------------------------------------------------
 dnl Check for integer types & library functions

@@ -69,7 +69,7 @@ CXX=@CXX@
 CC=@CC@
 LD=@CXX@
 
-LIBS=-lpw3270cpp @LIBS@ @GTK_LIBS@
+LIBS=-lpw3270cpp @PW3270_LIBS@ @LIB3270_LIBS@ @LIBS@ @GTK_LIBS@
 CXXFLAGS=@CXXFLAGS@ @GTK_CFLAGS@ \
 			-I../include \
 			-DJARDIR="\"${jardir}\"" \

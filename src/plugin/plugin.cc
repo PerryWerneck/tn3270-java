@@ -108,8 +108,6 @@ extern "C" {
 		g_mutex_init(&mutex);
 #endif // GTK_CHECK_VERSION
 
-		java3270_set_session(lib3270_get_default_session_handle());
-
 		return 0;
 	}
 

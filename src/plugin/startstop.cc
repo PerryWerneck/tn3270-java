@@ -170,6 +170,7 @@ bool load_jvm(GtkWidget *widget) {
 
 	// Dynamically load jvm library to avoid naming and path problems.
 	HMODULE		  kernel;
+	HMODULE		  hModule;
 	HANDLE 		  WINAPI (*AddDllDirectory)(PCWSTR NewDirectory);
 	BOOL 	 	  WINAPI (*RemoveDllDirectory)(HANDLE Cookie);
 
@@ -214,19 +215,19 @@ bool load_jvm(GtkWidget *widget) {
 
 		} else {
 
-			lib3270_trace_event(v3270_get_session(widget),"Can't find %s: %s","AddDllDirectory",session::win32_strerror(GetLastError()).c_str());
+			lib3270_trace_event(v3270_get_session(widget),"Can't find %s: %s","AddDllDirectory",lib3270_win32_strerror(GetLastError()));
 
 		}
 
 	} else {
 
-		lib3270_trace_event(v3270_get_session(widget),"Can't load %s: %s\n","kernel32.dll",session::win32_strerror(GetLastError()).c_str());
+		lib3270_trace_event(v3270_get_session(widget),"Can't load %s: %s\n","kernel32.dll",lib3270_win32_strerror(GetLastError()));
 
 	}
 
 	hModule = LoadLibrary("jvm.dll");
 	if(!hModule) {
-		lib3270_trace_event(v3270_get_session(widget),"Can't load %s\n","jvm.dll",session::win32_strerror(GetLastError()).c_str());
+		lib3270_trace_event(v3270_get_session(widget),"Can't load %s\n","jvm.dll",lib3270_win32_strerror(GetLastError()));
 
 		for(size_t f = 0; !hModule && f < G_N_ELEMENTS(dlldir); f++) {
 
@@ -239,7 +240,7 @@ bool load_jvm(GtkWidget *widget) {
 				gchar *p = g_build_filename(env,dlldir[f].path,"jvm.dll",NULL);
 				hModule = LoadLibrary(p);
 				if(!hModule) {
-					lib3270_trace_event(v3270_get_session(widget),"Can't load %s: %s\n",p,session::win32_strerror(GetLastError()).c_str());
+					lib3270_trace_event(v3270_get_session(widget),"Can't load %s: %s\n",p,lib3270_win32_strerror(GetLastError()));
 				}
 				g_free(p);
 
@@ -248,7 +249,7 @@ bool load_jvm(GtkWidget *widget) {
 	}
 
 	if(!hModule) {
-		failed(widget, _(  "Can't load java virtual machine" ), "%s", session::win32_strerror(GetLastError()).c_str());
+		failed(widget, _(  "Can't load java virtual machine" ), "%s", lib3270_win32_strerror(GetLastError()));
 	}
 
 	if(kernel) {
@@ -279,7 +280,7 @@ bool load_jvm(GtkWidget *widget) {
 	jint JNICALL (*CreateJavaVM)(JavaVM **, void **, void *) = (jint JNICALL (*)(JavaVM **, void **, void *)) GetProcAddress(hModule,"JNI_CreateJavaVM");
 
 	if(!CreateJavaVM) {
-		failed(widget, _(  "Can't load java virtual machine creation method" ), "%s", session::win32_strerror(GetLastError()).c_str());
+		failed(widget, _(  "Can't load java virtual machine creation method" ), "%s", lib3270_win32_strerror(GetLastError()));
 		return false;
 	}
 

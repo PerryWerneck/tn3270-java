@@ -41,8 +41,6 @@
 	extern "C" {
 #endif
 
-	LIB3270_EXPORT void java3270_set_session(H3270 *session);
-
 #ifdef __cplusplus
 	}
 #endif
