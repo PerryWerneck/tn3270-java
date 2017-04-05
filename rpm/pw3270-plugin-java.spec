@@ -15,6 +15,9 @@
 
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
+
+%define vrslib %(pkg-config --modversion lib3270)
+
 Summary:		Plugin module for embedding java on pw3270.
 Name:			pw3270-plugin-java
 Version:		5.1
@@ -34,6 +37,7 @@ BuildRequires:  gcc-c++
 BuildRequires:  m4
 BuildRequires:  pkgconfig
 BuildRequires:	pkgconfig(pw3270) >= 5.1
+BuildRequires:	pkgconfig(lib3270) >= 5.1
 
 BuildRequires:  java-devel
 BuildRequires:  javapackages-tools
@@ -53,8 +57,8 @@ directly from pw3270 main window.
 
 Summary:        Java class to interact with pw3270
 Group:          Development/Libraries/Java
-Requires:		lib3270 >= 5.1
-Requires:       java >= 4.2
+Requires:       java
+Requires:		lib3270 = %{vrslib}
 
 %description -n pw3270-java
 
