@@ -108,6 +108,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n pw3270-java
 %defattr(-,root,root)
+%doc README.md
 %dir %{_jnidir}
 %dir %{_jvmjardir}
 
