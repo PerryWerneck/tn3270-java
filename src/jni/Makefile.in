@@ -84,7 +84,7 @@ JAR=@JAR@
 
 LIBS=-lpw3270cpp @LIBS@ @LIBICONV@
 CXXFLAGS=@CXXFLAGS@ -I../include
-LDFLAGS=@LDFLAGS@
+LDFLAGS=@JNILDFLAGS@ @LDFLAGS@
 
 #---[ Rules ]----------------------------------------------------------------------------
 

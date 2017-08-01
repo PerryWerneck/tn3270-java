@@ -44,6 +44,7 @@ case "$host" in
 
 		CXXFLAGS="$CXXFLAGS -Wall -Werror -D_WIN32_WINNT=0x0600"
 		LIBS="$LIBS -lws2_32 -lntdll -lwtsapi32"
+		JNILDFLAGS="-static-libstdc++ -static-libgcc -Wl,--add-stdcall-alias"
 		;;
 
  	s390x-*)
@@ -54,6 +55,7 @@ case "$host" in
 
 		CXXFLAGS="$CXXFLAGS -pthread -Wall"
 		LIBS="-Wl,--no-undefined -pthread $LIBS"
+		JNILDFLAGS=""
 		;;
 
 
@@ -65,8 +67,12 @@ case "$host" in
 
 		CXXFLAGS="$CXXFLAGS -Wall -Werror"
 		LIBS="-pthread $LIBS"
+		JNILDFLAGS=""
 
 esac
+
+AC_SUBST(JNILDFLAGS)
+
 
 dnl ---------------------------------------------------------------------------
 dnl Check for other programs
