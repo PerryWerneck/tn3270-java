@@ -104,6 +104,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
+%dir %{_libdir}/pw3270-plugins
 %{_libdir}/pw3270-plugins/j3270.so
 
 %files -n pw3270-java
