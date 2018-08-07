@@ -1,0 +1,207 @@
+#!/bin/bash
+#
+# "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
+# (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
+# aplicativos mainframe. Registro no INPI sob o nome G3270.
+#
+# Copyright (C) <2008> <Banco do Brasil S.A.>
+#
+# Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
+# os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
+# Free Software Foundation.
+#
+# Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
+# GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
+# A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
+# obter mais detalhes.
+#
+# Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
+# programa;  se  não, escreva para a Free Software Foundation, Inc., 59 Temple
+# Place, Suite 330, Boston, MA, 02111-1307, USA
+#
+# Contatos:
+#
+# perry.werneck@gmail.com       (Alexandre Perry de Souza Werneck)
+# erico.mendonca@gmail.com      (Erico Mascarenhas de Mendonça)
+#
+
+myDIR=$(dirname $(readlink -f $0))
+
+prefix="@prefix@"
+PKG_CONFIG="@PKG_CONFIG@"
+
+copy_dependencies() {
+
+	AGAIN=1
+	until [  $AGAIN = 0 ]; do
+
+		SOURCES=$(mktemp)
+		REQUIRES=$(mktemp)
+
+#		find "$(dirname ${myDIR})/.bin/Release/" -iname "*.dll" >	${SOURCES}
+#		find "$(dirname ${myDIR})/.bin/Release/" -iname "*.exe" >>	${SOURCES}
+#		find "${TARGET}" -iname *.dll >> ${SOURCES}
+
+		# Só preciso de runtime para a JNI
+		echo ${1} >> ${SOURCES}
+
+		while read FILENAME
+		do
+			objdump -p ${FILENAME} | grep "DLL Name:" | cut -d: -f2 | tr "[:upper:]" "[:lower:]" >> ${REQUIRES}
+		done < ${SOURCES}
+
+		libs_to_exclude="
+			advapi32
+			cfgmgr32
+			comctl32
+			comdlg32
+			crypt32
+			d3d8
+			d3d9
+			ddraw
+			dnsapi
+			dsound
+			dwmapi
+			gdi32
+			gdiplus
+			glu32
+			glut32
+			imm32
+			iphlpapi
+			kernel32
+			ksuser
+			mpr
+			mscms
+			mscoree
+			msimg32
+			msvcr71
+			msvcr80
+			msvcr90
+			msvcrt
+			mswsock
+			netapi32
+			odbc32
+			ole32
+			oleacc
+			oleaut32
+			opengl32
+			psapi
+			rpcrt4
+			secur32
+			setupapi
+			shell32
+			shlwapi
+			user32
+			usp10
+			version
+			wininet
+			winmm
+			wldap32
+			ws2_32
+			wsock32
+			winspool.drv
+			ntdll
+		"
+
+		# Excluo DLLs do sistema
+		for i in $libs_to_exclude; do
+			sed -i -e "/${i}/d" ${REQUIRES}
+		done
+
+		# Procuro pelas DLLs que faltam
+		AGAIN=0
+		while read FILENAME
+		do
+			if [ ! -e "${TARGET}/${FILENAME}" ]; then
+
+				COUNT=$(find "$(dirname ${myDIR})/.bin/Release/" -iname ${FILENAME} | wc --lines)
+				if [ "${COUNT}" == "0" ]; then
+
+					echo ${FILENAME}
+
+					if [ -e ${prefix}/bin/${FILENAME} ]; then
+
+						echo "Copiando $(basename ${FILENAME})..."
+
+						AGAIN=1
+						cp -v "${prefix}/bin/${FILENAME}" "${TARGET}/${FILENAME}"
+						if [ "$?" != "0" ]; then
+							exit -1
+						fi
+					else 
+
+						echo "Can't find ${FILENAME}"
+						exit -1
+
+					fi
+
+				fi
+
+
+			fi
+
+		done < ${REQUIRES}
+
+		rm -f ${SOURCES}
+		rm -f ${REQUIRES}
+
+	done
+
+}
+
+make clean
+if [ "$?" != "0" ]; then
+	exit -1
+fi
+
+make all
+if [ "$?" != "0" ]; then
+	exit -1
+fi
+
+TEMPDIR=$(mktemp -d)
+
+cp -rv "@BASEDIR@/javadoc" "${TEMPDIR}"
+
+mkdir -p ${TEMPDIR}/jvm-exports
+cp -v "@BASEDIR@/.bin/Release/pw3270.jar" "${TEMPDIR}/jvm-exports"
+if [ "$?" != "0" ]; then
+	exit -1
+fi
+
+mkdir -p ${TEMPDIR}/plugin
+cp -v "@BASEDIR@/.bin/Release/j3270.dll" "${TEMPDIR}/plugin"
+if [ "$?" != "0" ]; then
+	exit -1
+fi
+
+mkdir -p ${TEMPDIR}/jni
+cp -v "@BASEDIR@/.bin/Release/jni3270.dll" "${TEMPDIR}/jni"
+if [ "$?" != "0" ]; then
+	exit -1
+fi
+
+TARGET="${TEMPDIR}/jni"
+copy_dependencies ${TEMPDIR}/jni/jni3270.dll
+
+ZIPFILE="@BASEDIR@/pw3270-java-@PACKAGE_VERSION@.@host@.zip"
+
+rm -f "${ZIPFILE}"
+if [ "$?" != "0" ]; then
+	exit -1
+fi
+
+cd ${TEMPDIR}
+if [ "$?" != "0" ]; then
+	exit -1
+fi
+
+zip -9 -m -r "${ZIPFILE}" *
+if [ "$?" != "0" ]; then
+	rm -f "${ZIPFILE}"
+	exit -1
+fi
+
+rm -fr ${TEMPDIR}
+
+

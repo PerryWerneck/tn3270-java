@@ -106,6 +106,7 @@ install-%: \
 all: \
 	$(BINRLS)/$(LIBNAME) \
 	$(BINRLS)/$(PLUGIN) \
+	$(BINRLS)/pw3270.jar \
 	javadoc
 
 install: \

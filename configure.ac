@@ -45,6 +45,9 @@ case "$host" in
 		CXXFLAGS="$CXXFLAGS -Wall -Werror -D_WIN32_WINNT=0x0600"
 		LIBS="$LIBS -lws2_32 -lntdll -lwtsapi32"
 		JNILDFLAGS="-static-libstdc++ -static-libgcc -Wl,--add-stdcall-alias"
+
+		AC_CONFIG_FILES(win/makepackage.sh)
+
 		;;
 
  	s390x-*)

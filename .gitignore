@@ -29,4 +29,6 @@ rpm/RPMS
 rpm/SOURCES
 rpm/SPECS
 rpm/SRPMS
+win/makepackage.sh
+win/makeruntime.sh
 
