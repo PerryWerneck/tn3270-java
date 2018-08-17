@@ -50,7 +50,7 @@ Requires:		java-extension-tn3270 = %{version}
 
 Plugin module for java plugins in pw3270.
 
-This package provides a pw3270 plugin allowing use o rexx scripts
+This package provides a pw3270 plugin allowing use of java classes
 directly from pw3270 main window.
 
 %package -n pw3270-java
