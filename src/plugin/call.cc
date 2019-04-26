@@ -32,7 +32,7 @@
  #include <lib3270.h>
  #include <lib3270/trace.h>
  #include <lib3270/log.h>
- #include <pw3270/v3270.h>
+ #include <v3270.h>
 
  using PW3270_NAMESPACE::exception;
 
@@ -51,7 +51,7 @@ void call(GtkWidget *widget, const char *classname) {
 
 	if(jvm || load_jvm(widget)) {
 
-		v3270_set_script(widget,'J',TRUE);
+		v3270_set_script(widget,'J');
 
 		try {
 
@@ -118,7 +118,7 @@ void call(GtkWidget *widget, const char *classname) {
 
 		}
 
-		v3270_set_script(widget,'J',FALSE);
+		v3270_set_script(widget,0);
 
 	}
 

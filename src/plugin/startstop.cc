@@ -50,26 +50,28 @@
 
  #include <pw3270.h>
  #include <pw3270/plugin.h>
- #include <pw3270/v3270.h>
+ #include <v3270.h>
  #include <lib3270/actions.h>
  #include <lib3270/log.h>
  #include <lib3270/trace.h>
  #include <lib3270/charset.h>
  #include <pw3270cpp.h>
- #include <pw3270/trace.h>
+ #include <lib3270/trace.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
 extern "C" {
 
+	/*
 	static void trace_cleanup(GtkWidget *widget, GtkWidget **window) {
 		*window = NULL;
 	}
+	*/
 
 	static jint JNICALL jni_vfprintf(FILE *fp, const char *fmt, va_list args) {
 
 		char 				* msg	= NULL;
-		static GtkWidget	* trace = NULL;
+//		static GtkWidget	* trace = NULL;
 
 		if(vasprintf(&msg,fmt,args) < 1) {
 			lib3270_write_log(lib3270_get_default_session_handle(),"java","vasprintf() error on \"%s\"",fmt);
@@ -79,9 +81,10 @@ extern "C" {
 		fprintf(fp,"%s",msg);
 		lib3270_write_log(lib3270_get_default_session_handle(),"java","%s",msg);
 
+		/*
 		if(!trace) {
 			// Cria janela de trace.
-			trace = pw3270_trace_new();
+			trace = v3270_trace_new();
 			g_signal_connect(G_OBJECT(trace), "destroy",G_CALLBACK(trace_cleanup), &trace);
 
 			pw3270_trace_set_destroy_on_close(trace,TRUE);
@@ -96,6 +99,7 @@ extern "C" {
 
 			free(msg);
 		}
+		*/
 
 		return 0;
 	}

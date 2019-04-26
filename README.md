@@ -1,6 +1,14 @@
+Java tn3270 protocol library
+============================
 
-Java support for pw3270
+Created originally as part of PW3270 application.
 
-Includes a plugin module for java plugins in pw3270 and a jar file allowing use of lib3270 or pw3270 directly from java applications.
+See more details at https://softwarepublico.gov.br/social/pw3270/
 
+Installation repositories
+=========================
+
+ You can find instalation repositories in SuSE Build Service:
+
+ * Linux (Many distributions):
 

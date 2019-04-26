@@ -296,7 +296,7 @@ dnl ---------------------------------------------------------------------------
 dnl Check for PW3270
 dnl ---------------------------------------------------------------------------
 
-PKG_CHECK_MODULES( [PW3270], [pw3270], AC_DEFINE(HAVE_PW3270), AC_MSG_ERROR([Can't find lib3270 devel.]))
+PKG_CHECK_MODULES( [PW3270], [pw3270], AC_DEFINE(HAVE_PW3270), AC_MSG_ERROR([Can't find pw3270 devel.]))
 AC_SUBST(PW3270_LIBS)
 AC_SUBST(PW3270_CFLAGS)
 
