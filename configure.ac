@@ -182,7 +182,12 @@ dnl ---------------------------------------------------------------------------
 dnl Check for Java
 dnl ---------------------------------------------------------------------------
 
+AC_ARG_VAR([JDK_HOME], [JDK home directory])
+
+AC_SUBST(JAVA_CFLAGS,-I$JDK_HOME/include/)
+
 AC_PATH_TOOL([JAVAC], [javac], [no])
+
 
 dnl ---------------------------------------------------------------------------
 dnl Check for ELF symbol visibility support

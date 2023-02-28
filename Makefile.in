@@ -47,6 +47,7 @@ MSGCAT=@MSGCAT@
 WINDRES=@WINDRES@
 AR=@AR@
 VALGRIND=@VALGRIND@
+JAVAC=@JAVAC@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -76,6 +77,7 @@ CFLAGS= \
 	-g \
 	-Isrc/include \
 	-DBUILD_DATE=`date +%Y%m%d` \
+	@JAVA_CFLAGS@ \
 	@IPC3270_CFLAGS@
 
 LDFLAGS= \
@@ -160,6 +162,25 @@ $(BINRLS)/$(LIBNAME)@DLLEXT@: \
 		$^ \
 		$(LIBS)
 
+
+#---[ Install Targets ]------------------------------------------------------------------
+
+src/include/private/br_app_pw3270_Terminal.h: \
+	src/Terminal.java
+	
+	@$(MKDIR) $(BINDIR)
+	@$(MKDIR) $(dir $@)
+	@echo $< ...
+
+	@$(JAVAC) \
+		-d $(BINDIR) \
+		-h $(dir $@) \
+		$<
+		
+
+x: \
+	src/include/private/br_app_pw3270_Terminal.h
+
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
@@ -208,6 +229,8 @@ clean: \
 	cleanDebug \
 	cleanRelease
 
+	@rm -f 	src/include/private/br_app_pw3270_Terminal.h
+
 cleanDebug:
 
 	@rm -fr $(OBJDBG)
@@ -223,5 +246,5 @@ clean: \
 	cleanRelease
 
 -include $(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).d)
--include $(foreach SRC, $(basename $(SOURCES))), $(OBJRLS)/$(SRC).d)
+-include $(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).d)
 
