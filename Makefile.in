@@ -24,273 +24,192 @@
 # erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
 #
 
-LIBNAME=@DLLPREFIX@jni3270@DLLEXT@
-PLUGIN=j3270@DLLEXT@
+#---[ Library configuration ]------------------------------------------------------------
 
-#---[ Paths ]------------------------------------------------------------------
+LIBNAME=jni3270
+
+SOURCES= \
+	$(wildcard src/*.cc) \
+	$(wildcard src/@OSNAME@/*.cc)
+
+#---[ Tools ]----------------------------------------------------------------------------
+
+CXX=@CXX@
+CC=@CC@
+LD=@CXX@
+LN_S=@LN_S@
+MKDIR=@MKDIR_P@
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+XGETTEXT=@XGETTEXT@
+MSGCAT=@MSGCAT@
+WINDRES=@WINDRES@
+AR=@AR@
+VALGRIND=@VALGRIND@
+
+#---[ Paths ]----------------------------------------------------------------------------
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
 sbindir=@sbindir@
 libdir=@libdir@
-datadir=@datadir@
 includedir=@includedir@
+datarootdir=@datarootdir@
+localedir=@localedir@
+docdir=@docdir@
 sysconfdir=@sysconfdir@
-jnidir=@jnidir@
-jvmjardir=@jvmjardir@
-javadocdir=@javadocdir@
 
-#---[ Configuration values ]-------------------------------------------------------------
-
-PACKAGE_NAME=pw3270
-PACKAGE_TARNAME=pw3270-plugin-java
-PACKAGE_VERSION=@PACKAGE_VERSION@
-
-BASEDIR=@BASEDIR@
-SRCDIR=$(BASEDIR)/.src/$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)
-
-OBJDIR=$(BASEDIR)/.obj
+OBJDIR=.obj
 OBJDBG=$(OBJDIR)/Debug
 OBJRLS=$(OBJDIR)/Release
 
-BINDIR=$(BASEDIR)/.bin
+BINDIR=.bin
 BINDBG=$(BINDIR)/Debug
 BINRLS=$(BINDIR)/Release
 
-INSTALL=@INSTALL@
-INSTALL_DATA=@INSTALL_DATA@
-INSTALL_PROGRAM=@INSTALL_PROGRAM@
-
-LN_S=@LN_S@
-JAVA=@JAVA@
-JAVAC=@JAVAC@
-MKDIR=@MKDIR_P@
-JAVADOC=@JAVADOC@
-AMTAR=@AMTAR@
-RPMBUILD=@RPMBUILD@
-
 #---[ Rules ]----------------------------------------------------------------------------
 
-$(BINDIR)/java/%.class: \
-	testprograms/%.java \
-	$(BINDIR)/java/pw3270/terminal.class
+CFLAGS= \
+	@CFLAGS@ \
+	-g \
+	-Isrc/include \
+	-DBUILD_DATE=`date +%Y%m%d` \
+	@IPC3270_CFLAGS@
+
+LDFLAGS= \
+	@LDFLAGS@
+
+LIBS= \
+	@LIBS@ \
+	@IPC3270_LIBS@
+
+#---[ Debug Rules ]----------------------------------------------------------------------
+
+$(OBJDBG)/%.o: \
+	%.cc
 
 	@echo $< ...
-	@$(MKDIR) `dirname $@`
-	@$(JAVAC) -encoding utf-8 -cp $(BINDIR)/java -d $(BINDIR)/java $<
+	@$(MKDIR) $(dir $@)
 
+	@$(CXX) \
+		$(CXXFLAGS) \
+		-Wall -Wextra -fstack-check \
+		-DDEBUG=1 \
+		-o $@ \
+		-c $<
 
-%.tar.bz2: \
-	%.tar
-
-	@echo $< ...
-	@bzip2 --compress -9 --stdout $< > $@
-	@chmod 0644 $@
-
-%.tar.gz: \
-	%.tar
+$(OBJDBG)/%.o: \
+	%.rc
 
 	@echo $< ...
-	@gzip -9 --stdout $< > $@
-	@chmod 0644 $@
+	@$(MKDIR) $(dir $@)
+	@$(WINDRES) $< -O coff -o $@
 
-install-%: \
-	src/%/Makefile \
-	all
+#---[ Release Rules ]--------------------------------------------------------------------
 
-	@make -C `dirname $<` DESTDIR=$(DESTDIR) install
+$(OBJRLS)/%.o: \
+	%.cc
 
-#---[ Targets ]--------------------------------------------------------------------------
+	@echo $< ...
+	@$(MKDIR) $(dir $@)
+
+	@$(CXX) \
+		$(CXXFLAGS) \
+		-Wall -Wextra \
+		-DNDEBUG=1 \
+		-o $@ \
+		-c $<
+
+$(OBJRLS)/%.o: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) $(dir $@)
+	@$(WINDRES) $< -O coff -o $@
+
+#---[ Release Targets ]------------------------------------------------------------------
 
 all: \
-	$(BINRLS)/$(LIBNAME) \
-	$(BINRLS)/$(PLUGIN) \
-	$(BINRLS)/pw3270.jar \
-	javadoc
-
-install: \
-	install-jni \
-	install-plugin \
-	install-doc
-
-install-doc: \
-	javadoc
-
-	@$(MKDIR) $(DESTDIR)/$(javadocdir)/$(PACKAGE_NAME)
-	@cp -rv ./javadoc/* $(DESTDIR)/$(javadocdir)/$(PACKAGE_NAME)
-	@find $(DESTDIR)/$(javadocdir)/$(PACKAGE_NAME) -type f -exec chmod 644 {} \;
-	@find $(DESTDIR)/$(javadocdir)/$(PACKAGE_NAME) -type d -exec chmod 755 {} \;
+	$(BINRLS)/$(LIBNAME)@DLLEXT@
 
 Release: \
-	$(BINRLS)/$(LIBNAME) \
-	$(BINRLS)/$(PLUGIN) \
-	javadoc
+	$(BINRLS)/$(LIBNAME)@DLLEXT@
 
-zip: \
-	pw3270-java-@PACKAGE_VERSION@.@host@.zip
+$(BINRLS)/$(LIBNAME)@DLLEXT@: \
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
 
+	@$(MKDIR) $(dir $@)
+	@echo $< ...
+	@$(LD) \
+		-shared -Wl,-soname,$(@F) \
+		-o $@ \
+		-L$(OBJRLS) \
+		$(LDFLAGS) \
+		$^ \
+		$(LIBS)
 
-pw3270-java-@PACKAGE_VERSION@.@host@.zip: \
-	$(BINRLS)/$(LIBNAME) \
-	$(BINRLS)/$(PLUGIN) \
-	$(BINRLS)/pw3270.jar \
-	javadoc
+#---[ Install Targets ]------------------------------------------------------------------
 
-	@rm -f $@
-	@zip -9 -r $@ ./javadoc
+install: \
+	install-@OSNAME@
 
-	@$(MKDIR) ./jvm-exports
-	@$(INSTALL_DATA) $(BINRLS)/pw3270.jar ./jvm-exports
-	@zip -9 -m -r $@ ./jvm-exports
-	@rm -fr ./jvm-exports
+install-linux: \
+	$(BINRLS)/$(LIBNAME)@DLLEXT@
 
-	@$(MKDIR) ./plugin
-	@$(INSTALL_PROGRAM) $(BINRLS)/$(PLUGIN) ./plugin
-	@zip -9 -m -r $@ ./plugin/
-	@rm -fr ./plugin
+	@$(MKDIR) $(DESTDIR)$(PYTHON_SITELIB)
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/$(LIBNAME)@DLLEXT@ \
+		$(DESTDIR)$(PYTHON_SITELIB)
 
-	@$(MKDIR) ./jni
-	@$(INSTALL_PROGRAM) $(BINRLS)/$(LIBNAME) ./jni
-	@zip -9 -m -r $@ ./jni
-	@rm -fr ./jni
+	@$(MKDIR) $(DESTDIR)$(datarootdir)/appdata
 
-	@zip -9 -r $@ ./testprograms
-
-javadoc: src/terminal.java
-	@$(JAVADOC) -encoding utf-8 -d $@ $^
-
-rpm: \
-	$(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.bz2
-
-ifneq ($(RPMBUILD),no)
-	@$(MKDIR) $(BASEDIR)/rpm
-	@$(MKDIR) $(BASEDIR)/rpm/SPECS
-	@$(MKDIR) $(BASEDIR)/rpm/SOURCES
-	@$(MKDIR) $(BASEDIR)/rpm/SRPMS
-	@$(MKDIR) $(BASEDIR)/rpm/RPMS
-	@$(MKDIR) $(BASEDIR)/rpm/BUILD
-	@$(MKDIR) $(BASEDIR)/rpm/BUILDROOT
-	@umask 002 ; $(RPMBUILD) \
-		--define="_topdir $(BASEDIR)/rpm" \
-		--define="_packager $(USER)@$(HOSTNAME)" \
-		--clean \
-		-ta $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.bz2
-endif
-
-bz2: \
-	$(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.bz2
-
-$(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar: \
-	$(SRCDIR)
-
-	@$(AMTAR) \
-		--verbose \
-		--format=ustar \
-		--create \
-		--exclude-vcs \
-		--directory $(BASEDIR)/.src \
-		--owner=root \
-		--group=root \
-		--file=$@ \
-		$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)
+	@$(INSTALL_DATA) \
+		metainfo.xml \
+		$(DESTDIR)$(datarootdir)/appdata/@PRODUCT_NAME@-python.metainfo.xml
 
 
-$(SRCDIR): \
-	clean
-
-	@$(MKDIR) $(SRCDIR)
-	@cp *.ac $(SRCDIR)
-	@cp *.in $(SRCDIR)
-	@cp *.cbp $(SRCDIR)
-	@cp *.sh $(SRCDIR)
-	@cp README.md $(SRCDIR)
-	@cp LICENCA $(SRCDIR)
-	@cp LICENSE $(SRCDIR)
-	@cp AUTHORS $(SRCDIR)
-	@cp rpm/*.spec $(SRCDIR)
-
-	@$(MKDIR) $(SRCDIR)/debian
-	@cp debian/* $(SRCDIR)/debian
-
-	@$(MKDIR) $(SRCDIR)/testprograms
-	@cp testprograms/* $(SRCDIR)/testprograms
-
-	@$(MKDIR) $(SRCDIR)/scripts
-	@cp scripts/* $(SRCDIR)/scripts
-
-	@$(MKDIR) $(SRCDIR)/src
-	@cp src/*.java $(SRCDIR)/src
-
-	@$(MKDIR) $(SRCDIR)/src/include
-	@cp src/include/*.in $(SRCDIR)/src/include
-
-	@$(MKDIR) $(SRCDIR)/src/include
-	@cp src/include/*.h $(SRCDIR)/src/include
-
-	@$(MKDIR) $(SRCDIR)/src/jni  
-	@cp src/jni/*.h $(SRCDIR)/src/jni
-	@cp src/jni/*.in $(SRCDIR)/src/jni
-	@cp src/jni/*.cc $(SRCDIR)/src/jni
-
-	@$(MKDIR) $(SRCDIR)/src/plugin  
-	@cp src/plugin/*.h $(SRCDIR)/src/plugin
-	@cp src/plugin/*.in $(SRCDIR)/src/plugin
-	@cp src/plugin/*.cc $(SRCDIR)/src/plugin
-
-$(BINRLS)/pw3270.jar: \
-	src/jni/*.cc \
-	src/include/*.h
-
-	@make -C src/jni $@
-
-
-$(BINRLS)/$(LIBNAME): \
-	src/jni/*.cc \
-	src/include/*.h
-
-	@make -C src/jni $@
-
-$(BINRLS)/$(PLUGIN): \
-	$(BINRLS)/$(LIBNAME) \
-	src/plugin/*.cc \
-	src/include/*.h
-
-	@make -C src/plugin $@
+#---[ Debug Targets ]--------------------------------------------------------------------
 
 Debug: \
-	$(BINDBG)/$(LIBNAME) \
-	$(BINDBG)/$(PLUGIN)
-
+	$(BINDBG)/$(LIBNAME)@DLLEXT@
+ 
 run: \
-	$(BINDBG)/$(LIBNAME) \
-	$(BINDIR)/java/version.class
-
-	@LD_LIBRARY_PATH=$(BINDBG) java -Djava.library.path=$(BINDBG) -cp .bin/java/ version
+	$(BINDBG)/$(LIBNAME)@DLLEXT@
 
 
-$(BINDBG)/$(LIBNAME): \
-	src/jni/*.cc \
-	src/include/*.h
+$(BINDBG)/$(LIBNAME)@DLLEXT@: \
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o)
 
-	@make -C src/jni $@
+	@$(MKDIR) $(dir $@)
+	@echo $< ...
+	@$(LD) \
+		-shared -Wl,-soname,$(@F) \
+		-o $@ \
+		-L$(BINDBG) \
+		$(LDFLAGS) \
+		$^ \
+		$(LIBS)
 
-$(BINDBG)/$(PLUGIN): \
-	$(BINDBG)/$(LIBNAME) \
-	src/plugin/*.cc \
-	src/include/*.h
+#---[ Clean Targets ]--------------------------------------------------------------------
 
-	@make -C src/plugin $@
+clean: \
+	cleanDebug \
+	cleanRelease
 
-cleanDebug: \
-	clean
+cleanDebug:
 
-clean:
-	@rm -fr $(BINDIR)
-	@rm -fr $(OBJDIR)
-	@rm -fr $(SRCDIR)
-	@rm -fr jni
-	@rm -fr javadoc
+	@rm -fr $(OBJDBG)
+	@rm -fr $(BINDBG)
 
+cleanRelease:
+
+	@rm -fr $(OBJRLS)
+	@rm -fr $(BINRLS)
+
+clean: \
+	cleanDebug \
+	cleanRelease
 
 

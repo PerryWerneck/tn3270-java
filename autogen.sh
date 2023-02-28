@@ -1,77 +1,29 @@
 #!/bin/bash
 
-APPLEVEL="0"
+builddir=${PWD}
 
 test -n "$srcdir" || srcdir=`dirname "$0"`
 test -n "$srcdir" || srcdir=.
 
-olddir=`pwd`
 cd "$srcdir"
 
-if test -e revision ; then
-	. revision
+mkdir -p scripts
+mkdir -p m4
+
+LIBTOOLIZE=$(which libtoolize)
+if [ -z ${LIBTOOLIZE} ]; then
+	LIBTOOLIZE=$(which glibtoolize)
 fi
-
-touch ChangeLog
-
-# Inicia com os defaults
-TEMPFILE=autogen.tmp
-
-if [ -d .svn ]; then
-
-	# Tenta detectar a versão
-	SVNVERSION=$(which svnversion 2> /dev/null)
-	if test -x "${SVNVERSION}" ; then
-		svnversion | cut -d: -f2 | sed 's@[M|m]@@g' > ${TEMPFILE} 2> /dev/null
-		if [ "$?" == "0" ]; then
-			PACKAGE_REVISION=$(cat ${TEMPFILE})
-		fi
-	fi
-
-	# Tenta detectar a URL
-	SVN=$(which svn 2> /dev/null)
-	if test -x "${SVN}" ; then
-
-		LANG="EN_US" "${SVN}" info > ${TEMPFILE} 2>&1
-		if [ "$?" == "0" ]; then
-			PACKAGE_SOURCE=$(cat ${TEMPFILE} | grep "^URL: " | cut -d" " -f2)
-		fi
-
-	fi
-
-elif [ -d .git ]; then
-
-	# Obtém revisão via git
-	# Referência: http://stackoverflow.com/questions/4120001/what-is-the-git-equivalent-for-revision-number
-
-	# Obtém URL via git
-	PACKAGE_SOURCE=$(git config --get remote.origin.url)
-
-	# Obtém número total de commits
-	PACKAGE_REVISION=$(git rev-list HEAD --count)
-
-fi
-
-
-rm -f $TEMPFILE
-
-if test -z ${PACKAGE_REVISION} ; then
-	echo "Can´t detect package revision, using current date"
-	PACKAGE_REVISION=`date +%y%m%d`
-fi
-
-if test -z ${PACKAGE_SOURCE} ; then
-	echo "Can´t detect package source"
+if [ -z ${LIBTOOLIZE} ]; then
+	echo "Can't find libtoolize"
 	exit -1
 fi
 
-#echo "PACKAGE_REVISION=${PACKAGE_REVISION}" > $srcdir/revision
-#echo "PACKAGE_SOURCE=${PACKAGE_SOURCE}" >> $srcdir/revision
-#echo "PACKAGE_LEVEL=${APPLEVEL}" >> $srcdir/revision
-
-#echo "m4_define([SVN_REVISION], ${PACKAGE_REVISION})" > $srcdir/revision.m4
-#echo "m4_define([SVN_URL], ${PACKAGE_SOURCE})" >> $srcdir/revision.m4
-#echo "m4_define([APP_LEVEL], ${APPLEVEL})" >> $srcdir/revision.m4
+${LIBTOOLIZE} --force
+if test $? != 0 ; then
+	echo "libtoolize failed."
+	exit -1
+fi
 
 aclocal
 if test $? != 0 ; then
@@ -79,16 +31,26 @@ if test $? != 0 ; then
 	exit -1
 fi
 
-autoconf
+autoheader --force
+if test $? != 0 ; then
+	echo "autoheader failed."
+	exit -1
+fi
+
+autoconf --force
 if test $? != 0 ; then
 	echo "autoconf failed."
 	exit -1
 fi
 
-cd "$olddir"
-test -n "$NOCONFIGURE" || "$srcdir/configure" "$@"
+automake --add-missing 2> /dev/null | true
 
-echo "Package set to revision $PACKAGE_REVISION and source $PACKAGE_SOURCE"
+autopoint
+
+cd "${builddir}"
+
+test -n "$NOCONFIGURE" || "$srcdir/configure" --srcdir=${srcdir} $@
+
 
 
 
