@@ -184,9 +184,16 @@ dnl ---------------------------------------------------------------------------
 
 AC_ARG_VAR([JDK_HOME], [JDK home directory])
 
-AC_SUBST(JAVA_CFLAGS,-I$JDK_HOME/include/)
-
 AC_PATH_TOOL([JAVAC], [javac], [no])
+
+case "$host" in
+	*-mingw32|*-pc-msys)
+		;;
+
+ 	*)
+		AC_SUBST(JAVA_CFLAGS,"-I$JDK_HOME/include/ -I$JDK_HOME/include/linux")
+
+esac
 
 
 dnl ---------------------------------------------------------------------------

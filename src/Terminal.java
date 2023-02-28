@@ -34,10 +34,15 @@ public class Terminal {
 	static {
         System.loadLibrary("jni3270");
     }
-
-	/// @brief Get the current lib3270 version.
-	/// @return String with the current lib3270 version.
-	public native String get_version();
+	
+	/// @brief Get the current ipc3270 version.
+	/// @return String with the current ipc3270 version.
+	public static native String get_version();
+	
+	/// @brief Get the current ipc3270 revision.
+	/// @return String with the current ipc3270 revision.
+	public static native String get_revision();
+	
     
 };
 

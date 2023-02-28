@@ -29,8 +29,8 @@
 LIBNAME=jni3270
 
 SOURCES= \
-	$(wildcard src/*.cc) \
-	$(wildcard src/@OSNAME@/*.cc)
+	$(wildcard src/native/*.cc) \
+	$(wildcard src/native/@OSNAME@/*.cc)
 
 #---[ Tools ]----------------------------------------------------------------------------
 
@@ -90,7 +90,8 @@ LIBS= \
 #---[ Debug Rules ]----------------------------------------------------------------------
 
 $(OBJDBG)/%.o: \
-	%.cc
+	%.cc \
+	src/include/private/br_app_pw3270_Terminal.h
 
 	@echo $< ...
 	@$(MKDIR) $(@D)
@@ -118,7 +119,8 @@ $(OBJDBG)/%.o: \
 #---[ Release Rules ]--------------------------------------------------------------------
 
 $(OBJRLS)/%.o: \
-	%.cc
+	%.cc \
+	src/include/private/br_app_pw3270_Terminal.h
 
 	@echo $< ...
 	@$(MKDIR) $(@D)
@@ -177,10 +179,6 @@ src/include/private/br_app_pw3270_Terminal.h: \
 		-h $(dir $@) \
 		$<
 		
-
-x: \
-	src/include/private/br_app_pw3270_Terminal.h
-
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
@@ -189,16 +187,8 @@ install: \
 install-linux: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@
 
-	@$(MKDIR) $(DESTDIR)$(PYTHON_SITELIB)
-	@$(INSTALL_PROGRAM) \
-		$(BINRLS)/$(LIBNAME)@DLLEXT@ \
-		$(DESTDIR)$(PYTHON_SITELIB)
-
-	@$(MKDIR) $(DESTDIR)$(datarootdir)/appdata
-
-	@$(INSTALL_DATA) \
-		metainfo.xml \
-		$(DESTDIR)$(datarootdir)/appdata/@PRODUCT_NAME@-python.metainfo.xml
+install-windows: \
+	$(BINRLS)/$(LIBNAME)@DLLEXT@
 
 
 #---[ Debug Targets ]--------------------------------------------------------------------
@@ -206,8 +196,28 @@ install-linux: \
 Debug: \
 	$(BINDBG)/$(LIBNAME)@DLLEXT@
  
-run: \
+$(BINDIR)/%.class: \
+	testprograms/%.java \
 	$(BINDBG)/$(LIBNAME)@DLLEXT@
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@$(JAVAC) \
+		-encoding utf-8 \
+		-cp $(BINDIR) \
+		-d $(BINDIR) \
+		$<
+ 
+run: \
+	$(BINDBG)/$(LIBNAME)@DLLEXT@ \
+	$(BINDIR)/version.class
+
+	@ln -sf $(LIBNAME)@DLLEXT@ $(BINDBG)/lib$(LIBNAME)@DLLEXT@
+	
+	@LD_LIBRARY_PATH=$(BINDBG) \
+		java \
+			-Djava.library.path=$(BINDBG) \
+			-cp $(BINDIR) version
 
 
 $(BINDBG)/$(LIBNAME)@DLLEXT@: \
