@@ -63,25 +63,22 @@ dnl ---------------------------------------------------------------------------
 app_vrs_major=$(echo $VERSION | cut -d. -f1)
 app_vrs_minor=$(echo $VERSION | cut -d. -f2)
 
-AC_DEFINE_UNQUOTED(PACKAGE_MAJOR_VERSION, $app_vrs_major)
-AC_DEFINE_UNQUOTED(PACKAGE_MINOR_VERSION, $app_vrs_minor)
+AC_DEFINE_UNQUOTED(PACKAGE_MAJOR_VERSION, $app_vrs_major, [The library major version])
+AC_DEFINE_UNQUOTED(PACKAGE_MINOR_VERSION, $app_vrs_minor, [The library minor version])
 
 AC_SUBST(PACKAGE_MAJOR_VERSION,$app_vrs_major)
 AC_SUBST(PACKAGE_MINOR_VERSION,$app_vrs_minor)
 
-app_cv_release="`date +%-y`.`date +%-m`.`date +%-d`"
-app_cv_revision=`date +%y%m%d`
+AC_ARG_WITH([release], [AS_HELP_STRING([--with-release], [Set release])], [ app_cv_release="$withval" ],[ app_cv_release="`date +%-y`.`date +%-m`.`date +%-d`" ])
 
 app_rls_major=$(echo $app_cv_release.0.0 | cut -d. -f1)
 app_rls_minor=$(echo $app_cv_release.0.0 | cut -d. -f2)
 
-AC_DEFINE_UNQUOTED(PACKAGE_RELEASE, $app_cv_release)
-AC_DEFINE_UNQUOTED(PACKAGE_REVISION,$app_cv_revision)
-AC_DEFINE_UNQUOTED(PACKAGE_MAJOR_RELEASE, $app_rls_major)
-AC_DEFINE_UNQUOTED(PACKAGE_MINOR_RELEASE, $app_rls_minor)
+AC_DEFINE_UNQUOTED(PACKAGE_MAJOR_RELEASE, $app_rls_major, [The library major release])
+AC_DEFINE_UNQUOTED(PACKAGE_MINOR_RELEASE, $app_rls_minor, [The library minor release])
+AC_DEFINE_UNQUOTED(PACKAGE_RELEASE, "$app_cv_release", [The package release])
 
-AC_SUBST(PACKAGE_RELEASE,$app_cv_release)
-AC_SUBST(PACKAGE_REVISION,$app_cv_revision)
+AC_SUBST(PACKAGE_RELEASE,"$app_cv_release")
 AC_SUBST(PACKAGE_MAJOR_RELEASE,$app_rls_major)
 AC_SUBST(PACKAGE_MINOR_RELEASE,$app_rls_minor)
 
@@ -142,29 +139,8 @@ AC_PATH_TOOL([ZIP], [zip], [zip])
 PKG_CHECK_EXISTS
 
 AC_ARG_WITH([product-name], [AS_HELP_STRING([--with-product-name], [Set product name])], [ app_cv_product="$withval" ],[ app_cv_product=`$PKG_CONFIG --variable=product_name lib3270` ])
-AC_DEFINE_UNQUOTED(PRODUCT_NAME, $app_cv_product)
+AC_DEFINE_UNQUOTED(PRODUCT_NAME, $app_cv_product,[The product name])
 AC_SUBST(PRODUCT_NAME,$app_cv_product)
-
-dnl ---------------------------------------------------------------------------
-dnl Check for C++ 2011 support
-dnl ---------------------------------------------------------------------------
-AC_DEFUN([AX_CHECK_COMPILE_FLAG],
-[AC_PREREQ(2.59)dnl for _AC_LANG_PREFIX
-AS_VAR_PUSHDEF([CACHEVAR],[ax_cv_check_[]_AC_LANG_ABBREV[]flags_$4_$1])dnl
-AC_CACHE_CHECK([whether _AC_LANG compiler accepts $1], CACHEVAR, [
-  ax_check_save_flags=$[]_AC_LANG_PREFIX[]FLAGS
-  _AC_LANG_PREFIX[]FLAGS="$[]_AC_LANG_PREFIX[]FLAGS $4 $1"
-  AC_COMPILE_IFELSE([AC_LANG_PROGRAM()],
-    [AS_VAR_SET(CACHEVAR,[yes])],
-    [AS_VAR_SET(CACHEVAR,[no])])
-  _AC_LANG_PREFIX[]FLAGS=$ax_check_save_flags])
-AS_IF([test x"AS_VAR_GET(CACHEVAR)" = xyes],
-  [m4_default([$2], :)],
-  [m4_default([$3], :)])
-AS_VAR_POPDEF([CACHEVAR])dnl
-])dnl AX_CHECK_COMPILE_FLAGS
-
-AX_CHECK_COMPILE_FLAG([-std=gnu++11], [CXXFLAGS="$CXXFLAGS -std=gnu++11"])
 
 dnl ---------------------------------------------------------------------------
 dnl Check for IPC3270
@@ -190,11 +166,11 @@ AC_ARG_WITH([static-ipc3270],
 
 if test "$app_cv_static_ipc3270" == "yes"; then
 
-	PKG_CHECK_MODULES( [IPC3270], [ipc3270-static], AC_DEFINE(USING_STATIC_IPC3270), AC_MSG_ERROR([IPC3270 not present.]))
+	PKG_CHECK_MODULES( [IPC3270], [libipc3270-static], AC_DEFINE(STATIC_IPC3270,1,[Using static ipc3270]), AC_MSG_ERROR([IPC3270 not present.]))
 
 else
 
-	PKG_CHECK_MODULES( [IPC3270], [ipc3270], AC_DEFINE(USING_SHARED_IPC3270), AC_MSG_ERROR([IPC3270 not present.]))
+	PKG_CHECK_MODULES( [IPC3270], [libipc3270], AC_DEFINE(USING_SHARED_IPC3270,1,[Using shared ipc3270]), AC_MSG_ERROR([IPC3270 not present.]))
 
 
 fi
@@ -206,166 +182,7 @@ dnl ---------------------------------------------------------------------------
 dnl Check for Java
 dnl ---------------------------------------------------------------------------
 
-AC_ARG_VAR([JAVA_HOME], [JAVA home directory])
-AC_ARG_VAR([JDK_HOME], [JDK home directory])
-AC_ARG_VAR([JRE_HOME], [JRE home directory])
-
-AC_ARG_WITH([jnidir], [AS_HELP_STRING([--with-jnidir], [Directory for JNI libraries])], [ jnidir="$withval" ],[ jnidir=\$"{libdir}/java" ])
-AC_ARG_WITH([javadocdir], [AS_HELP_STRING([--with-javadocdir], [Directory for javadoc files])], [ javadocdir="$withval" ],[ javadocdir=\$"{datadir}/javadoc" ])
-
-AC_ARG_WITH([jvmjardir], [AS_HELP_STRING([--with-jvmjardir], [Directory for JAR files])], [ jvmjardir="$withval" ],[ jvmjardir=\$"{libdir}/jvm-exports" ])
-
-AC_ARG_ENABLE([java],[AS_HELP_STRING([--disable-java], [Disable java integration])],[ app_cv_java="$enableval" ],[ app_cv_java="yes" ])
-
-if test "$app_cv_java" = "yes" ; then
-
-	# Check for JAVA_HOME
-	if test "_$JAVA_HOME" = "_" ; then
-		JAVA_HOME=$libdir/jvm/java
-	fi
-
-	# Check for JDK_HOME
-	if test "_$JDK_HOME" = "_" ; then
-		JDK_HOME=$JAVA_HOME
-	fi
-
-	# Check for JRE_HOME
-	if test "_$JRE_HOME" = "_" ; then
-		JRE_HOME=$JAVA_HOME/jre
-	fi
-fi
-
-if test "$app_cv_java" = "yes" ; then
-
-	AC_PATH_TOOL([JAVA], [java], [no], [$JDK_HOME/bin:$JRE_HOME/bin:$PATH])
-	if test "$JAVA" = "no" ; then
-		app_cv_java="no"
-	fi
-
-	AC_PATH_TOOL([JAVAC], [javac], [no], [$JDK_HOME/bin:$JRE_HOME/bin:$PATH])
-	if test "$JAVAC" = "no" ; then
-		app_cv_java="no"
-	fi
-
-	AC_PATH_TOOL([JAVAH], [javah], [no], [$JDK_HOME/bin:$JRE_HOME/bin:$PATH])
-	if test "$JAVAH" = "no" ; then
-		app_cv_java="no"
-	fi
-
-	AC_PATH_TOOL([JAR], [jar], [no], [$JDK_HOME/bin:$JRE_HOME/bin:$PATH])
-	if test "$JAVA" = "no" ; then
-		app_cv_java="no"
-	fi
-
-	AC_PATH_TOOL([JAVADOC], [javadoc], [no], [$JDK_HOME/bin:$JRE_HOME/bin:$PATH])
-	if test "$JAVADOC" = "no" ; then
-		app_cv_java="no"
-	fi
-
-fi
-
-# Set JVM arch
-case $host_cpu in
-
-x86_64)
-	jvm_arch=amd64
-	;;
-
-i?86)
-	jvm_arch=i386
-	;;
-powerpc64le)
-	jvm_arch=ppc64le
-	;;
-powerpc64)
-	jvm_arch=ppc64
-	;;
-
-*)
-	jvm_arch="$host_cpu"
-	;;
-
-esac
-
-# JVMDIR
-if test "_$JVMDIR" = "_" ; then
-
-	case "$host" in
-		*-mingw32)
-			jniinc=$JDK_HOME/include/win32
-			JVMDIR="\$(JRE_HOME)/bin"
-			;;
-
-		*-apple-*)
-			jniinc=$JDK_HOME/include/apple
-			JVMDIR="\$(JRE_HOME)/lib/$jvm_arch/server"
-			;;
-
-		*)
-			jniinc=$JDK_HOME/include/linux
-			JVMDIR="\$(JRE_HOME)/lib/$jvm_arch/server"
-	esac
-
-fi
-
-
-# Java link options depends on OS
-case "$host" in
-	*-mingw32)
-
-		if test -e "$JRE_HOME/bin/client/jvm.dll"; then
-			AC_MSG_NOTICE(Found $JRE_HOME/bin/client/jvm.dll)
-			jvm_libs="-L\"\$(JRE_HOME)/bin/client\" -ljvm"
-		elif test -e "$JRE_HOME/bin/server/jvm.dll"; then
-			AC_MSG_NOTICE(Found $JRE_HOME/bin/server/jvm.dll)
-			jvm_libs="-L\"\$(JRE_HOME)/bin/server\" -ljvm"
-		else
-			AC_MSG_NOTICE([Can't find jvm.dll.])
-			app_cv_java="no"
-		fi
-		;;
-
-	*-apple-*)
-		jvm_libs="-L\$(JVMDIR) -Wl,-rpath,\$(JVMDIR) -ljvm"
-		;;
-
-	*)
-		jvm_libs="-L\$(JVMDIR) -Wl,-rpath,\$(JVMDIR) -ljvm"
-esac
-
-if test -d "$jniinc"; then
-	AC_MSG_NOTICE([Found $jniinc.])
-else
-	AC_MSG_NOTICE([Can't find $jniinc.])
-	app_cv_java="no"
-fi
-
-if test "$app_cv_java" = "yes" ; then
-
-	AC_MSG_NOTICE([jdk is present and enabled.])
-
-else
-
-	AC_MSG_ERROR([jdk is NOT present or disabled.])
-
-fi
-
-CXXFLAGS="$CXXFLAGS -I$JDK_HOME/include -I$jniinc"
-
-AC_SUBST(JVM_LIBS,$jvm_libs)
-
-AC_SUBST(JAVAC)
-AC_SUBST(JAVAH)
-AC_SUBST(JAVADOC)
-AC_SUBST(JVMDIR)
-AC_SUBST(jnidir)
-AC_SUBST(jvmjardir)
-AC_SUBST(javadocdir)
-AC_SUBST(JAR)
-AC_SUBST(jvm_arch)
-AC_SUBST(JDK_HOME)
-AC_SUBST(JRE_HOME)
-
+AC_PATH_TOOL([JAVAC], [javac], [no])
 
 dnl ---------------------------------------------------------------------------
 dnl Check for ELF symbol visibility support
@@ -458,7 +275,7 @@ dnl ---------------------------------------------------------------------------
 app_cv_description="Java bindings for lib3270/pw3270"
 
 AC_SUBST(PACKAGE_DESCRIPTION,"$app_cv_description")
-AC_DEFINE_UNQUOTED(PACKAGE_DESCRIPTION,"$app_cv_description")
+AC_DEFINE_UNQUOTED(PACKAGE_DESCRIPTION,"$app_cv_description",[ The package description ])
 
 AC_SUBST(OSNAME,$app_cv_osname)
 AC_SUBST(LIBS)

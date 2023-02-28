@@ -1,45 +1,61 @@
-/**
- * @file config.h
- *
- * @brief Configuração para o aplicativo.
- *
- * Gerado automaticamente pelo processo ./configure esse arquivo descreve
- * as configurações de ambiente detectadas automaticamente.
- *
- * @author perry.werneck@gmail.com
- *
- */
+/* src/include/config.h.in.  Generated from configure.ac by autoheader.  */
 
-#ifndef CONFIG_H_INCLUDED
+/* supports GCC visibility attributes */
+#undef HAVE_GNUC_VISIBILITY
 
-	#define CONFIG_H_INCLUDED 1
+/* Define if you have the iconv() function and it works. */
+#undef HAVE_ICONV
 
-	/**
-	 * @brief Nome do pacote.
-	 */
-	#undef PACKAGE_NAME
+/* Define as const if the declaration of iconv() needs const. */
+#undef ICONV_CONST
 
-	/**
-	 * @brief Versão atual.
-	 */
-	#undef PACKAGE_VERSION
+/* Name of package */
+#undef PACKAGE
 
-	/**
- 	 * @brief Descrição do aplicativo.
-	 */
-	#undef PACKAGE_DESCRIPTION
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
 
-	/**
-	 * @brief Indica se o compilador atual possui suporte a "visibility"
-	 *
-	 * Quando disponível indica que o compilador atual permite tornar
-	 * visíveis numa biblioteca apenas as funções declaradas para isso
-	 * evitando que todos os símbolos fiquem visíveis.
-	 *
-	 * Isso permite um melhor controle sobre quais funções podem ser usados
-	 * pelo programa principal.
-	 *
-	 */
-	#undef HAVE_GNUC_VISIBILITY
+/* The package description */
+#undef PACKAGE_DESCRIPTION
 
-#endif // CONFIG_H_INCLUDED
+/* The library major release */
+#undef PACKAGE_MAJOR_RELEASE
+
+/* The library major version */
+#undef PACKAGE_MAJOR_VERSION
+
+/* The library minor release */
+#undef PACKAGE_MINOR_RELEASE
+
+/* The library minor version */
+#undef PACKAGE_MINOR_VERSION
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* The package release */
+#undef PACKAGE_RELEASE
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* The product name */
+#undef PRODUCT_NAME
+
+/* Using static ipc3270 */
+#undef STATIC_IPC3270
+
+/* Using shared ipc3270 */
+#undef USING_SHARED_IPC3270
+
+/* Version number of package */
+#undef VERSION

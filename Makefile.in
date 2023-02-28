@@ -91,12 +91,18 @@ $(OBJDBG)/%.o: \
 	%.cc
 
 	@echo $< ...
-	@$(MKDIR) $(dir $@)
+	@$(MKDIR) $(@D)
 
 	@$(CXX) \
-		$(CXXFLAGS) \
+		$(CFLAGS) \
+		-DDEBUG=1 \
+		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+
+	@$(CXX) \
+		$(CFLAGS) \
 		-Wall -Wextra -fstack-check \
 		-DDEBUG=1 \
+		-DMODULES_DIR=@MODULE_DEBUG_PATH@ \
 		-o $@ \
 		-c $<
 
@@ -113,11 +119,15 @@ $(OBJRLS)/%.o: \
 	%.cc
 
 	@echo $< ...
-	@$(MKDIR) $(dir $@)
+	@$(MKDIR) $(@D)
 
 	@$(CXX) \
-		$(CXXFLAGS) \
-		-Wall -Wextra \
+		$(CFLAGS) \
+		-DNDEBUG=1 \
+		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+
+	@$(CXX) \
+		$(CFLAGS) \
 		-DNDEBUG=1 \
 		-o $@ \
 		-c $<
@@ -212,4 +222,6 @@ clean: \
 	cleanDebug \
 	cleanRelease
 
+-include $(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).d)
+-include $(foreach SRC, $(basename $(SOURCES))), $(OBJRLS)/$(SRC).d)
 
