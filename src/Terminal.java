@@ -93,6 +93,17 @@ public class Terminal {
 	}
 
 	public native CursorPosition get_cursor_position();
-    
+	
+	/// @brief Get the lib3270 version string.
+	public native String get_lib3270_version();
+
+	/// @brief Get the lib3270 revision string.
+	public native String get_lib3270_revision();
+	
+	/// @brief Get the LU name associated with the session, if there is one.
+	public native String get_associated_lu_name();
+	    
+	public native String get_host_url();
+	 	    
 };
 

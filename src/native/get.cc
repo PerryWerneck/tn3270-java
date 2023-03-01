@@ -80,3 +80,35 @@
 	});
 
  }
+
+ JNIEXPORT jstring JNICALL Java_br_app_pw3270_Terminal_get_1lib3270_1version(JNIEnv *env, jobject obj) {
+
+	return call(env,obj,[](TN3270::Session &session){
+		return session.getVersion();
+	});
+
+ }
+
+ JNIEXPORT jstring JNICALL Java_br_app_pw3270_Terminal_get_1lib3270_1revision(JNIEnv *env, jobject obj) {
+
+	return call(env,obj,[](TN3270::Session &session){
+		return session.getRevision();
+	});
+
+ }
+
+ JNIEXPORT jstring JNICALL Java_br_app_pw3270_Terminal_get_1associated_1lu_1name(JNIEnv *env, jobject obj) {
+
+	return call(env,obj,[](TN3270::Session &session){
+		return session.getAssociatedLUName();
+	});
+
+ }
+
+ JNIEXPORT jstring JNICALL Java_br_app_pw3270_Terminal_get_1host_1url(JNIEnv *env, jobject obj) {
+
+	return call(env,obj,[](TN3270::Session &session){
+		return session.getHostURL();
+	});
+
+ }

@@ -190,3 +190,22 @@
 
  }
 
+ jstring call(JNIEnv *env, jobject obj, const std::function<std::string(TN3270::Session &session)> &call) {
+
+	try {
+
+		return env->NewStringUTF(call(getSessionFromJObject(env,obj)).c_str());
+
+	} catch(const std::exception &e) {
+
+		env->ThrowNew(env->FindClass("java/lang/Exception"), e.what());
+
+	} catch(...) {
+
+		env->ThrowNew(env->FindClass("java/lang/Exception"), "Unexpected error");
+
+	}
+
+	return jstring{};
+
+ }

@@ -61,4 +61,5 @@
 
  DLL_PRIVATE jint call(JNIEnv *env, jobject obj, const std::function<int(TN3270::Session &session)> &call);
  DLL_PRIVATE jobject call(JNIEnv *env, jobject obj, const std::function<jobject(TN3270::Session &session)> &call);
+ DLL_PRIVATE jstring call(JNIEnv *env, jobject obj, const std::function<std::string(TN3270::Session &session)> &call);
 
