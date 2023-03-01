@@ -37,7 +37,7 @@ marshal.h
 fallbacks.c
 version.c
 config.h
-br_app_pw3270_Terminal.h
+br_app_pw3270_*.h
 mkversion.sh
 dbus-glue.h
 BUILD

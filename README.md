@@ -1,14 +1,30 @@
-Java tn3270 protocol library
-============================
+# Java tn3270 protocol library
 
-Created originally as part of PW3270 application.
 
-See more details at https://softwarepublico.gov.br/social/pw3270/
+## Examples
 
-Installation repositories
-=========================
+Getting versions of jni module and loaded lib3270
 
- You can find instalation repositories in SuSE Build Service:
+```java
+import br.app.pw3270.Terminal;
 
- * Linux (Many distributions):
+public class sample {
+
+    public static void main (String[] args) {
+
+        try (Terminal host = new Terminal()) {
+
+		    System.out.println("Using ipc3270 version " + host.getVersion() + "-" + host.getRevision());
+		    System.out.println("Using lib3270 version " + host.getLib3270Version() + "-" + host.getLib3270Revision()); 
+		    
+		} catch (Exception e) {
+
+		    e.printStackTrace();
+
+		}
+        
+    }
+    
+}
+```
 

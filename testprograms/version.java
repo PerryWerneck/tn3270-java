@@ -1,10 +1,10 @@
 
 import br.app.pw3270.Terminal;
 
-public class version
-{
-    public static void main (String[] args)
-    {
+public class version {
+
+    public static void main (String[] args) {
+
         try (Terminal host = new Terminal()) {
 
 		    System.out.println("Using ipc3270 version " + host.getVersion() + "-" + host.getRevision());

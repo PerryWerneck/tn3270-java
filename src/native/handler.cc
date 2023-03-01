@@ -115,8 +115,6 @@
 
  JNIEXPORT void JNICALL Java_br_app_pw3270_Terminal_close(JNIEnv *env, jobject object) {
 
-	cout << "Closing session" << endl;
-
 	try {
 
 		auto field =
@@ -135,7 +133,6 @@
 			);
 
 		if(!handler) {
-			cout << "Session is already closed" << endl;
 			return;
 		}
 

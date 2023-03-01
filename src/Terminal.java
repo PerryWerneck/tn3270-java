@@ -40,6 +40,27 @@ public class Terminal implements AutoCloseable {
 
 	}
 	
+	public class Action implements AutoCloseable {
+
+		public Action(Terminal terminal, String name) {
+			open(terminal,name);
+		}
+
+		// Action native handler.
+		private long hAction;
+
+		public native void open(Terminal terminal, String name);
+		public native void close();
+
+		public native boolean activatable();
+		public native void activate();
+
+		public native String name();
+		public native String description();
+		public native String summary();
+
+	}
+
 	// TN3270 native handler.
 	private long hSession;
 
@@ -47,7 +68,7 @@ public class Terminal implements AutoCloseable {
 		open();
 	}
 
-	public void Terminal(String id) {
+	public Terminal(String id) {
 		open(id,"");
 	}
 
@@ -133,26 +154,6 @@ public class Terminal implements AutoCloseable {
 	//
 	// Actions
 	//
-
-	/*
-	public class Action {
-
-		// Action native handler.
-		private long hAction;
-
-		public native bool activatable();
-		public native void activate();
-
-		public native String name();
-		public native String description();
-		public native String summary();
-
-		Action(long hSession, String name);
-
-	}
-
-	Action getAction(String name);
-	*/
 
 	public native void activate(String action);
 	public native boolean activatable(String action);
