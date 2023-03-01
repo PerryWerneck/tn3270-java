@@ -108,6 +108,16 @@ public class Terminal {
 	//
 	// Setters
 	//
+	public native void setURL(String url);
+	public native void setUnlockDelay(int delay);
+	public native void setTimeout(int timeout);
+	public native void setLockOnOperatorError(boolean lock);
+	public native int setCursorPosition(int addr);
+	public native int setCursorPosition(int row, int col);
+	public native void setCharSet(String charset);
+	public native void setProperty(String name, int value);
+	public native void setProperty(String name, boolean value);
+	public native void setProperty(String name, String value);
 
 	//
 	// Actions

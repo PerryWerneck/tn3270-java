@@ -40,6 +40,7 @@
 		<Unit filename="src/native/get.cc" />
 		<Unit filename="src/native/handler.cc" />
 		<Unit filename="src/native/info.cc" />
+		<Unit filename="src/native/set.cc" />
 		<Unit filename="src/native/states.cc" />
 		<Unit filename="src/native/tools.cc" />
 		<Unit filename="src/native/workers.cc" />
