@@ -24,7 +24,7 @@ public class Terminal {
 	static {
         System.loadLibrary("jni3270");
     }
-    
+
     //
     // Inner classes
     //
@@ -32,7 +32,7 @@ public class Terminal {
 
 		public int row = 0;
 		public int col = 0;
-		
+
 		CursorPosition(int r, int c) {
 			row = r;
 			col = c;
@@ -40,21 +40,21 @@ public class Terminal {
 
 	}
 
-	
+
 	// TN3270 native handler.
 	private long hSession;
-		
+
 	/// @brief Get the current ipc3270 version.
 	/// @return String with the current ipc3270 version.
-	public static native String get_version();
-	
+	public static native String getVersion();
+
 	/// @brief Get the current ipc3270 revision.
 	/// @return String with the current ipc3270 revision.
-	public static native String get_revision();
-	
+	public static native String getRevision();
+
 	/// @brief Open headless tn3270 session.
 	public native void open(String id, String charset);
-	
+
 	/// @brief Open headless tn3270 session with default charset.
 	public void open() {
 		open("","");
@@ -67,52 +67,52 @@ public class Terminal {
 
 	/// @brief Close tn3270 session.
 	public native void close();
-	
+
 	//
 	// Getters
 	//
-	
+
 	/// @brief Get the id of the current program message.
 	/// @return The ProgramMessage value.
-	public native int get_program_message();
-	
-	public native int get_connection_state();
+	public native int getProgramMessage();
+
+	public native int getConnectionState();
 
 	/// @brief Get SSL state.
 	/// @return State of SSL connection (0 = Unsafe, 1 = Valid CA, 2 = Invalid CA or self-signed, 3 = Negotiating, 4 = Undefined)
-	public native int get_get_ssl_state();
-	
-	public native int get_keyboard_lock_state();
-    
-	public native int get_screen_width();
+	public native int getSSLState();
 
-	public native int get_screen_height();
-	
-	public native int get_screen_length();
-	
-	public native int get_cursor_address();
-	
-	public native CursorPosition get_cursor_position();
-	
+	public native int getKeyboardLockState();
+
+	public native int getWidth();
+
+	public native int getHeight();
+
+	public native int getLength();
+
+	public native int getCursorAddress();
+
+	public native CursorPosition getCursorPosition();
+
 	/// @brief Get the lib3270 version string.
-	public native String get_lib3270_version();
+	public native String getLib3270Version();
 
 	/// @brief Get the lib3270 revision string.
-	public native String get_lib3270_revision();
-	
+	public native String getLib3270Revision();
+
 	/// @brief Get the LU name associated with the session, if there is one.
-	public native String get_associated_lu_name();
-	    
-	public native String get_host_url();
-	
+	public native String getAssociatedLUName();
+
+	public native String getURL();
+
 	//
 	// Setters
 	//
-	
+
 	//
 	// Actions
 	//
-	
+
 	/*
 	public class Action {
 
@@ -129,8 +129,8 @@ public class Terminal {
 		Action(long hSession, String name);
 
 	}
-	
-	Action get_action(String name);
+
+	Action getAction(String name);
 	*/
 
 	public native void activate(String action);
@@ -144,6 +144,6 @@ public class Terminal {
 	public native void erase_eol();
 	public native void erase_input();
 	public native void erase_eof();
-	
+
 };
 

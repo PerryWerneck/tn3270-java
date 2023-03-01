@@ -26,7 +26,7 @@
 
  using namespace std;
 
- JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_get_1screen_1width(JNIEnv *env, jobject obj) {
+ JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_getWidth(JNIEnv *env, jobject obj) {
 
 	return call(env,obj,[](TN3270::Session &session){
 		return (int) session.getScreenWidth();
@@ -34,7 +34,7 @@
 
  }
 
- JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_get_1screen_1height(JNIEnv *env, jobject obj) {
+ JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_getHeight(JNIEnv *env, jobject obj) {
 
 	return call(env,obj,[](TN3270::Session &session){
 		return (int) session.getScreenHeight();
@@ -42,7 +42,7 @@
 
  }
 
- JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_get_1screen_1length(JNIEnv *env, jobject obj) {
+ JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_getLength(JNIEnv *env, jobject obj) {
 
 	return call(env,obj,[](TN3270::Session &session){
 		return (int) session.getScreenLength();
@@ -50,7 +50,7 @@
 
  }
 
- JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_get_1cursor_1address(JNIEnv *env, jobject obj) {
+ JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_getCursorAddress(JNIEnv *env, jobject obj) {
 
 	return call(env,obj,[](TN3270::Session &session){
 		return (int) session.getCursorAddress();
@@ -58,7 +58,7 @@
 
  }
 
- JNIEXPORT jobject JNICALL Java_br_app_pw3270_Terminal_get_1cursor_1position(JNIEnv *env, jobject obj) {
+ JNIEXPORT jobject JNICALL Java_br_app_pw3270_Terminal_getCursorPosition(JNIEnv *env, jobject obj) {
 
 	return call(env,obj,[env,obj](TN3270::Session &session){
 
@@ -81,7 +81,7 @@
 
  }
 
- JNIEXPORT jstring JNICALL Java_br_app_pw3270_Terminal_get_1lib3270_1version(JNIEnv *env, jobject obj) {
+ JNIEXPORT jstring JNICALL Java_br_app_pw3270_Terminal_getLib3270Version(JNIEnv *env, jobject obj) {
 
 	return call(env,obj,[](TN3270::Session &session){
 		return session.getVersion();
@@ -89,7 +89,7 @@
 
  }
 
- JNIEXPORT jstring JNICALL Java_br_app_pw3270_Terminal_get_1lib3270_1revision(JNIEnv *env, jobject obj) {
+ JNIEXPORT jstring JNICALL Java_br_app_pw3270_Terminal_getLib3270Revision(JNIEnv *env, jobject obj) {
 
 	return call(env,obj,[](TN3270::Session &session){
 		return session.getRevision();
@@ -97,7 +97,7 @@
 
  }
 
- JNIEXPORT jstring JNICALL Java_br_app_pw3270_Terminal_get_1associated_1lu_1name(JNIEnv *env, jobject obj) {
+ JNIEXPORT jstring JNICALL Java_br_app_pw3270_Terminal_getAssociatedLUName(JNIEnv *env, jobject obj) {
 
 	return call(env,obj,[](TN3270::Session &session){
 		return session.getAssociatedLUName();
@@ -105,7 +105,7 @@
 
  }
 
- JNIEXPORT jstring JNICALL Java_br_app_pw3270_Terminal_get_1host_1url(JNIEnv *env, jobject obj) {
+ JNIEXPORT jstring JNICALL Java_br_app_pw3270_Terminal_getURL(JNIEnv *env, jobject obj) {
 
 	return call(env,obj,[](TN3270::Session &session){
 		return session.getHostURL();

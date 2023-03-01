@@ -26,10 +26,10 @@
 
  using namespace std;
 
- JNIEXPORT jstring JNICALL Java_br_app_pw3270_Terminal_get_1version(JNIEnv *env, jclass) {
+ JNIEXPORT jstring JNICALL Java_br_app_pw3270_Terminal_getVersion(JNIEnv *env, jclass) {
 	return env->NewStringUTF(TN3270::getVersion());
  }
 
- JNIEXPORT jstring JNICALL Java_br_app_pw3270_Terminal_get_1revision(JNIEnv *env, jclass) {
+ JNIEXPORT jstring JNICALL Java_br_app_pw3270_Terminal_getRevision(JNIEnv *env, jclass) {
 	return env->NewStringUTF(TN3270::getRevision());
  }
