@@ -79,7 +79,20 @@ public class Terminal {
 	public native int get_screen_length();
 	
 	public native int get_cursor_address();
+	
+	public class CursorPosition {
 
+		public int row = 0;
+		public int col = 0;
+		
+		CursorPosition(int r, int c) {
+			row = r;
+			col = c;
+		}
+
+	}
+
+	public native CursorPosition get_cursor_position();
     
 };
 

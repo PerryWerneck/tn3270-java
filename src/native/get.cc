@@ -24,6 +24,8 @@
  #include <private/br_app_pw3270_Terminal.h>
  #include <stdexcept>
 
+ using namespace std;
+
  JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_get_1screen_1width(JNIEnv *env, jobject obj) {
 
 	return call(env,obj,[](TN3270::Session &session){
@@ -56,3 +58,25 @@
 
  }
 
+ JNIEXPORT jobject JNICALL Java_br_app_pw3270_Terminal_get_1cursor_1position(JNIEnv *env, jobject obj) {
+
+	return call(env,obj,[env,obj](TN3270::Session &session){
+
+		TN3270::Session::Cursor cursor{session.getCursorPosition()};
+
+		jclass jclass = env->FindClass("br/app/pw3270/Terminal$CursorPosition");
+
+		if(!jclass) {
+			throw runtime_error("Can't find 'CursorPosition' class");
+		}
+
+		jmethodID cid = env->GetMethodID(jclass, "<init>", "(Lbr/app/pw3270/Terminal;II)V");
+		if(!cid) {
+			throw runtime_error("Cant get 'CursorPosition' constructor cid");
+		}
+
+		return env->NewObject(jclass, cid, obj, (int) cursor.row, (int) cursor.col);
+
+	});
+
+ }

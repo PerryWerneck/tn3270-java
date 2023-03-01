@@ -170,3 +170,23 @@
 
  }
 
+ jobject call(JNIEnv *env, jobject obj, const std::function<jobject(TN3270::Session &session)> &call) {
+
+	try {
+
+		return call(getSessionFromJObject(env,obj));
+
+	} catch(const std::exception &e) {
+
+		env->ThrowNew(env->FindClass("java/lang/Exception"), e.what());
+
+	} catch(...) {
+
+		env->ThrowNew(env->FindClass("java/lang/Exception"), "Unexpected error");
+
+	}
+
+	return jobject{};
+
+ }
+

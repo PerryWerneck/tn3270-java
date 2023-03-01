@@ -60,4 +60,5 @@
  DLL_PRIVATE TN3270::Session	& getSessionFromJObject(JNIEnv *env, jobject object);
 
  DLL_PRIVATE jint call(JNIEnv *env, jobject obj, const std::function<int(TN3270::Session &session)> &call);
+ DLL_PRIVATE jobject call(JNIEnv *env, jobject obj, const std::function<jobject(TN3270::Session &session)> &call);
 
