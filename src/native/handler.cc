@@ -24,6 +24,7 @@
  #include <lib3270/ipc/session.h>
  #include <private/br_app_pw3270_Terminal.h>
  #include <stdexcept>
+ #include <lib3270/log.h>
 
  using namespace std;
 
@@ -114,6 +115,8 @@
 
  JNIEXPORT void JNICALL Java_br_app_pw3270_Terminal_close(JNIEnv *env, jobject object) {
 
+	cout << "Closing session" << endl;
+
 	try {
 
 		auto field =
@@ -132,7 +135,8 @@
 			);
 
 		if(!handler) {
-			throw runtime_error("Session is already closed");
+			cout << "Session is already closed" << endl;
+			return;
 		}
 
 		env->SetLongField(object, field, 0);

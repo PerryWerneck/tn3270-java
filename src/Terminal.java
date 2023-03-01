@@ -19,7 +19,7 @@
 
 package br.app.pw3270;
 
-public class Terminal {
+public class Terminal implements AutoCloseable {
 
 	static {
         System.loadLibrary("jni3270");
@@ -39,10 +39,17 @@ public class Terminal {
 		}
 
 	}
-
-
+	
 	// TN3270 native handler.
 	private long hSession;
+
+	public Terminal() {
+		open();
+	}
+
+	public void Terminal(String id) {
+		open(id,"");
+	}
 
 	/// @brief Get the current ipc3270 version.
 	/// @return String with the current ipc3270 version.
@@ -118,6 +125,10 @@ public class Terminal {
 	public native void setProperty(String name, int value);
 	public native void setProperty(String name, boolean value);
 	public native void setProperty(String name, String value);
+
+	public int setCursorPosition(CursorPosition position) {
+		return setCursorPosition(position.row,position.col);
+	}
 
 	//
 	// Actions
