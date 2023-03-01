@@ -20,16 +20,39 @@
  #include <config.h>
  #include <jni.h>
  #include <jni3270.h>
- #include <lib3270/ipc.h>
+ #include <lib3270/ipc/session.h>
  #include <private/br_app_pw3270_Terminal.h>
  #include <stdexcept>
 
- using namespace std;
+ JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_get_1screen_1width(JNIEnv *env, jobject obj) {
 
- JNIEXPORT jstring JNICALL Java_br_app_pw3270_Terminal_get_1version(JNIEnv *env, jclass) {
-	return env->NewStringUTF(TN3270::getVersion());
+	return call(env,obj,[](TN3270::Session &session){
+		return (int) session.getScreenWidth();
+	});
+
  }
 
- JNIEXPORT jstring JNICALL Java_br_app_pw3270_Terminal_get_1revision(JNIEnv *env, jclass) {
-	return env->NewStringUTF(TN3270::getRevision());
+ JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_get_1screen_1height(JNIEnv *env, jobject obj) {
+
+	return call(env,obj,[](TN3270::Session &session){
+		return (int) session.getScreenHeight();
+	});
+
  }
+
+ JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_get_1screen_1length(JNIEnv *env, jobject obj) {
+
+	return call(env,obj,[](TN3270::Session &session){
+		return (int) session.getScreenLength();
+	});
+
+ }
+
+ JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_get_1cursor_1address(JNIEnv *env, jobject obj) {
+
+	return call(env,obj,[](TN3270::Session &session){
+		return (int) session.getCursorAddress();
+	});
+
+ }
+

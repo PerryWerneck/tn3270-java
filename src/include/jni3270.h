@@ -58,4 +58,6 @@
  #include <functional>
 
  DLL_PRIVATE TN3270::Session	& getSessionFromJObject(JNIEnv *env, jobject object);
- DLL_PRIVATE jstring			* jni_ret_jstring(JNIEnv *env, jobject object, const std::function<std::string (TN3270::Host &host)> &worker) noexcept;
+
+ DLL_PRIVATE jint call(JNIEnv *env, jobject obj, const std::function<int(TN3270::Session &session)> &call);
+

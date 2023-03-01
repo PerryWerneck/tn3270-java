@@ -35,6 +35,9 @@ public class Terminal {
         System.loadLibrary("jni3270");
     }
 	
+	// TN3270 native handler.
+	private long hSession;
+		
 	/// @brief Get the current ipc3270 version.
 	/// @return String with the current ipc3270 version.
 	public static native String get_version();
@@ -43,6 +46,40 @@ public class Terminal {
 	/// @return String with the current ipc3270 revision.
 	public static native String get_revision();
 	
+	/// @brief Open headless tn3270 session.
+	public native void open(String id, String charset);
+	
+	/// @brief Open headless tn3270 session with default charset.
+	public void open() {
+		open("","");
+	}
+
+	/// @brief Open tn3270 session with default charset.
+	public void open(String id) {
+		open(id,"");
+	}
+
+	/// @brief Close tn3270 session.
+	public native void close();
+	
+	/// @brief Get the id of the current program message.
+	/// @return The ProgramMessage value.
+	public native int get_program_message();
+	
+	public native int get_connection_state();
+
+	public native int get_get_ssl_state();
+	
+	public native int get_keyboard_lock_state();
+    
+	public native int get_screen_width();
+
+	public native int get_screen_height();
+	
+	public native int get_screen_length();
+	
+	public native int get_cursor_address();
+
     
 };
 

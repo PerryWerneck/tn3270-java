@@ -17,11 +17,42 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- /*
  #include <config.h>
  #include <jni.h>
  #include <jni3270.h>
- #include <lib3270/ipc.h>
+ #include <lib3270/ipc/session.h>
  #include <private/br_app_pw3270_Terminal.h>
  #include <stdexcept>
- */
+
+ JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_get_1program_1message(JNIEnv *env, jobject obj) {
+
+	return call(env,obj,[](TN3270::Session &session){
+		return (int) session.getProgramMessage();
+	});
+
+ }
+
+ JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_get_1connection_1state(JNIEnv *env, jobject obj) {
+
+ 	return call(env,obj,[](TN3270::Session &session){
+		return (int) session.getConnectionState();
+	});
+
+ }
+
+ JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_get_1get_1ssl_1state(JNIEnv *env, jobject obj) {
+
+	return call(env,obj,[](TN3270::Session &session){
+		return (int) session.getSSLState();
+	});
+
+ }
+
+ JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_get_1keyboard_1lock_1state(JNIEnv *env, jobject obj) {
+
+	return call(env,obj,[](TN3270::Session &session){
+		return (int) session.getKeyboardLockState();
+	});
+
+ }
+

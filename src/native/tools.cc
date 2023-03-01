@@ -25,24 +25,3 @@
 
  using namespace std;
 
- TN3270::Session & getSessionFromJObject(JNIEnv *env, jobject object) {
-
-	TN3270::Session * session =
-		reinterpret_cast<TN3270::Session *>(
-			env->GetLongField(
-				object,
-				env->GetFieldID(
-					env->GetObjectClass(object),
-					"hSession",
-					"J"
-				)
-			)
-		);
-
-	if(!session) {
-		throw runtime_error("Invalid Session handler");
-	}
-
-	return *session;
-
- }

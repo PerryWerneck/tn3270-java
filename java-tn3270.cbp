@@ -36,8 +36,10 @@
 		<Unit filename="src/include/config.h" />
 		<Unit filename="src/include/jni3270.h" />
 		<Unit filename="src/include/private/br_app_pw3270_Terminal.h" />
+		<Unit filename="src/native/get.cc" />
+		<Unit filename="src/native/handler.cc" />
 		<Unit filename="src/native/info.cc" />
-		<Unit filename="src/native/init.cc" />
+		<Unit filename="src/native/states.cc" />
 		<Unit filename="src/native/tools.cc" />
 		<Unit filename="src/native/workers.cc" />
 		<Extensions>
