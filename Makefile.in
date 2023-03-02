@@ -210,14 +210,14 @@ $(BINDIR)/%.class: \
  
 run: \
 	$(BINDBG)/$(LIBNAME)@DLLEXT@ \
-	$(BINDIR)/version.class
+	$(BINDIR)/test.class
 
 	@ln -sf $(LIBNAME)@DLLEXT@ $(BINDBG)/lib$(LIBNAME)@DLLEXT@
 	
 	@LD_LIBRARY_PATH=$(BINDBG) \
 		java \
 			-Djava.library.path=$(BINDBG) \
-			-cp $(BINDIR) version
+			-cp $(BINDIR) test
 
 
 $(BINDBG)/$(LIBNAME)@DLLEXT@: \

@@ -113,17 +113,23 @@
 
  }
 
- JNIEXPORT jboolean JNICALL Java_br_app_pw3270_Terminal_getConnected(JNIEnv *env, jobject obj) {
+ JNIEXPORT jboolean JNICALL Java_br_app_pw3270_Terminal_getConnected(JNIEnv *env, jobject obj, jint timeout) {
 
-	return call(env,obj,[](TN3270::Session &session){
+	return call(env,obj,[timeout](TN3270::Session &session){
+		if(timeout) {
+			session.waitForConnected(timeout);
+		}
 		return (int) session.connected();
 	});
 
  }
 
- JNIEXPORT jboolean JNICALL Java_br_app_pw3270_Terminal_getReady(JNIEnv *env, jobject obj) {
+ JNIEXPORT jboolean JNICALL Java_br_app_pw3270_Terminal_getReady(JNIEnv *env, jobject obj, jint timeout) {
 
-	return call(env,obj,[](TN3270::Session &session){
+	return call(env,obj,[timeout](TN3270::Session &session){
+		if(timeout) {
+			session.waitForReady(timeout);
+		}
 		return (int) session.ready();
 	});
  }

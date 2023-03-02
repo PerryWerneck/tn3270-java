@@ -69,7 +69,7 @@ public class Terminal implements AutoCloseable {
 	}
 
 	public Terminal(String id) {
-		open(id,"");
+		open(id,"UTF-8");
 	}
 
 	/// @brief Get the current ipc3270 version.
@@ -85,17 +85,40 @@ public class Terminal implements AutoCloseable {
 
 	/// @brief Open headless tn3270 session with default charset.
 	public void open() {
-		open("","");
+		open("","UTF-8");
 	}
 
 	/// @brief Open tn3270 session with default charset.
 	public void open(String id) {
-		open(id,"");
+		open(id,"UTF-8");
 	}
 
 	/// @brief Close tn3270 session.
 	public native void close();
+	
+	//
+	// Connection
+	//
+	
+	///
+	/// @brief Connect to 3270 host.
+	/// <p>
+	/// Connect to the 3270 host
+	/// <p>
+	/// URI formats:
+	/// <ul>
+	/// <li>tn3270://[HOSTNAME]:[HOSTPORT] for non SSL connections.</li>
+	/// <li>tn3270s://[HOSTNAME]:[HOSTPORT] for ssl connection.</li>
+	/// </ul>
+	///
+	/// @param host		Host URI.
+	/// @param seconds	How many seconds to wait for a connection.
+	public native void connect(String url, int seconds);	
 
+	public native void connect(int seconds);	
+	
+	public native void disconnect();
+	
 	//
 	// Getters
 	//
@@ -128,8 +151,23 @@ public class Terminal implements AutoCloseable {
 
 	public native CursorPosition getCursorPosition();
 	
-	public native boolean getConnected();
-	public native boolean getReady();	
+	/// @brief Get connected state.
+	/// @param timeout Time to wait for state (0 = no wait).
+	/// @return true if the terminal is connected.
+	public native boolean getConnected(int timeout);
+
+	public boolean getConnected() {
+		return getReady(0);
+	}
+	
+	/// @brief Get 'readyness' of terminal.
+	/// @param timeout Time to wait for state (0 = no wait).
+	/// @return true if the terminal is ready.
+	public native boolean getReady(int timeout);	
+
+	public boolean getReady() {
+		return getReady(0);
+	}
 
 	/// @brief Get the lib3270 version string.
 	public native String getLib3270Version();
