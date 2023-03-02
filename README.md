@@ -35,9 +35,9 @@ import br.app.pw3270.Terminal;
 
 public class Sample {
 
-    public static void main (String[] args) {
+	public static void main (String[] args) {
 
-        try (Terminal host = new Terminal(":a")) {
+		try (Terminal host = new Terminal(":a")) {
 			
 			host.setCharSet("UTF-8");
 			
@@ -55,12 +55,11 @@ public class Sample {
 			}
 		        
 		} catch (Exception e) {
-
-		    e.printStackTrace();
+		
+			e.printStackTrace();
 
 		}
-        
-    }
+	}
     
 }
 ```
