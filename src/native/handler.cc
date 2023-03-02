@@ -48,6 +48,18 @@
 
  };
 
+ TN3270::Session & getSessionFromJLong(jlong id) {
+
+	Handler * handler = reinterpret_cast<Handler *>(id);
+
+	if(!handler) {
+		throw runtime_error("Session is not open");
+	}
+
+	return *handler->hSession;
+
+ }
+
  TN3270::Session & getSessionFromJObject(JNIEnv *env, jobject object) {
 
 	Handler * handler =

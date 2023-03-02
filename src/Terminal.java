@@ -43,13 +43,13 @@ public class Terminal implements AutoCloseable {
 	public class Action implements AutoCloseable {
 
 		public Action(Terminal terminal, String name) {
-			open(terminal,name);
+			open(terminal.hSession,name);
 		}
 
 		// Action native handler.
-		private long hAction;
+		private long hAction = 0;
 
-		public native void open(Terminal terminal, String name);
+		public native void open(long hSession, String name);
 		public native void close();
 
 		public native boolean activatable();
