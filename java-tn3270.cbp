@@ -40,12 +40,12 @@
 		<Unit filename="src/native/action.cc" />
 		<Unit filename="src/native/actions.cc" />
 		<Unit filename="src/native/get.cc" />
+		<Unit filename="src/native/gettext.cc" />
 		<Unit filename="src/native/handler.cc" />
 		<Unit filename="src/native/info.cc" />
 		<Unit filename="src/native/set.cc" />
 		<Unit filename="src/native/states.cc" />
 		<Unit filename="src/native/tools.cc" />
-		<Unit filename="src/native/tostring.cc" />
 		<Unit filename="src/native/workers.cc" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
