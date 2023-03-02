@@ -99,7 +99,13 @@ public class Terminal implements AutoCloseable {
 	//
 	// Getters
 	//
+	public native String getText(int baddr, int len);
+	public native String getText(int row, int col, int len);
 
+	public String getText() {
+		return getText(0,-1);
+	}
+		
 	/// @brief Get the id of the current program message.
 	/// @return The ProgramMessage value.
 	public native int getProgramMessage();
@@ -121,6 +127,9 @@ public class Terminal implements AutoCloseable {
 	public native int getCursorAddress();
 
 	public native CursorPosition getCursorPosition();
+	
+	public native boolean getConnected();
+	public native boolean getReady();	
 
 	/// @brief Get the lib3270 version string.
 	public native String getLib3270Version();
@@ -132,6 +141,21 @@ public class Terminal implements AutoCloseable {
 	public native String getAssociatedLUName();
 
 	public native String getURL();
+	
+	//
+	// toString variations
+	//
+	public String toString(int baddr, int len) {
+		return getText(baddr,len);
+	}
+	
+	public String toString(int row, int col, int len) {
+		return getText(row,col,len);
+	}
+
+	public String toString() {
+		return getText(0,-1);
+	}
 
 	//
 	// Setters
@@ -154,6 +178,60 @@ public class Terminal implements AutoCloseable {
 	//
 	// Actions
 	//
+
+	/// @brief Input string parsing control char.
+	/// @return The keyboard lock state.
+	public native int input(String str, char control);
+
+	/// @brief Input string parsing control char.
+	///
+	/// Insert string parsing the action codes prefixed with the defined control character.
+	///
+	/// Value | Action      | Description                                                |
+	/// :----:|:------------|:-----------------------------------------------------------|
+	///  @@P  | -           | Print the screen contents (if available)                   |
+	///  @@@@ | -           | Input the @@ char.                                         |
+	///  @@E  | ENTER       | -                                                          |
+	///  @@F  | ERASE_EOF   | -                                                          |
+	///  @@1  | PF1         | Send the PF1 key.                                          |
+	///  @@2  | PF2         | Send the PF2 key.                                          |
+	///  @@3  | PF3         | Send the PF3 key.                                          |
+	///  @@4  | PF4         | Send the PF4 key.                                          |
+	///  @@5  | PF5         | Send the PF5 key.                                          |
+	///  @@6  | PF6         | Send the PF6 key.                                          |
+	///  @@7  | PF7         | Send the PF7 key.                                          |
+	///  @@8  | PF8         | Send the PF8 key.                                          |
+	///  @@9  | PF9         | Send the PF9 key.                                          |
+	///  @@a  | PF10        | Send the PF10 key.                                         |
+	///  @@b  | PF11        | Send the PF11 key.                                         |
+	///  @@c  | PF12        | Send the PF12 key.                                         |
+	///  @@d  | PF13        | Send the PF13 key.                                         |
+	///  @@e  | PF14        | Send the PF14 key.                                         |
+	///  @@f  | PF15        | Send the PF15 key.                                         |
+	///  @@g  | PF16        | Send the PF16 key.                                         |
+	///  @@h  | PF17        | Send the PF17 key.                                         |
+	///  @@u  | PF18        | Send the PF18 key.                                         |
+	///  @@j  | PF19        | Send the PF19 key.                                         |
+	///  @@k  | PF20        | Send the PF20 key.                                         |
+	///  @@l  | PF21        | Send the PF21 key.                                         |
+	///  @@m  | PF22        | Send the PF22 key.                                         |
+	///  @@n  | PF23        | Send the PF23 key.                                         |
+	///  @@o  | PF24        | Send the PF24 key.                                         |
+	///  @@x  | PA1         | Send the PA1 key.                                          |
+	///  @@y  | PA2         | Send the PA2 key.                                          |
+	///  @@z  | PA3         | Send the PA3 key.                                          |
+	///  @@D  | CHAR_DELETE |                                                            |
+	///  @@N  | NEWLINE     |                                                            |
+	///  @@C  | CLEAR       |                                                            |
+	///  @@R  | KYBD_RESET  |                                                            |
+	///  @@<  | BACKSPACE   |                                                            |
+	/// :----:|:------------|:-----------------------------------------------------------|
+	///
+	/// @return The keyboard lock state.
+	///
+	public int input(String str) {
+		return input(str,'@');
+	}
 
 	public native void activate(String action);
 	public native boolean activatable(String action);

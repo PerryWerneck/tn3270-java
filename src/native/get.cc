@@ -112,3 +112,19 @@
 	});
 
  }
+
+ JNIEXPORT jboolean JNICALL Java_br_app_pw3270_Terminal_getConnected(JNIEnv *env, jobject obj) {
+
+	return call(env,obj,[](TN3270::Session &session){
+		return (int) session.connected();
+	});
+
+ }
+
+ JNIEXPORT jboolean JNICALL Java_br_app_pw3270_Terminal_getReady(JNIEnv *env, jobject obj) {
+
+	return call(env,obj,[](TN3270::Session &session){
+		return (int) session.ready();
+	});
+ }
+

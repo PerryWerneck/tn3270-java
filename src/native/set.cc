@@ -133,3 +133,13 @@
 	});
 
  }
+
+ JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_input(JNIEnv *env, jobject obj, jstring text, jchar ctrl) {
+
+	return call(env,obj,[env,text,ctrl](TN3270::Session &session){
+
+		return session.input(env->GetStringUTFChars(text,0),ctrl);
+
+	});
+
+ }
