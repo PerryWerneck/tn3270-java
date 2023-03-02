@@ -14,14 +14,14 @@ public class sample {
 
         try (Terminal host = new Terminal()) {
 
-		    System.out.println("Using ipc3270 version " + host.getVersion() + "-" + host.getRevision());
-		    System.out.println("Using lib3270 version " + host.getLib3270Version() + "-" + host.getLib3270Revision()); 
+		System.out.println("Using ipc3270 version " + host.getVersion() + "-" + host.getRevision());
+		System.out.println("Using lib3270 version " + host.getLib3270Version() + "-" + host.getLib3270Revision()); 
 		    
-		} catch (Exception e) {
+	} catch (Exception e) {
 
-		    e.printStackTrace();
+		e.printStackTrace();
 
-		}
+	}
         
     }
     
