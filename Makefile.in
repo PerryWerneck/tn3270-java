@@ -48,6 +48,8 @@ WINDRES=@WINDRES@
 AR=@AR@
 VALGRIND=@VALGRIND@
 JAVAC=@JAVAC@
+JAR=@JAR@
+JAVADOC=@JAVADOC@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -61,6 +63,9 @@ datarootdir=@datarootdir@
 localedir=@localedir@
 docdir=@docdir@
 sysconfdir=@sysconfdir@
+jnidir=@jnidir@
+jvmjardir=@jvmjardir@
+javadocdir=@javadocdir@
 
 OBJDIR=.obj
 OBJDBG=$(OBJDIR)/Debug
@@ -165,7 +170,7 @@ $(BINRLS)/$(LIBNAME)@DLLEXT@: \
 		$(LIBS)
 
 
-#---[ Install Targets ]------------------------------------------------------------------
+#---[ Misc Targets ]--------------------------------------------------------------------
 
 src/include/private/br_app_pw3270_Terminal.h: \
 	src/Terminal.java
@@ -175,6 +180,7 @@ src/include/private/br_app_pw3270_Terminal.h: \
 	@echo $< ...
 
 	@$(JAVAC) \
+		-encoding utf-8 \
 		-d $(BINDIR) \
 		-h $(dir $@) \
 		$<
@@ -182,10 +188,33 @@ src/include/private/br_app_pw3270_Terminal.h: \
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
-	install-@OSNAME@
+	install-@OSNAME@ \
+	install-javadoc
+
+install-javadoc: \
+	src/Terminal.java
+
+	@$(MKDIR) $(DESTDIR)$(javadocdir)
+	@$(JAVADOC) \
+		-encoding utf-8 \
+		-d $(DESTDIR)$(javadocdir) \
+		$^
 
 install-linux: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@
+
+	@$(JAVAC) \
+		-encoding utf-8 \
+		-d $(BINDIR) \
+		src/Terminal.java
+
+	@$(MKDIR) $(DESTDIR)$(jvmjardir)
+	@$(JAR) -cvf $(DESTDIR)$(jvmjardir)/$(LIBNAME).jar -C $(BINDIR) br
+	
+	@$(MKDIR) $(DESTDIR)$(jnidir)
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/$(LIBNAME)@DLLEXT@ \
+		$(DESTDIR)$(jnidir)/lib$(LIBNAME)@DLLEXT@
 
 install-windows: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@

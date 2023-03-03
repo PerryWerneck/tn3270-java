@@ -184,7 +184,18 @@ dnl ---------------------------------------------------------------------------
 
 AC_ARG_VAR([JDK_HOME], [JDK home directory])
 
+AC_ARG_WITH([jnidir], [AS_HELP_STRING([--with-jnidir], [Directory for JNI libraries])], [ jnidir="$withval" ],[ jnidir=\$"{libdir}/java" ])
+AC_SUBST(jnidir)
+
+AC_ARG_WITH([jvmjardir], [AS_HELP_STRING([--with-jvmjardir], [Directory for JAR files])], [ jvmjardir="$withval" ],[ jvmjardir=\$"{libdir}/jvm-exports" ])
+AC_SUBST(jvmjardir)
+
+AC_ARG_WITH([javadocdir], [AS_HELP_STRING([--with-javadocdir], [Directory for javadoc files])], [ javadocdir="$withval" ],[ javadocdir=\$"{datadir}/javadoc" ])
+AC_SUBST(javadocdir)
+
 AC_PATH_TOOL([JAVAC], [javac], [no])
+AC_PATH_TOOL([JAR], [jar], [no])
+AC_PATH_TOOL([JAVADOC], [javadoc], [no])
 
 case "$host" in
 	*-mingw32|*-pc-msys)
