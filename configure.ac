@@ -92,8 +92,8 @@ case "$host" in
 
 		CFLAGS="$CFLAGS -pthread -D_WIN32_WINNT=0x0600"
 		CXXFLAGS="$CXXFLAGS -pthread -D_WIN32_WINNT=0x0600"
+		LDFLAGS="$LDFLAGS -static-libgcc -static-libstdc++ -Wl,--add-stdcall-alias,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive,-Bdynamic,--output-def,\$(@D)/\$(LIBNAME).def"
 		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32"
-		LDFLAGS="$LDFLAGS -static-libgcc -static-libstdc++"
 		DLLEXT=".dll"
 
 		app_win32_revision=$(date +%-y.%-m.%-d.%-H)
@@ -102,18 +102,7 @@ case "$host" in
 		app_win32_file_version=$(date +%-y,%-m,%-d,%-H)
 		AC_SUBST(WIN32_FILE_VERSION,$app_win32_file_version)
 
-dnl		AC_CONFIG_FILES(src/module/windows/resources.rc)
-
-		if test "$host_cpu" = "x86_64"; then
-			app_cv_programfiles="PROGRAMFILES64"
-		else
-			app_cv_programfiles="PROGRAMFILES"
-		fi
-
-		AC_SUBST(PROGRAMFILES,$app_cv_programfiles)
-dnl		AC_SUBST(WINARCH,$app_cv_winarch)
-dnl     AC_SUBST(SONAME,py3270.dll)
-
+		AC_CONFIG_FILES(src/native/os/windows/resources.rc)
 		;;
 
  	*)
@@ -199,6 +188,7 @@ AC_PATH_TOOL([JAVADOC], [javadoc], [no])
 
 case "$host" in
 	*-mingw32|*-pc-msys)
+		AC_SUBST(JAVA_CFLAGS,"-I$JDK_HOME/include/ -I$JDK_HOME/include/win32")
 		;;
 
  	*)
