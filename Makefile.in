@@ -179,7 +179,7 @@ src/include/private/br_app_pw3270_Terminal.h: \
 	@$(MKDIR) $(dir $@)
 	@echo $< ...
 
-	@$(JAVAC) \
+	@"$(JAVAC)" \
 		-encoding utf-8 \
 		-d $(BINDIR) \
 		-h $(dir $@) \

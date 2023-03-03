@@ -48,6 +48,12 @@ AM_INIT_AUTOMAKE
 dnl Check for iconv
 AM_ICONV
 
+LT_INIT
+AC_CONFIG_MACRO_DIRS([m4])
+
+dnl Set gettext version
+AM_GNU_GETTEXT_VERSION([0.14])
+
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX
@@ -188,7 +194,7 @@ AC_PATH_TOOL([JAVADOC], [javadoc], [no])
 
 case "$host" in
 	*-mingw32|*-pc-msys)
-		AC_SUBST(JAVA_CFLAGS,"-I$JDK_HOME/include/ -I$JDK_HOME/include/win32")
+		AC_SUBST(JAVA_CFLAGS,"-I\"$JDK_HOME/include/\" -I\"$JDK_HOME/include/win32\"")
 		;;
 
  	*)
