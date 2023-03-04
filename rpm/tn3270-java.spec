@@ -27,19 +27,21 @@ Group: 			Development/Languages/Java
 
 BuildRoot:		/var/tmp/%{name}-%{version}
 
-BuildRequires:  autoconf >= 2.61
-BuildRequires:  automake
-BuildRequires:  binutils
-BuildRequires:  coreutils
-BuildRequires:  gcc-c++
-BuildRequires:  m4
-BuildRequires:  libtool
-BuildRequires:  pkgconfig
+BuildRequires:	autoconf >= 2.61
+BuildRequires:	automake
+BuildRequires:	binutils
+BuildRequires:	coreutils
+BuildRequires:	gcc-c++
+BuildRequires:	m4
+BuildRequires:	libtool
+BuildRequires:	pkgconfig
 BuildRequires:	pkgconfig(libipc3270) >= 5.5
 
-BuildRequires:  java-devel
-BuildRequires:  javapackages-tools
+BuildRequires:	java-devel
+BuildRequires:	javapackages-tools
 BuildRequires:	fdupes
+
+Recommends:		pw3270-plugin-ipc
 
 %description
 This package provides Java class for lib3270/pw3270 interaction.
