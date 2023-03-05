@@ -2,7 +2,7 @@ Source: tn3270-java
 Section: unknown
 Priority: optional
 Maintainer: Perry Werneck <perry.werneck@gmail.com>
-Build-Depends: debhelper (>= 7), autotools-dev, autoconf, automake, gettext, libssl-dev, pkg-config, lib3270-dev, libipc3270-dev, default-jdk
+Build-Depends: debhelper (>= 7), autotools-dev, autoconf, automake, gettext, libssl-dev, pkg-config, libipc3270-dev, default-jdk
 
 Package: tn3270-java
 Architecture: any
