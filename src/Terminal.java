@@ -19,10 +19,54 @@
 
 package br.app.pw3270;
 
+import java.io.OutputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+
 public class Terminal implements AutoCloseable {
 
 	static {
-        System.loadLibrary("jni3270");
+
+		try {
+
+	        System.loadLibrary("jni3270");
+
+		} catch (UnsatisfiedLinkError e) {
+    	
+			// https://stackoverflow.com/questions/1611357/how-to-make-a-jar-file-that-includes-dll-files
+
+			String ext = ".so";
+			if(System.getProperty("os.name").toLowerCase().contains("win")) {
+				ext = ".dll";
+			}
+
+			String tmpfile = System.getProperty("java.io.tmpdir") + "/jni3270" + ext;
+
+			try(InputStream in = Terminal.class.getResourceAsStream("/lib/jni3270" + ext)) {
+
+				try(OutputStream out = new FileOutputStream(tmpfile)) {
+					byte[] buffer = new byte[1024];
+					int length;
+					while ((length = in.read(buffer)) > 0) {
+						out.write(buffer, 0, length);
+					}
+				} catch (IOException outerr) {
+
+					throw new java.lang.RuntimeException("Cant save JNI Module");
+
+				}
+
+			} catch (IOException inerr) {
+
+				throw new java.lang.RuntimeException("Cant load JNI Module");
+
+			}
+
+			System.load(tmpfile);
+		
+		}
+
     }
 
     //
