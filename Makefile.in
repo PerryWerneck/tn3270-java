@@ -213,12 +213,12 @@ $(BINDIR)/$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar: \
 	@$(MKDIR) $(dir $@)
 	@echo $< ...
 
-	@$(JAVAC) \
+	@"$(JAVAC)" \
 		-encoding utf-8 \
 		-d $(BINDIR) \
 		src/Terminal.java
 
-	@$(JAR) \
+	@"$(JAR)" \
 		-cvf $@ \
 		-C $(BINDIR) br
 
@@ -274,7 +274,7 @@ $(BINDIR)/%.class: \
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
-	@$(JAVAC) \
+	@"$(JAVAC)" \
 		-encoding utf-8 \
 		-cp $(BINDIR) \
 		-d $(BINDIR) \
