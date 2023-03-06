@@ -27,6 +27,9 @@
 #---[ Library configuration ]------------------------------------------------------------
 
 LIBNAME=jni3270
+PACKAGE_NAME=@PACKAGE_NAME@
+PACKAGE_VERSION=@PACKAGE_VERSION@
+PACKAGE_RELEASE=@PACKAGE_RELEASE@
 
 SOURCES= \
 	$(wildcard src/native/*.cc) \
@@ -50,6 +53,7 @@ VALGRIND=@VALGRIND@
 JAVAC=@JAVAC@
 JAR=@JAR@
 JAVADOC=@JAVADOC@
+ZIP=@ZIP@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -200,25 +204,64 @@ install-javadoc: \
 		-d $(DESTDIR)$(javadocdir) \
 		$^
 
-install-linux: \
-	$(BINRLS)/$(LIBNAME)@DLLEXT@
+jar: \
+	$(BINDIR)/$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar
+	
+$(BINDIR)/$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar: \
+	src/Terminal.java
+
+	@$(MKDIR) $(dir $@)
+	@echo $< ...
 
 	@$(JAVAC) \
 		-encoding utf-8 \
 		-d $(BINDIR) \
 		src/Terminal.java
 
-	@$(MKDIR) $(DESTDIR)$(jvmjardir)
-	@$(JAR) -cvf $(DESTDIR)$(jvmjardir)/$(LIBNAME).jar -C $(BINDIR) br
+	@$(JAR) \
+		-cvf $@ \
+		-C $(BINDIR) br
+
+zip: \
+	$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).zip
 	
+$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).zip: \
+	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
+	$(BINDIR)/$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar
+
+	@$(ZIP) \
+		-9 -j \
+		$@ \
+		$^
+	
+install-linux: \
+	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
+	$(BINDIR)/$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar
+
+	@$(MKDIR) $(DESTDIR)$(jvmjardir)
+	@$(INSTALL_DATA) \
+		$(BINDIR)/$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar \
+		$(DESTDIR)$(jnidir)/$(PACKAGE_NAME)"-"$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar
+
 	@$(MKDIR) $(DESTDIR)$(jnidir)
 	@$(INSTALL_PROGRAM) \
 		$(BINRLS)/$(LIBNAME)@DLLEXT@ \
-		$(DESTDIR)$(jnidir)/lib$(LIBNAME)@DLLEXT@
-
+		$(DESTDIR)$(jnidir)/lib$(LIBNAME)@DLLEXT@		
+			
 install-windows: \
-	$(BINRLS)/$(LIBNAME)@DLLEXT@
+	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
+	$(BINDIR/$(LIBNAME).jar
 
+	@$(MKDIR) $(DESTDIR)$(jvmjardir)
+	@$(MKDIR) $(DESTDIR)$(jvmjardir)
+	@$(INSTALL_DATA) \
+		$(BINDIR)/$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar \
+		$(DESTDIR)$(jnidir)/$(PACKAGE_NAME)"-"$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar
+
+	@$(MKDIR) $(DESTDIR)$(jnidir)
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/$(LIBNAME)@DLLEXT@ \
+		$(DESTDIR)$(jnidir)/lib$(LIBNAME)@DLLEXT@		
 
 #---[ Debug Targets ]--------------------------------------------------------------------
 
