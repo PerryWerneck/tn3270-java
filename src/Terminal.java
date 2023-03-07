@@ -267,6 +267,7 @@ public class Terminal implements AutoCloseable {
 
 	/**
 	 * Get SSL state.
+	 * <p>
 	 * <table>
 	 * <tr><th>Value</th><th>State</th></tr>
 	 * <tr><td>0</td><td>Unsafe</td></tr>
@@ -279,6 +280,28 @@ public class Terminal implements AutoCloseable {
 	 */
 	public native int getSSLState();
 
+
+	/**
+	 * Get bitmask with keyboard lock state.
+	 * <p>
+	 * <table>
+	 * <tr><th>Value</th><th>Lib3270 id</th><th>Description</th></tr>
+	 * <tr><td>0x0000</td><td>LIB3270_KL_UNLOCKED</td><td>Keyboard is unlocked.</td></tr>
+	 * <tr><td>0x0001</td><td>LIB3270_KL_OERR_PROTECTED</td><td></td></tr>
+	 * <tr><td>0x0002</td><td>LIB3270_KL_OERR_NUMERIC</td><td></td></tr>
+	 * <tr><td>0x0003</td><td>LIB3270_KL_OERR_OVERFLOW</td><td></td></tr>
+	 * <tr><td>0x0004</td><td>LIB3270_KL_OERR_DBCS</td><td></td></tr>
+	 * <tr><td>0x0010</td><td>LIB3270_KL_NOT_CONNECTED</td><td>Not connected to host.</td></tr>
+	 * <tr><td>0x0020</td><td>LIB3270_KL_AWAITING_FIRST</td><td></td></tr>
+	 * <tr><td>0x0040</td><td>LIB3270_KL_OIA_TWAIT</td><td></td></tr>
+	 * <tr><td>0x0080</td><td>LIB3270_KL_OIA_LOCKED</td><td></td></tr>
+	 * <tr><td>0x0100</td><td>LIB3270_KL_DEFERRED_UNLOCK</td><td></td></tr>
+	 * <tr><td>0x0200</td><td>LIB3270_KL_ENTER_INHIBIT</td><td></td></tr>
+	 * <tr><td>0x0400</td><td>LIB3270_KL_SCROLLED</td><td></td></tr>
+	 * <tr><td>0x0800</td><td>LIB3270_KL_OIA_MINUS</td><td></td></tr>
+	 * </table>
+     * @return The value of keyboard lock state.
+     */
 	public native int getKeyboardLockState();
 
 	public native int getWidth();
