@@ -44,6 +44,7 @@
 		<Unit filename="src/native/gettext.cc" />
 		<Unit filename="src/native/handler.cc" />
 		<Unit filename="src/native/info.cc" />
+		<Unit filename="src/native/os/windows/init.cc" />
 		<Unit filename="src/native/set.cc" />
 		<Unit filename="src/native/states.cc" />
 		<Unit filename="src/native/tools.cc" />
