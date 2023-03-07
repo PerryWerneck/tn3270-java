@@ -48,6 +48,7 @@
 		<Unit filename="src/native/set.cc" />
 		<Unit filename="src/native/states.cc" />
 		<Unit filename="src/native/tools.cc" />
+		<Unit filename="src/native/wait.cc" />
 		<Unit filename="src/native/workers.cc" />
 		<Extensions>
 			<lib_finder disable_auto="1" />

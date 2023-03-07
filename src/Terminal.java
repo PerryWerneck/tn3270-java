@@ -449,15 +449,80 @@ public class Terminal implements AutoCloseable {
 	public native void activate(String action);
 	public native boolean activatable(String action);
 
+	/**
+	 * Send a pfkey to host.
+	 *
+	 * @param key PFkey number.
+	 *
+	 */
 	public native void pfkey(int value);
+
+	/**
+	 * Send a pakey to host.
+	 *
+	 * @param key PAkey number.
+	 *
+	 */
 	public native void pakey(int value);
 
 	public native void enter();
 	public native void erase();
 	public native void erase_eol();
 	public native void erase_input();
+	
+	/**
+	 * Erase from cursor position until the end of the field.
+	 */	
 	public native void erase_eof();
 	
+	//
+	// Wait
+	//
+	
+	/**
+	 * Wait for an specified amount of time.
+	 * <p>
+	 * Wait for the specified time keeping the main loop active.
+	 *
+	 * @param seconds Number of seconds to wait.
+	 *
+	 */
+	public native void sleep(int seconds);	
+
+	public native void wait(String text, int seconds);
+
+	/**
+	 * Wait for terminal negociation.
+	 * <p>
+	 * Wait on a loop until the terminal contents are
+	 * ready for reading.
+	 *
+	 * @param seconds Maximum time (in seconds) to wait for.
+	 *
+	 */
+	public native void wait(int seconds);
+
+	/**
+	 * Wait for text at defined address.
+	 *
+	 * @param baddr address of string.
+	 * @param text	String to compare.
+	 * @param seconds Maximum time (in seconds) to wait for.
+	 *
+	 */
+	public native void wait(int baddr, String text, int seconds);
+
+	/**
+	 * Wait for text at defined row,col
+	 *
+	 * @param row	Row for text to compare.
+	 * @param col	Column for text to compare.
+	 * @param text	String to compare.
+	 * @param seconds Maximum time (in seconds) to wait for.
+	 *
+	 */
+	public native void wait(int row, int col, String text, int seconds);
+		
 	//
 	// Legacy
 	//
