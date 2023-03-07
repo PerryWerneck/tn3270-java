@@ -263,6 +263,28 @@ install-windows: \
 		$(BINRLS)/$(LIBNAME)@DLLEXT@ \
 		$(DESTDIR)$(jnidir)/lib$(LIBNAME)@DLLEXT@		
 
+package: \
+	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
+	src/Terminal.java
+
+	@$(MKDIR) $(dir $@)
+	@echo $< ...
+
+	@"$(JAVAC)" \
+		-encoding utf-8 \
+		-d $(BINDIR) \
+		src/Terminal.java
+
+	@$(MKDIR) $(BINDIR)/lib
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/$(LIBNAME)@DLLEXT@ \
+		$(BINDIR)/lib		
+
+	@"$(JAR)" \
+		-cvf $(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE)-@host_cpu@.jar \
+		-C $(BINDIR) br \
+		-C $(BINDIR) lib
+
 #---[ Debug Targets ]--------------------------------------------------------------------
 
 Debug: \
