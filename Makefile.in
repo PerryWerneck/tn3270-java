@@ -242,6 +242,7 @@ $(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE)-@host_cpu@.zip: \
 		-9 -r \
 		$@ \
 		$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE)-@host_cpu@.jar \
+		LICENSE \
 		doc
 	
 install-linux: \
