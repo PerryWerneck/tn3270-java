@@ -284,10 +284,10 @@ public class Terminal implements AutoCloseable {
 	/** Get the lib3270 version string. */
 	public native String getLib3270Version();
 
-	/** @brief Get the lib3270 revision string. */
+	/** Get the lib3270 revision string. */
 	public native String getLib3270Revision();
 
-	/* @brief Get the LU name associated with the session, if there is one. */
+	/** Get the LU name associated with the session, if there is one. */
 	public native String getAssociatedLUName();
 
 	public native String getURL();

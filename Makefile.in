@@ -232,16 +232,17 @@ $(BINDIR)/$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar: \
 		-C $(BINDIR) br
 
 zip: \
-	$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).zip
+	$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE)-@host_cpu@.zip
 	
-$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).zip: \
-	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
-	$(BINDIR)/$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar
-
+$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE)-@host_cpu@.zip: \
+	package \
+	doc
+	
 	@$(ZIP) \
-		-9 -j \
+		-9 -r \
 		$@ \
-		$^
+		$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE)-@host_cpu@.jar \
+		doc
 	
 install-linux: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
