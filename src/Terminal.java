@@ -69,12 +69,19 @@ public class Terminal implements AutoCloseable {
 
     }
 
-    //
-    // Inner classes
-    //
+    /**
+     * Cursor position.
+     */
 	public class CursorPosition {
 
+		/**
+		 * Cursor row.
+		 */
 		public int row = 0;
+
+		/**
+		 * Cursor column.
+		 */
 		public int col = 0;
 
 		CursorPosition(int r, int c) {
@@ -116,56 +123,82 @@ public class Terminal implements AutoCloseable {
 		open(id,"UTF-8");
 	}
 
-	/// @brief Get the current ipc3270 version.
-	/// @return String with the current ipc3270 version.
+	/**
+	 * Get the current ipc3270 version.
+	 * @return String with the version of the ipc3270 library.
+	 */
 	public static native String getVersion();
 
-	/// @brief Get the current ipc3270 revision.
-	/// @return String with the current ipc3270 revision.
+	/**
+	* Get the current ipc3270 revision.
+	* @return String with the revision of the ipc3270 library.
+	*/
 	public static native String getRevision();
 
-	/// @brief Open headless tn3270 session.
+	/**
+	 * Open tn3270 session.
+	 * @param id Session ID ("" for headless).
+	 * @param charset Local charset.
+	 */
 	public native void open(String id, String charset);
 
-	/// @brief Open headless tn3270 session with default charset.
+	/**
+	 * Open headless tn3270 session with default charset (UTF-8).
+	 */
 	public void open() {
 		open("","UTF-8");
 	}
 
-	/// @brief Open tn3270 session with default charset.
+	/**
+	 * @brief Open tn3270 session with default charset (UTF-8).
+	 */
 	public void open(String id) {
 		open(id,"UTF-8");
 	}
 
-	/// @brief Close tn3270 session.
+	/**
+	 * Close tn3270 session, release resources.
+	 */
 	public native void close();
 	
 	//
 	// Connection
 	//
 	
-	///
-	/// @brief Connect to 3270 host.
-	/// <p>
-	/// Connect to the 3270 host
-	/// <p>
-	/// URI formats:
-	/// <ul>
-	/// <li>tn3270://[HOSTNAME]:[HOSTPORT] for non SSL connections.</li>
-	/// <li>tn3270s://[HOSTNAME]:[HOSTPORT] for ssl connection.</li>
-	/// </ul>
-	///
-	/// @param host		Host URI.
-	/// @param seconds	How many seconds to wait for a connection.
+	/**
+	 *  Connect to 3270 host.
+	 *  <p>
+	 *  Connect to the 3270 host
+	 *  <p>
+	 *  URI formats:
+	 *  <ul>
+	 *  <li>tn3270://[HOSTNAME]:[HOSTPORT] for non SSL connections.</li>
+	 *  <li>tn3270s://[HOSTNAME]:[HOSTPORT] for ssl connection.</li>
+	 *  </ul>
+	 * 
+	 *  @param url		Host URL.
+	 *  @param seconds	How many seconds to wait for a connection.
+	 */
 	public native void connect(String url, int seconds);	
 
+	/**
+	 * Connect to default 3270 host.
+	 * <p>
+	 * When using a GUI session this connected to the session defined tn3270 host.
+	 *  @param seconds	How many seconds to wait for a connection.
+	 */
 	public native void connect(int seconds);	
 	
+	/**
+	 * Disconnect from tn3270 host.
+	 */
 	public native void disconnect();
 	
 	//
 	// Getters
 	//
+	
+	
 	public native String getText(int baddr, int len);
 	public native String getText(int row, int col, int len);
 
@@ -173,14 +206,37 @@ public class Terminal implements AutoCloseable {
 		return getText(0,-1);
 	}
 		
-	/// @brief Get the id of the current program message.
-	/// @return The ProgramMessage value.
+	/**
+	 * Get the current program message id.
+	 * <p>
+	 * <table>
+	 * <tr><th>Value</th><th>Lib3270 name</th><th>Description</th></tr>
+     * <tr><td>0</td><td>LIB3270_MESSAGE_NONE</td><td>No message</td></tr>
+     * <tr><td>1</td><td>LIB3270_MESSAGE_SYSWAIT</td><td></td></tr>
+     * <tr><td>2</td><td>LIB3270_MESSAGE_TWAIT</td><td></td></tr>
+     * <tr><td>3</td><td>LIB3270_MESSAGE_CONNECTED</td><td>Connected to host</td></tr>
+     * <tr><td>4</td><td>LIB3270_MESSAGE_DISCONNECTED</td><td>Disconnected from host</td></tr>
+     * <tr><td>5</td><td>LIB3270_MESSAGE_AWAITING_FIRST</td><td></td></tr>
+     * <tr><td>6</td><td>LIB3270_MESSAGE_MINUS</td><td></td></tr>
+     * <tr><td>7</td><td>LIB3270_MESSAGE_PROTECTED</td><td></td></tr>
+     * <tr><td>8</td><td>LIB3270_MESSAGE_NUMERIC</td><td></td></tr>
+     * <tr><td>9</td><td>LIB3270_MESSAGE_OVERFLOW</td><td></td></tr>
+     * <tr><td>10</td><td>LIB3270_MESSAGE_INHIBIT</td><td></td></tr>
+     * <tr><td>11</td><td>LIB3270_MESSAGE_KYBDLOCK</td><td>Keyboard is locked</td></tr>
+     * <tr><td>12</td><td>LIB3270_MESSAGE_X</td><td></td></tr> 
+     * <tr><td>13</td><td>LIB3270_MESSAGE_RESOLVING</td><td>Resolving hostname (running DNS query)</td></tr>
+     * <tr><td>14</td><td>LIB3270_MESSAGE_CONNECTING</td><td>Connecting to host</td></tr> 
+	 * </table>
+	 * @return The ProgramMessage value.
+	 */
 	public native int getProgramMessage();
 
 	public native int getConnectionState();
 
-	/// @brief Get SSL state.
-	/// @return State of SSL connection (0 = Unsafe, 1 = Valid CA, 2 = Invalid CA or self-signed, 3 = Negotiating, 4 = Undefined)
+	/**
+	 * Get SSL state.
+	 * @return State of SSL connection (0 = Unsafe, 1 = Valid CA, 2 = Invalid CA or self-signed, 3 = Negotiating, 4 = Undefined)
+	 */
 	public native int getSSLState();
 
 	public native int getKeyboardLockState();
@@ -195,31 +251,43 @@ public class Terminal implements AutoCloseable {
 
 	public native CursorPosition getCursorPosition();
 	
-	/// @brief Get connected state.
-	/// @param timeout Time to wait for state (0 = no wait).
-	/// @return true if the terminal is connected.
+	public native boolean contains(String chars);
+	
+	public native int find(String chars, int pos);
+	
+	public int find(String chars) {
+		return find(chars,0);
+	}
+
+	/**
+	 * Get connected state.
+	 * @param timeout Time to wait for state (0 = no wait).
+	 * @return true if the terminal is connected.
+	 */
 	public native boolean getConnected(int timeout);
 
 	public boolean getConnected() {
 		return getReady(0);
 	}
 	
-	/// @brief Get 'readyness' of terminal.
-	/// @param timeout Time to wait for state (0 = no wait).
-	/// @return true if the terminal is ready.
+	/**
+	 * Get 'readyness' of terminal.
+	 * @param timeout Time to wait for 'ready' state (0 = no wait).
+	 * @return true if the terminal is ready.
+	 */
 	public native boolean getReady(int timeout);	
 
 	public boolean getReady() {
 		return getReady(0);
 	}
 
-	/// @brief Get the lib3270 version string.
+	/** Get the lib3270 version string. */
 	public native String getLib3270Version();
 
-	/// @brief Get the lib3270 revision string.
+	/** @brief Get the lib3270 revision string. */
 	public native String getLib3270Revision();
 
-	/// @brief Get the LU name associated with the session, if there is one.
+	/* @brief Get the LU name associated with the session, if there is one. */
 	public native String getAssociatedLUName();
 
 	public native String getURL();
@@ -227,6 +295,7 @@ public class Terminal implements AutoCloseable {
 	//
 	// toString variations
 	//
+	
 	public String toString(int baddr, int len) {
 		return getText(baddr,len);
 	}
@@ -261,56 +330,55 @@ public class Terminal implements AutoCloseable {
 	// Actions
 	//
 
-	/// @brief Input string parsing control char.
-	/// @return The keyboard lock state.
+	/**
+	 * @brief Input string parsing control char.
+     * @return The keyboard lock state.
+     */
 	public native int input(String str, char control);
 
-	/// @brief Input string parsing control char.
-	///
-	/// Insert string parsing the action codes prefixed with the defined control character.
-	///
-	/// Value | Action      | Description                                                |
-	/// :----:|:------------|:-----------------------------------------------------------|
-	///  @@P  | -           | Print the screen contents (if available)                   |
-	///  @@@@ | -           | Input the @@ char.                                         |
-	///  @@E  | ENTER       | -                                                          |
-	///  @@F  | ERASE_EOF   | -                                                          |
-	///  @@1  | PF1         | Send the PF1 key.                                          |
-	///  @@2  | PF2         | Send the PF2 key.                                          |
-	///  @@3  | PF3         | Send the PF3 key.                                          |
-	///  @@4  | PF4         | Send the PF4 key.                                          |
-	///  @@5  | PF5         | Send the PF5 key.                                          |
-	///  @@6  | PF6         | Send the PF6 key.                                          |
-	///  @@7  | PF7         | Send the PF7 key.                                          |
-	///  @@8  | PF8         | Send the PF8 key.                                          |
-	///  @@9  | PF9         | Send the PF9 key.                                          |
-	///  @@a  | PF10        | Send the PF10 key.                                         |
-	///  @@b  | PF11        | Send the PF11 key.                                         |
-	///  @@c  | PF12        | Send the PF12 key.                                         |
-	///  @@d  | PF13        | Send the PF13 key.                                         |
-	///  @@e  | PF14        | Send the PF14 key.                                         |
-	///  @@f  | PF15        | Send the PF15 key.                                         |
-	///  @@g  | PF16        | Send the PF16 key.                                         |
-	///  @@h  | PF17        | Send the PF17 key.                                         |
-	///  @@u  | PF18        | Send the PF18 key.                                         |
-	///  @@j  | PF19        | Send the PF19 key.                                         |
-	///  @@k  | PF20        | Send the PF20 key.                                         |
-	///  @@l  | PF21        | Send the PF21 key.                                         |
-	///  @@m  | PF22        | Send the PF22 key.                                         |
-	///  @@n  | PF23        | Send the PF23 key.                                         |
-	///  @@o  | PF24        | Send the PF24 key.                                         |
-	///  @@x  | PA1         | Send the PA1 key.                                          |
-	///  @@y  | PA2         | Send the PA2 key.                                          |
-	///  @@z  | PA3         | Send the PA3 key.                                          |
-	///  @@D  | CHAR_DELETE |                                                            |
-	///  @@N  | NEWLINE     |                                                            |
-	///  @@C  | CLEAR       |                                                            |
-	///  @@R  | KYBD_RESET  |                                                            |
-	///  @@<  | BACKSPACE   |                                                            |
-	/// :----:|:------------|:-----------------------------------------------------------|
-	///
-	/// @return The keyboard lock state.
-	///
+	/**
+	 * Input string parsing default control char (@).
+     * <table>
+	 * <tr><td>Insert string parsing the action codes prefixed with the defined control character.
+	 * <tr><th>Value</th><th>Action</th><th>Description</th></tr>
+	 * <tr><td>@@P</td><td></td><td>Print the screen contents (if available)</td></tr>
+	 * <tr><td>@@@@</td><td></td><td>Input the @@ char.</td></tr>
+	 * <tr><td>@@E</td><td>ENTER</td><td></td></tr>
+	 * <tr><td>@@F</td><td>ERASE_EOF</td><td></td></tr>
+	 * <tr><td>@@1</td><td>PF1</td><td>Send the PF1 key.</td></tr>
+	 * <tr><td>@@2</td><td>PF2</td><td>Send the PF2 key.</td></tr>
+	 * <tr><td>@@3</td><td>PF3</td><td>Send the PF3 key.</td></tr>
+	 * <tr><td>@@4</td><td>PF4</td><td>Send the PF4 key.</td></tr>
+	 * <tr><td>@@5</td><td>PF5</td><td>Send the PF5 key.</td></tr>
+	 * <tr><td>@@6</td><td>PF6</td><td>Send the PF6 key.</td></tr>
+	 * <tr><td>@@7</td><td>PF7</td><td>Send the PF7 key.</td></tr>
+	 * <tr><td>@@8</td><td>PF8</td><td>Send the PF8 key.</td></tr>
+	 * <tr><td>@@9</td><td>PF9</td><td>Send the PF9 key.</td></tr>
+	 * <tr><td>@@a</td><td>PF10</td><td>Send the PF10 key.</td></tr>
+	 * <tr><td>@@b</td><td>PF11</td><td>Send the PF11 key.</td></tr>
+	 * <tr><td>@@c</td><td>PF12</td><td>Send the PF12 key.</td></tr>
+	 * <tr><td>@@d</td><td>PF13</td><td>Send the PF13 key.</td></tr>
+	 * <tr><td>@@e</td><td>PF14</td><td>Send the PF14 key.</td></tr>
+	 * <tr><td>@@f</td><td>PF15</td><td>Send the PF15 key.</td></tr>
+	 * <tr><td>@@g</td><td>PF16</td><td>Send the PF16 key.</td></tr>
+	 * <tr><td>@@h</td><td>PF17</td><td>Send the PF17 key.</td></tr>
+	 * <tr><td>@@u</td><td>PF18</td><td>Send the PF18 key.</td></tr>
+	 * <tr><td>@@j</td><td>PF19</td><td>Send the PF19 key.</td></tr>
+	 * <tr><td>@@k</td><td>PF20</td><td>Send the PF20 key.</td></tr>
+	 * <tr><td>@@l</td><td>PF21</td><td>Send the PF21 key.</td></tr>
+	 * <tr><td>@@m</td><td>PF22</td><td>Send the PF22 key.</td></tr>
+	 * <tr><td>@@n</td><td>PF23</td><td>Send the PF23 key.</td></tr>
+	 * <tr><td>@@o</td><td>PF24</td><td>Send the PF24 key.</td></tr>
+	 * <tr><td>@@x</td><td>PA1</td><td>Send the PA1 key.</td></tr>
+	 * <tr><td>@@y</td><td>PA2</td><td>Send the PA2 key.</td></tr>
+	 * <tr><td>@@z</td><td>PA3</td><td>Send the PA3 key.</td></tr>
+	 * <tr><td>@@D</td><td>CHAR_DELETE</td><td></td></tr>
+	 * <tr><td>@@N</td><td>NEWLINE</td><td></td></tr>
+	 * <tr><td>@@C</td><td>CLEAR</td><td></td></tr>
+	 * <tr><td>@@R</td><td>KYBD_RESET</td><td></td></tr>
+     * </table>
+     * @return The keyboard lock state.
+     */
 	public int input(String str) {
 		return input(str,'@');
 	}
@@ -326,6 +394,11 @@ public class Terminal implements AutoCloseable {
 	public native void erase_eol();
 	public native void erase_input();
 	public native void erase_eof();
+	
+	//
+	// Legacy
+	//
+	
 
 };
 

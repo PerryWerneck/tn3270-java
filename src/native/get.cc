@@ -134,3 +134,20 @@
 	});
  }
 
+ JNIEXPORT jboolean JNICALL Java_br_app_pw3270_Terminal_contains(JNIEnv *env, jobject obj, jstring chars) {
+
+	return call(env,obj,[env,chars](TN3270::Session &session){
+		return (int) session.contains(env->GetStringUTFChars(chars,0));
+	});
+
+ }
+
+ JNIEXPORT jint JNICALL Java_br_app_pw3270_Terminal_find(JNIEnv *env, jobject obj, jstring chars, jint pos) {
+
+	return call(env,obj,[env,chars,pos](TN3270::Session &session){
+		return (int) session.find(env->GetStringUTFChars(chars,0),pos);
+	});
+
+ }
+
+

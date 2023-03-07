@@ -203,6 +203,15 @@ install-javadoc: \
 		-encoding utf-8 \
 		-d $(DESTDIR)$(javadocdir) \
 		$^
+		
+doc: \
+	src/Terminal.java
+
+	@$(MKDIR) doc
+	@$(JAVADOC) \
+		-encoding utf-8 \
+		-d doc \
+		$^
 
 jar: \
 	$(BINDIR)/$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar
