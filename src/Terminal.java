@@ -115,10 +115,18 @@ public class Terminal implements AutoCloseable {
 	// TN3270 native handler.
 	private long hSession;
 
+	/**
+	 * Build a headless TN3270 session.
+	 */
 	public Terminal() {
 		open();
 	}
 
+	/**
+	 * Build session binded to pw3270's session window.
+	 *
+	 * @param id pw3270 window id (A: for the first one, B: for second ... )
+	 */
 	public Terminal(String id) {
 		open(id,"UTF-8");
 	}
@@ -150,7 +158,7 @@ public class Terminal implements AutoCloseable {
 	}
 
 	/**
-	 * @brief Open tn3270 session with default charset (UTF-8).
+	 * Open tn3270 session with default charset (UTF-8).
 	 */
 	public void open(String id) {
 		open(id,"UTF-8");
@@ -198,10 +206,34 @@ public class Terminal implements AutoCloseable {
 	// Getters
 	//
 	
-	
+	/**
+	 * Get terminal contents at address.
+	 *
+	 * @param baddr address of string to get.
+	 * @param len length of string to get.
+	 *
+	 * @return String at address with length chars.
+	 *
+	 */
 	public native String getText(int baddr, int len);
+
+	/**
+	 * Get terminal contents at position.
+	 *
+	 * @param row row of the string start.
+	 * @param col column of the string start.
+	 * @param len length of string to get.
+	 *
+	 * @return String at position with length chars.
+	 *
+	 */
 	public native String getText(int row, int col, int len);
 
+	/**
+	 * Get all terminal contents.
+	 *
+	 * @return The terminal contents.
+	 */
 	public String getText() {
 		return getText(0,-1);
 	}
@@ -235,7 +267,15 @@ public class Terminal implements AutoCloseable {
 
 	/**
 	 * Get SSL state.
-	 * @return State of SSL connection (0 = Unsafe, 1 = Valid CA, 2 = Invalid CA or self-signed, 3 = Negotiating, 4 = Undefined)
+	 * <table>
+	 * <tr><th>Value</th><th>State</th></tr>
+	 * <tr><td>0</td><td>Unsafe</td></tr>
+	 * <tr><td>1</td><td>Valid CA</td></tr>
+	 * <tr><td>2</td><td>Invalid CA or self-signed</td></tr>
+	 * <tr><td>3</td><td>Negotiating</td></tr>
+	 * <tr><td>4</td><td>Undefined</td></tr>
+	 * </table>
+	 * @return State of SSL connection.
 	 */
 	public native int getSSLState();
 
