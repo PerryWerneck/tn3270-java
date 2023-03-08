@@ -314,10 +314,26 @@ public class Terminal implements AutoCloseable {
 
 	public native CursorPosition getCursorPosition();
 	
+	/**
+	 * Test for string in terminal.
+	 * @param chars The string to search.
+	 * @return true if the terminal contains 'chars'
+	 */
 	public native boolean contains(String chars);
-	
+
+	/**
+	 * Find string in the terminal.
+	 * @param chars The string to search.
+	 * @param pos Starting address.
+	 * @return The address of string on terminal.
+	 */
 	public native int find(String chars, int pos);
 	
+	/**
+	 * Find string in the terminal.
+	 * @param chars The string to search.
+	 * @return The address of string on terminal.
+	 */
 	public int find(String chars) {
 		return find(chars,0);
 	}
@@ -340,6 +356,10 @@ public class Terminal implements AutoCloseable {
 	 */
 	public native boolean getReady(int timeout);	
 
+	/**
+	 * Check if terminal is ready to receive inputs.
+	 * @return true if the terminal is ready.
+	 */
 	public boolean getReady() {
 		return getReady(0);
 	}
@@ -446,7 +466,24 @@ public class Terminal implements AutoCloseable {
 		return input(str,'@');
 	}
 
+    /**
+	 * Launch a lib3270 action by name.
+	 *
+	 * @param name		Name of the action to fire.
+	 *
+	 * @return Return code of the action call.
+	 *
+	 */
 	public native void activate(String action);
+	
+    /**
+	 * Test if a lib3270 action is activatable.
+	 *
+	 * @param name Name of the action.
+	 *
+	 * @return true if the action can be activated.
+	 *
+	 */
 	public native boolean activatable(String action);
 
 	/**
@@ -489,6 +526,13 @@ public class Terminal implements AutoCloseable {
 	 */
 	public native void sleep(int seconds);	
 
+	/**
+	 * Wait for an specified string in terminal.
+	 *
+	 * @param text The string to wait.
+	 * @param seconds How many seconds to wait for text to appear.
+	 *
+	 */
 	public native void wait(String text, int seconds);
 
 	/**
