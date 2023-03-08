@@ -187,13 +187,24 @@ AC_ARG_WITH([javadocdir], [AS_HELP_STRING([--with-javadocdir], [Directory for ja
 AC_SUBST(javadocdir)
 
 AC_PATH_TOOL([JAVAC], [javac], [no])
+if test x$JAVAC = xno; then
+       AC_MSG_ERROR("javac not found")
+fi
+
 AC_PATH_TOOL([JAR], [jar], [no])
+if test x$JAR = xno; then
+       AC_MSG_ERROR("jar not found")
+fi
+
 AC_PATH_TOOL([JAVADOC], [javadoc], [no])
+if test x$JAVADOC = xno; then
+       AC_MSG_ERROR("javadoc not found")
+fi
 
 AC_ARG_VAR([JDK_HOME], [JDK home directory])
 
 if test "$JDK_HOME" == ""; then
-	JDK_HOME="$(readlink -f /usr/bin/javac | sed "s:bin/javac::")"
+	JDK_HOME="$(readlink -f "$JAVAC" | sed "s:bin/javac::")"
 fi
 
 if test "$JDK_HOME" == ""; then
