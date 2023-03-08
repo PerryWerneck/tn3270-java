@@ -22,6 +22,20 @@ rm -fr ./.build
 mkdir -p ./.build
 
 #
+# Find java
+#
+if [ -z "$JDK_HOME" ]; then
+	echo "-----------------------------------------------------------"
+	find "/c/hostedtoolcache" -iname javac.exe
+	echo "-------------- " $(dirname $(find "/c/hostedtoolcache" -iname javac.exe | head -n 1))
+fi
+
+if [ ! -d "$JDK_HOME" ]; then
+	echo "Unable to find jdk"
+	exit -1	
+fi
+
+#
 # Build LIB3270
 #
 echo "Building lib3270"
