@@ -5,6 +5,45 @@ Java class for interaction with pw3270 or lib3270.
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![build result](https://build.opensuse.org/projects/home:PerryWerneck:pw3270/packages/tn3270-java/badge.svg?type=percent)](https://build.opensuse.org/package/show/home:PerryWerneck:pw3270/tn3270-java)
 
+## Instalation
+
+### Linux
+
+[<img src="https://raw.githubusercontent.com/PerryWerneck/pw3270/master/branding/obs-badge-en.svg" alt="Download from open build service" height="80px">](https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=tn3270-java)
+
+## Building for Linux
+
+### Requirements
+
+ * [libipc3270](../../../libipc3270)
+
+## Building for windows
+
+### Windows native with MSYS2
+
+1. Install java sdk
+
+2. Build and install [libipc3270](../../../libipc3270)
+
+3. Get sources from git
+
+	```shell
+	git clone https://github.com/PerryWerneck/tn3270-java.git ./tn3270-java
+	```
+
+4. Build package using the mingw shell
+
+	```shell
+	cd tn3270-java
+	./autogen.sh
+	make zip
+	```
+5. Install
+
+	```shell
+	make install
+	```
+
 ## Examples
 
 Getting versions of jni module and loaded lib3270
