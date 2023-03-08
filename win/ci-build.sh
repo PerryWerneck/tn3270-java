@@ -54,7 +54,7 @@ echo "Building TN3270-Java"
 ./autogen.sh || die "Autogen failure"
 ./configure || die "Configure failure"
 make clean || die "Make clean failure"
-make all  || die "Make failure"
+make zip  || die "Make failure"
 
 echo "Build complete"
 

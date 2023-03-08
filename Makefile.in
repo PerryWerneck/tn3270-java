@@ -199,7 +199,7 @@ install-javadoc: \
 	src/Terminal.java
 
 	@$(MKDIR) $(DESTDIR)$(javadocdir)
-	@$(JAVADOC) \
+	@"$(JAVADOC)" \
 		-encoding utf-8 \
 		-d $(DESTDIR)$(javadocdir) \
 		$^
@@ -208,7 +208,7 @@ doc: \
 	src/Terminal.java
 
 	@$(MKDIR) doc
-	@$(JAVADOC) \
+	@"$(JAVADOC)" \
 		-encoding utf-8 \
 		-d doc \
 		$^
@@ -238,7 +238,7 @@ $(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE)-@host_cpu@.zip: \
 	package \
 	doc
 	
-	@$(ZIP) \
+	@"$(ZIP)" \
 		-9 -r \
 		$@ \
 		$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE)-@host_cpu@.jar \
@@ -344,7 +344,10 @@ clean: \
 	cleanDebug \
 	cleanRelease
 
-	@rm -f 	src/include/private/br_app_pw3270_Terminal.h
+	@rm -f src/include/private/br_app_pw3270_Terminal.h
+	@rm -fr doc
+	@rm -f *.zip
+	@rm -f *.jar
 
 cleanDebug:
 

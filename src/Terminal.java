@@ -242,6 +242,7 @@ public class Terminal implements AutoCloseable {
 	 * Get the current program message id.
 	 * <p>
 	 * <table>
+     * <caption>Message IDs</caption>
 	 * <tr><th>Value</th><th>Lib3270 name</th><th>Description</th></tr>
      * <tr><td>0</td><td>LIB3270_MESSAGE_NONE</td><td>No message</td></tr>
      * <tr><td>1</td><td>LIB3270_MESSAGE_SYSWAIT</td><td></td></tr>
@@ -269,6 +270,7 @@ public class Terminal implements AutoCloseable {
 	 * Get SSL state.
 	 * <p>
 	 * <table>
+	 * <caption>SSL States</caption>
 	 * <tr><th>Value</th><th>State</th></tr>
 	 * <tr><td>0</td><td>Unsafe</td></tr>
 	 * <tr><td>1</td><td>Valid CA</td></tr>
@@ -285,6 +287,7 @@ public class Terminal implements AutoCloseable {
 	 * Get bitmask with keyboard lock state.
 	 * <p>
 	 * <table>
+	 * <caption>Lock State flags</caption>
 	 * <tr><th>Value</th><th>Lib3270 id</th><th>Description</th></tr>
 	 * <tr><td>0x0000</td><td>LIB3270_KL_UNLOCKED</td><td>Keyboard is unlocked.</td></tr>
 	 * <tr><td>0x0001</td><td>LIB3270_KL_OERR_PROTECTED</td><td></td></tr>
@@ -414,15 +417,15 @@ public class Terminal implements AutoCloseable {
 	//
 
 	/**
-	 * @brief Input string parsing control char.
+	 * Input string parsing control char.
      * @return The keyboard lock state.
      */
 	public native int input(String str, char control);
 
 	/**
-	 * Input string parsing default control char (@).
+	 * Insert string parsing the action codes prefixed with the defined control character.
      * <table>
-	 * <tr><td>Insert string parsing the action codes prefixed with the defined control character.
+	 * <caption>Valid action codes</caption>
 	 * <tr><th>Value</th><th>Action</th><th>Description</th></tr>
 	 * <tr><td>@@P</td><td></td><td>Print the screen contents (if available)</td></tr>
 	 * <tr><td>@@@@</td><td></td><td>Input the @@ char.</td></tr>
@@ -469,38 +472,29 @@ public class Terminal implements AutoCloseable {
     /**
 	 * Launch a lib3270 action by name.
 	 *
-	 * @param name		Name of the action to fire.
-	 *
-	 * @return Return code of the action call.
-	 *
+	 * @param action The action to activate.
 	 */
 	public native void activate(String action);
 	
     /**
 	 * Test if a lib3270 action is activatable.
 	 *
-	 * @param name Name of the action.
-	 *
+	 * @param action Name of the action.
 	 * @return true if the action can be activated.
-	 *
 	 */
 	public native boolean activatable(String action);
 
 	/**
 	 * Send a pfkey to host.
-	 *
 	 * @param key PFkey number.
-	 *
 	 */
-	public native void pfkey(int value);
+	public native void pfkey(int key);
 
 	/**
 	 * Send a pakey to host.
-	 *
 	 * @param key PAkey number.
-	 *
 	 */
-	public native void pakey(int value);
+	public native void pakey(int key);
 
 	public native void enter();
 	public native void erase();
