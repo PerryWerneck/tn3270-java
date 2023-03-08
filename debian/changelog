@@ -1,6 +1,7 @@
-pw3270-plugin-java (5.1-0) unstable; urgency=low
+tn3270-java (5.4-0) unstable; urgency=low
 
-  * Unstable release
+  * Initial Release
 
- -- Perry Werneck <perry.werneck@gmail.com>  Thu, 19 Apr 2016 17:38:00 -0300
+ -- Perry Werneck <perry.werneck@gmail.com>  Wed, 2 May 2012 15:20:56 -0300
+
 

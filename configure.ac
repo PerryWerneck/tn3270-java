@@ -1,12 +1,37 @@
+dnl
+dnl Software pw3270, desenvolvido com base nos códigos fontes do  C3270  e  X3270
+dnl (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
+dnl aplicativos mainframe. Registro no INPI sob o nome G3270.
+dnl
+dnl Copyright (C) <2008> <Banco do Brasil S.A.>
+dnl
+dnl Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
+dnl os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
+dnl Free Software Foundation.
+dnl
+dnl Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
+dnl GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
+dnl A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
+dnl obter mais detalhes.
+dnl
+dnl Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
+dnl programa;  se  não, escreva para a Free Software Foundation, Inc., 59 Temple
+dnl Place, Suite 330, Boston, MA, 02111-1307, USA
+dnl
+dnl Contatos:
+dnl
+dnl perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
+dnl erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
+dnl
 
 dnl Process this file with autoconf to produce a configure script.
 
 dnl The minimum version of autoconf required.
-AC_PREREQ(2.59)
+AC_PREREQ(2.61)
 
 dnl Initialise automake with the package name, version and
 dnl bug-reporting address.
-AC_INIT([pw3270-java], [5.1], [perry.werneck@gmail.com])
+AC_INIT([java-tn3270], [5.2], [perry.werneck@gmail.com])
 
 dnl Place auxilliary scripts here.
 AC_CONFIG_AUX_DIR([scripts])
@@ -23,71 +48,19 @@ AM_INIT_AUTOMAKE
 dnl Check for iconv
 AM_ICONV
 
+LT_INIT
+AC_CONFIG_MACRO_DIRS([m4])
+
+dnl Set gettext version
+AM_GNU_GETTEXT_VERSION([0.14])
+
 dnl Checks for programs.
-AC_PROG_CXX
 AC_PROG_CC
+AC_PROG_CXX
 AC_PROG_SED
 AC_PROG_LN_S
 
 AC_LANG([C++])
-
-dnl ---------------------------------------------------------------------------
-dnl Check for OS specifics
-dnl ---------------------------------------------------------------------------
-
-case "$host" in
-	*-mingw32)
-
-		EXEEXT=".exe"
-		DLLPREFIX=""
-		DLLEXT=".dll"
-
-		CXXFLAGS="$CXXFLAGS -Wall -Werror -D_WIN32_WINNT=0x0600"
-		LIBS="$LIBS -lws2_32 -lntdll -lwtsapi32"
-		JNILDFLAGS="-static-libstdc++ -static-libgcc -Wl,--add-stdcall-alias"
-
-		AC_CONFIG_FILES(win/makepackage.sh)
-
-		;;
-
- 	s390x-*)
-
-		EXEEXT=""
-		DLLPREFIX="lib"
-		DLLEXT=".so"
-
-		CXXFLAGS="$CXXFLAGS -pthread -Wall"
-		LIBS="-Wl,--no-undefined -pthread $LIBS"
-		JNILDFLAGS=""
-		;;
-
-
- 	*)
-
-		EXEEXT=""
-		DLLPREFIX="lib"
-		DLLEXT=".so"
-
-		CXXFLAGS="$CXXFLAGS -Wall -Werror"
-		LIBS="-pthread $LIBS"
-		JNILDFLAGS=""
-
-esac
-
-AC_SUBST(JNILDFLAGS)
-
-
-dnl ---------------------------------------------------------------------------
-dnl Check for other programs
-dnl ---------------------------------------------------------------------------
-AC_PATH_TOOL([STRIP], [strip])
-AC_PATH_TOOL([RPMBUILD], [rpmbuild], [no])
-AC_PATH_TOOL([MAKENSIS], [makensis], [no])
-AC_PATH_TOOL([VALGRIND], [valgrind], [no])
-AC_PATH_TOOL([WINDRES], [windres], [no])
-AC_PATH_TOOL([ZIP], [zip], [zip])
-AC_PATH_TOOL([FIND], [find], [find])
-AC_PATH_TOOL([AR], [ar], [ar])
 
 dnl ---------------------------------------------------------------------------
 dnl Version info
@@ -96,252 +69,147 @@ dnl ---------------------------------------------------------------------------
 app_vrs_major=$(echo $VERSION | cut -d. -f1)
 app_vrs_minor=$(echo $VERSION | cut -d. -f2)
 
-AC_SUBST(PACKAGE_MAJOR_VERSION,$app_vrs_major)
-AC_SUBST(PACKAGE_MINOR_VERSION,$app_vrs_minor)
-
-AC_DEFINE_UNQUOTED(PACKAGE_MAJOR_VERSION, $app_vrs_major)
-AC_DEFINE_UNQUOTED(PACKAGE_MINOR_VERSION, $app_vrs_minor)
+AC_DEFINE_UNQUOTED(PACKAGE_MAJOR_VERSION, $app_vrs_major, [The library major version])
+AC_DEFINE_UNQUOTED(PACKAGE_MINOR_VERSION, $app_vrs_minor, [The library minor version])
 
 AC_SUBST(PACKAGE_MAJOR_VERSION,$app_vrs_major)
 AC_SUBST(PACKAGE_MINOR_VERSION,$app_vrs_minor)
 
-app_cv_description="Java binding for pw3270/lib3270"
+AC_ARG_WITH([release], [AS_HELP_STRING([--with-release], [Set release])], [ app_cv_release="$withval" ],[ app_cv_release="`date +%-y`.`date +%-m`.`date +%-d`" ])
 
-AC_DEFINE_UNQUOTED(PACKAGE_DESCRIPTION,"$app_cv_description")
-AC_SUBST(PACKAGE_DESCRIPTION,"$app_cv_description")
+app_rls_major=$(echo $app_cv_release.0.0 | cut -d. -f1)
+app_rls_minor=$(echo $app_cv_release.0.0 | cut -d. -f2)
+
+AC_DEFINE_UNQUOTED(PACKAGE_MAJOR_RELEASE, $app_rls_major, [The library major release])
+AC_DEFINE_UNQUOTED(PACKAGE_MINOR_RELEASE, $app_rls_minor, [The library minor release])
+AC_DEFINE_UNQUOTED(PACKAGE_RELEASE, "$app_cv_release", [The package release])
+
+AC_SUBST(PACKAGE_RELEASE,"$app_cv_release")
+AC_SUBST(PACKAGE_MAJOR_RELEASE,$app_rls_major)
+AC_SUBST(PACKAGE_MINOR_RELEASE,$app_rls_minor)
 
 dnl ---------------------------------------------------------------------------
-dnl Check for JDK
+dnl Check for OS specifics
 dnl ---------------------------------------------------------------------------
 
-AC_ARG_VAR([JAVA_HOME], [JAVA home directory])
-AC_ARG_VAR([JDK_HOME], [JDK home directory])
-AC_ARG_VAR([JRE_HOME], [JRE home directory])
+case "$host" in
+	*-mingw32|*-pc-msys)
+		app_cv_osname="windows"
 
-AC_ARG_WITH([jnidir], [AS_HELP_STRING([--with-jnidir], [Directory for JNI libraries])], [ jnidir="$withval" ],[ jnidir=\$"{libdir}/java" ])
-AC_ARG_WITH([javadocdir], [AS_HELP_STRING([--with-javadocdir], [Directory for javadoc files])], [ javadocdir="$withval" ],[ javadocdir=\$"{datadir}/javadoc" ])
+		CFLAGS="$CFLAGS -pthread -D_WIN32_WINNT=0x0600"
+		CXXFLAGS="$CXXFLAGS -pthread -D_WIN32_WINNT=0x0600"
+		LDFLAGS="$LDFLAGS -static-libgcc -static-libstdc++ -Wl,--add-stdcall-alias,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive,-Bdynamic,--output-def,\$(@D)/\$(LIBNAME).def"
+		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32"
+		DLLEXT=".dll"
 
-AC_ARG_WITH([jvmjardir], [AS_HELP_STRING([--with-jvmjardir], [Directory for JAR files])], [ jvmjardir="$withval" ],[ jvmjardir=\$"{libdir}/jvm-exports" ])
+		app_win32_revision=$(date +%-y.%-m.%-d.%-H)
+		AC_SUBST(WIN32_VERSION,$app_win32_revision)
 
-AC_ARG_ENABLE([java],[AS_HELP_STRING([--disable-java], [Disable java integration])],[ app_cv_java="$enableval" ],[ app_cv_java="yes" ])
+		app_win32_file_version=$(date +%-y,%-m,%-d,%-H)
+		AC_SUBST(WIN32_FILE_VERSION,$app_win32_file_version)
 
-if test "$app_cv_java" = "yes" ; then
+		AC_CONFIG_FILES(src/native/os/windows/resources.rc)
+		;;
 
-	# Check for JAVA_HOME
-	if test "_$JAVA_HOME" = "_" ; then
-		JAVA_HOME=$libdir/jvm/java
-	fi
-
-	# Check for JDK_HOME
-	if test "_$JDK_HOME" = "_" ; then
-		JDK_HOME=$JAVA_HOME
-	fi
-
-	# Check for JRE_HOME
-	if test "_$JRE_HOME" = "_" ; then
-		JRE_HOME=$JAVA_HOME/jre
-	fi
-fi
-
-if test "$app_cv_java" = "yes" ; then
-
-	AC_PATH_TOOL([JAVA], [java], [no], [$JDK_HOME/bin:$JRE_HOME/bin:$PATH])
-	if test "$JAVA" = "no" ; then
-		app_cv_java="no"
-	fi
-
-	AC_PATH_TOOL([JAVAC], [javac], [no], [$JDK_HOME/bin:$JRE_HOME/bin:$PATH])
-	if test "$JAVAC" = "no" ; then
-		app_cv_java="no"
-	fi
-
-	AC_PATH_TOOL([JAVAH], [javah], [no], [$JDK_HOME/bin:$JRE_HOME/bin:$PATH])
-	if test "$JAVAH" = "no" ; then
-		app_cv_java="no"
-	fi
-
-	AC_PATH_TOOL([JAR], [jar], [no], [$JDK_HOME/bin:$JRE_HOME/bin:$PATH])
-	if test "$JAVA" = "no" ; then
-		app_cv_java="no"
-	fi
-
-	AC_PATH_TOOL([JAVADOC], [javadoc], [no], [$JDK_HOME/bin:$JRE_HOME/bin:$PATH])
-	if test "$JAVADOC" = "no" ; then
-		app_cv_java="no"
-	fi
-
-fi
-
-# Set JVM arch
-case $host_cpu in
-
-x86_64)
-	jvm_arch=amd64
-	;;
-
-i?86)
-	jvm_arch=i386
-	;;
-powerpc64le)
-	jvm_arch=ppc64le
-	;;
-powerpc64)
-	jvm_arch=ppc64
-	;;
-
-*)
-	jvm_arch="$host_cpu"
-	;;
+ 	*)
+		CFLAGS="$CFLAGS -pthread"
+		CXXFLAGS="$CXXFLAGS -pthread"
+		LDFLAGS="$LDFLAGS -pthread"
+		app_cv_osname="linux"
+		LOGDIR="/var/log"
+		DLLEXT=".so"
+dnl     AC_SUBST(SONAME,py3270.so.$app_vrs_major.$app_vrs_minor)
 
 esac
 
-# JVMDIR
-if test "_$JVMDIR" = "_" ; then
+dnl ---------------------------------------------------------------------------
+dnl Check for other programs
+dnl ---------------------------------------------------------------------------
+
+AC_PATH_TOOL([AR], [ar], [ar])
+AC_PATH_TOOL([WINDRES], [windres], [no])
+AC_PATH_TOOL([VALGRIND], [valgrind], [no])
+AC_PATH_TOOL([ZIP], [zip], [zip])
+
+PKG_CHECK_EXISTS
+
+AC_ARG_WITH([product-name], [AS_HELP_STRING([--with-product-name], [Set product name])], [ app_cv_product="$withval" ],[ app_cv_product=`$PKG_CONFIG --variable=product_name lib3270` ])
+AC_DEFINE_UNQUOTED(PRODUCT_NAME, $app_cv_product,[The product name])
+AC_SUBST(PRODUCT_NAME,$app_cv_product)
+
+dnl ---------------------------------------------------------------------------
+dnl Check for IPC3270
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_WITH([static-ipc3270],
+        [AS_HELP_STRING([--with-static-ipc3270], [Uses static version of ipc3270])],
+[
+	app_cv_static_ipc3270=$withval
+],[
 
 	case "$host" in
-		*-mingw32)
-			jniinc=$JDK_HOME/include/win32
-			JVMDIR="\$(JRE_HOME)/bin"
-			;;
-
-		*-apple-*)
-			jniinc=$JDK_HOME/include/apple
-			JVMDIR="\$(JRE_HOME)/lib/$jvm_arch/server"
-			;;
-
-		*)
-			jniinc=$JDK_HOME/include/linux
-			JVMDIR="\$(JRE_HOME)/lib/$jvm_arch/server"
-	esac
-
-fi
-
-
-# Java link options depends on OS
-case "$host" in
-	*-mingw32)
-
-		if test -e "$JRE_HOME/bin/client/jvm.dll"; then
-			AC_MSG_NOTICE(Found $JRE_HOME/bin/client/jvm.dll)
-			jvm_libs="-L\"\$(JRE_HOME)/bin/client\" -ljvm"
-		elif test -e "$JRE_HOME/bin/server/jvm.dll"; then
-			AC_MSG_NOTICE(Found $JRE_HOME/bin/server/jvm.dll)
-			jvm_libs="-L\"\$(JRE_HOME)/bin/server\" -ljvm"
-		else
-			AC_MSG_NOTICE([Can't find jvm.dll.])
-			app_cv_java="no"
-		fi
-		;;
-
-	*-apple-*)
-		jvm_libs="-L\$(JVMDIR) -Wl,-rpath,\$(JVMDIR) -ljvm"
+	*-mingw32|*-pc-msys)
+		app_cv_static_ipc3270="yes"
 		;;
 
 	*)
-		jvm_libs="-L\$(JVMDIR) -Wl,-rpath,\$(JVMDIR) -ljvm"
-esac
+		app_cv_static_ipc3270="no"
 
-if test -d "$jniinc"; then
-	AC_MSG_NOTICE([Found $jniinc.])
-else
-	AC_MSG_NOTICE([Can't find $jniinc.])
-	app_cv_java="no"
-fi
+	esac
 
-if test "$app_cv_java" = "yes" ; then
-
-	AC_MSG_NOTICE([jdk is present and enabled.])
-
-else
-
-	AC_MSG_ERROR([jdk is NOT present or disabled.])
-
-fi
-
-CXXFLAGS="$CXXFLAGS -I$JDK_HOME/include -I$jniinc"
-
-AC_SUBST(JVM_LIBS,$jvm_libs)
-
-AC_SUBST(JAVAC)
-AC_SUBST(JAVAH)
-AC_SUBST(JAVADOC)
-AC_SUBST(JVMDIR)
-AC_SUBST(jnidir)
-AC_SUBST(jvmjardir)
-AC_SUBST(javadocdir)
-AC_SUBST(JAR)
-AC_SUBST(jvm_arch)
-AC_SUBST(JDK_HOME)
-AC_SUBST(JRE_HOME)
-
-dnl ---------------------------------------------------------------------------
-dnl Check for GTK
-dnl ---------------------------------------------------------------------------
-
-PKG_CHECK_MODULES( [GTK], [gtk+-3.0], AC_DEFINE(HAVE_GTK))
-
-AC_SUBST(GTK_LIBS)
-AC_SUBST(GTK_CFLAGS)
-AC_SUBST(GTK_VERSION,`$PKG_CONFIG --modversion gtk+-3.0`)
-
-dnl ---------------------------------------------------------------------------
-dnl Check for lib3270
-dnl ---------------------------------------------------------------------------
-
-PKG_CHECK_MODULES( [LIB3270], [lib3270], AC_DEFINE(HAVE_LIB3270), AC_MSG_ERROR([Can't find lib3270 devel.]))
-AC_SUBST(LIB3270_LIBS)
-AC_SUBST(LIB3270_CFLAGS)
-
-dnl ---------------------------------------------------------------------------
-dnl Check for PW3270
-dnl ---------------------------------------------------------------------------
-
-PKG_CHECK_MODULES( [PW3270], [pw3270], AC_DEFINE(HAVE_PW3270), AC_MSG_ERROR([Can't find pw3270 devel.]))
-AC_SUBST(PW3270_LIBS)
-AC_SUBST(PW3270_CFLAGS)
-
-dnl ---------------------------------------------------------------------------
-dnl Check for integer types & library functions
-dnl ---------------------------------------------------------------------------
-
-AC_CHECK_TYPES([pid_t, uint8_t, uint16_t, uint32_t, int32_t, uint64_t, int64_t])
-AC_CHECK_FUNCS(srandom random getopt asprintf vasprintf)
-AC_CHECK_FUNCS(getaddrinfo sendfile poll eventfd statfs64)
-
-dnl ---------------------------------------------------------------------------
-dnl Check for libintl
-dnl ---------------------------------------------------------------------------
-
-AC_PATH_TOOL([XGETTEXT], [xgettext], [no])
-AC_PATH_TOOL([MSGCAT], [msgcat], [no])
-AC_PATH_TOOL([MSGINIT], [msginit], [no])
-AC_PATH_TOOL([MSGMERGE], [msgmerge], [no])
-AC_PATH_TOOL([MSGFMT], [msgfmt], [no])
-
-AC_CHECK_HEADER(libintl.h, [
-	AC_DEFINE(HAVE_LIBINTL, 1)
 ])
 
-dnl ---------------------------------------------------------------------------
-dnl Check for C++ 2011 support
-dnl ---------------------------------------------------------------------------
-AC_DEFUN([AX_CHECK_COMPILE_FLAG],
-[AC_PREREQ(2.59)dnl for _AC_LANG_PREFIX
-AS_VAR_PUSHDEF([CACHEVAR],[ax_cv_check_[]_AC_LANG_ABBREV[]flags_$4_$1])dnl
-AC_CACHE_CHECK([whether _AC_LANG compiler accepts $1], CACHEVAR, [
-  ax_check_save_flags=$[]_AC_LANG_PREFIX[]FLAGS
-  _AC_LANG_PREFIX[]FLAGS="$[]_AC_LANG_PREFIX[]FLAGS $4 $1"
-  AC_COMPILE_IFELSE([AC_LANG_PROGRAM()],
-    [AS_VAR_SET(CACHEVAR,[yes])],
-    [AS_VAR_SET(CACHEVAR,[no])])
-  _AC_LANG_PREFIX[]FLAGS=$ax_check_save_flags])
-AS_IF([test x"AS_VAR_GET(CACHEVAR)" = xyes],
-  [m4_default([$2], :)],
-  [m4_default([$3], :)])
-AS_VAR_POPDEF([CACHEVAR])dnl
-])dnl AX_CHECK_COMPILE_FLAGS
+if test "$app_cv_static_ipc3270" == "yes"; then
 
-AX_CHECK_COMPILE_FLAG([-std=gnu++11], [CXXFLAGS="$CXXFLAGS -std=gnu++11"])
+	PKG_CHECK_MODULES( [IPC3270], [libipc3270-static], AC_DEFINE(STATIC_IPC3270,1,[Using static ipc3270]), AC_MSG_ERROR([IPC3270 not present.]))
+
+else
+
+	PKG_CHECK_MODULES( [IPC3270], [libipc3270], AC_DEFINE(USING_SHARED_IPC3270,1,[Using shared ipc3270]), AC_MSG_ERROR([IPC3270 not present.]))
+
+
+fi
+
+AC_SUBST(IPC3270_LIBS)
+AC_SUBST(IPC3270_CFLAGS)
+
+dnl ---------------------------------------------------------------------------
+dnl Check for Java
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_WITH([jnidir], [AS_HELP_STRING([--with-jnidir], [Directory for JNI libraries])], [ jnidir="$withval" ],[ jnidir=\$"{libdir}/java" ])
+AC_SUBST(jnidir)
+
+AC_ARG_WITH([jvmjardir], [AS_HELP_STRING([--with-jvmjardir], [Directory for JAR files])], [ jvmjardir="$withval" ],[ jvmjardir=\$"{libdir}/jvm-exports" ])
+AC_SUBST(jvmjardir)
+
+AC_ARG_WITH([javadocdir], [AS_HELP_STRING([--with-javadocdir], [Directory for javadoc files])], [ javadocdir="$withval" ],[ javadocdir=\$"{datadir}/javadoc" ])
+AC_SUBST(javadocdir)
+
+AC_PATH_TOOL([JAVAC], [javac], [no])
+AC_PATH_TOOL([JAR], [jar], [no])
+AC_PATH_TOOL([JAVADOC], [javadoc], [no])
+
+AC_ARG_VAR([JDK_HOME], [JDK home directory])
+
+if test "$JDK_HOME" == ""; then
+	JDK_HOME="$(readlink -f /usr/bin/javac | sed "s:bin/javac::")"
+fi
+
+if test "$JDK_HOME" == ""; then
+	AC_MSG_ERROR([JDK_HOME is not defined])
+fi
+
+case "$host" in
+	*-mingw32|*-pc-msys)
+		AC_SUBST(JAVA_CFLAGS,"-I\"$JDK_HOME/include/\" -I\"$JDK_HOME/include/win32\"")
+		;;
+
+ 	*)
+		AC_SUBST(JAVA_CFLAGS,"-I$JDK_HOME/include/ -I$JDK_HOME/include/linux")
+
+esac
+
 
 dnl ---------------------------------------------------------------------------
 dnl Check for ELF symbol visibility support
@@ -398,75 +266,66 @@ if test x$g_have_gnuc_visibility = xyes; then
 fi
 
 dnl ---------------------------------------------------------------------------
-dnl Check for compiler visibility flag
-dnl ---------------------------------------------------------------------------
-AC_MSG_CHECKING(whether $CC accepts -fvisibility=hidden)
-AC_CACHE_VAL(app_cv_fvisibility_ok,
-[ac_save_cc="$CC"
-CC="$CC -fvisibility=hidden"
-AC_TRY_RUN([int main() { return 0; }],
-  app_cv_fvisibility_ok=yes,
-  app_cv_fvisibility_ok=no,
-  app_cv_fvisibility_ok=no)
-CC="$ac_save_cc"])
-AC_MSG_RESULT($app_cv_fvisibility_ok)
-if test $app_cv_fvisibility_ok = yes; then
-  CXXFLAGS="$CXXFLAGS -fvisibility=hidden"
-fi
-
-dnl ---------------------------------------------------------------------------
 dnl Check for pic
 dnl ---------------------------------------------------------------------------
+
 AC_ARG_ENABLE([pic],
 	[AS_HELP_STRING([--disable-pic], [disable support for PIC libraries (required to compile on 64bits)])],
 [
 	app_cv_pic="$enableval"
 ],[
 
-	case "$host" in
-		*-mingw32)
-			app_cv_pic="no"
-			;;
+	case "$host_cpu" in
+	x86_64)
+		app_cv_pic="yes"
+		;;
 
- 	s390x-*)
-			app_cv_pic="yes"
-			;;
+	aarch64)
+		app_cv_pic="yes"
+		;;
 
 	*)
-		if test "$host_cpu" = "x86_64"; then
-			app_cv_pic="yes"
-		else
-			app_cv_pic="no"
-		fi
+		app_cv_pic="no"
 	esac
+
 ])
 
 if test "$app_cv_pic" == "yes"; then
+	CFLAGS="$CFLAGS -fPIC"
 	CXXFLAGS="$CXXFLAGS -fPIC"
 fi
 
 dnl ---------------------------------------------------------------------------
-dnl Output config
+dnl Configure program options
 dnl ---------------------------------------------------------------------------
 
-AC_SUBST(BASEDIR,$ac_pwd)
-AC_SUBST(LIBS)
-AC_SUBST(EXEEXT)
-AC_SUBST(DLLEXT)
-AC_SUBST(DLLPREFIX)
+app_cv_description="Java bindings for lib3270/pw3270"
 
+AC_SUBST(PACKAGE_DESCRIPTION,"$app_cv_description")
+AC_DEFINE_UNQUOTED(PACKAGE_DESCRIPTION,"$app_cv_description",[ The package description ])
+
+AC_SUBST(OSNAME,$app_cv_osname)
+AC_SUBST(LIBS)
+AC_SUBST(DLLEXT)
+
+CFLAGS="$CFLAGS -DHAVE_CONFIG_H"
+CXXFLAGS="$CXXFLAGS -DHAVE_CONFIG_H"
+
+AC_SUBST(CFLAGS)
+AC_SUBST(CXXFLAGS)
+AC_SUBST(LDFLAGS)
+AC_SUBST(BASEDIR,$ac_pwd)
 
 dnl ---------------------------------------------------------------------------
 dnl Configure which files to generate.
 dnl ---------------------------------------------------------------------------
 
 AC_CONFIG_FILES(Makefile)
-AC_CONFIG_FILES(src/jni/Makefile)
-AC_CONFIG_FILES(src/plugin/Makefile)
 
 dnl ---------------------------------------------------------------------------
 dnl Output the generated config.status script.
 dnl ---------------------------------------------------------------------------
 
 AC_OUTPUT
+
 

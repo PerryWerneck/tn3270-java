@@ -1,24 +1,29 @@
-Source: pw3270-plugin-java
+Source: tn3270-java
 Section: unknown
 Priority: optional
 Maintainer: Perry Werneck <perry.werneck@gmail.com>
-Build-Depends: debhelper (>= 7), autotools-dev, autoconf, gettext, libgtk-3-dev, pw3270-dev, default-jdk
+Build-Depends: debhelper (>= 7), autotools-dev, autoconf, automake, gettext, libssl-dev, pkg-config, libipc3270-dev, default-jdk
 
-Package: pw3270-plugin-java
+Package: tn3270-java
 Architecture: any
-Depends: ${misc:Depends}, pw3270, pw3270-java (= ${binary:Version})
-Description: Java support for pw3270.
- This package provides a plugin allowing calling of java classes from pw3270 application.
+Section: libs
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Recommends: pw3270-plugin-ipc (= ${binary:Version})
+Provides: tn3270-java (= ${binary:Version})
+Description: TN3270 Access library.
+ TN3270 access library originally designed as part of the pw3270 application.
 
-Package: pw3270-java
+Package: tn3270-javadoc
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, lib3270
-Description: Java class for acessing 3270 hosts.
- This package provides a Java class for acessing 3270 hosts.
+Provides: tn3270-javadoc (= ${binary:Version})
+Section: libdevel
+Depends: ${misc:Depends}, tn3270-java (= ${binary:Version})
+Description: TN3270 Access library javadoc.
+ TN3270 access library originally designed as part of the pw3270 application.
 
-Package: pw3270-javadoc
+Package: tn3270-java-dbg
 Architecture: any
-Depends: ${misc:Depends}, pw3270-java (= ${binary:Version})
-Description: Javadoc for pw3270.
- API Documentation for pw3270.
+Depends: tn3270-java (= ${binary:Version}), ${misc:Depends}
+Description: Debugging symbols for tn3270-java
+ This package contains the debugging symbols for tn3270-java.
 

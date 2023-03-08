@@ -8,6 +8,9 @@ export DH_VERBOSE=1
 # This is the debhelper compatibility version to use.
 export DH_COMPAT=9
 
+# Name of the package
+PACKAGE_NAME=tn3270-java
+
 CFLAGS = -g
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 CFLAGS += -O0
@@ -19,24 +22,10 @@ build: build-stamp
 build-stamp:
 	dh_testdir
 
-	set
-    
-	echo "m4_define([SVN_REVISION], 0)" > revision.m4
-	echo "m4_define([SVN_URL], http://softwarepublico.gov.br/gitlab/pw3270/principal.git)" >> revision.m4
-	echo "m4_define([APP_LEVEL], 0)" >> revision.m4
-
 	# Add here commands to compile the package.
-	aclocal
-	autoconf
-
-	./configure \
-		JRE_HOME="`readlink -f /usr/bin/java | sed "s@bin/java@@"`" \
-		JDK_HOME="`readlink -f /usr/bin/javac | sed "s@bin/javac@@"`" \
-
-
-	rm -f debian/*.install
-	make clean
-	make Release
+	NOCONFIGURE=1 ./autogen.sh
+	./configure --prefix=/usr
+	make all
 	# --- end custom part for compiling
 
 	touch build-stamp
@@ -58,22 +47,14 @@ install: build
 	dh_clean -k
 	dh_installdirs
 
-	# Install Java plugin
-	make DESTDIR=$(PWD)/debian/pw3270-plugin-java BINDIR=../../.bin install-plugin
+	# Build package
+	make all
 
-	# Install Java extension
-	make DESTDIR=$(PWD)/debian/pw3270-java BINDIR=../../.bin install-jni
+	# Install tn3270-java
+	make DESTDIR=$(PWD)/debian/tn3270-java install-linux
 
-	# Install Javadoc
-	make DESTDIR=$(PWD)/debian/pw3270-javadoc BINDIR=../../.bin install-doc
-  
-	# Create updated file lists
-	find $(PWD)/debian/pw3270-plugin-java -type f | sed -e "s@^$(PWD)/debian/pw3270-plugin-java/@/@g" > $(PWD)/debian/pw3270-plugin-java.install
-
-	find $(PWD)/debian/pw3270-plugin-javadoc -type f | sed -e "s@^$(PWD)/debian/pw3270-plugin-java/@/@g" > $(PWD)/debian/pw3270-javadoc.install
-
-	find $(PWD)/debian/pw3270-java -type f | sed -e "s@^$(PWD)/debian/pw3270-java/@/@g" > $(PWD)/debian/pw3270-java.install
-
+	# Install javadoc
+	make DESTDIR=$(PWD)/debian/tn3270-javadoc install-javadoc
 
 	# --- end custom part for installing
 
@@ -86,7 +67,7 @@ binary-arch: build install
 	dh_testdir
 	dh_testroot
 #	dh_installdebconf
-	dh_installdocs AUTHORS LICENSE
+	dh_installdocs AUTHORS LICENSE README.md
 	dh_installexamples
 	dh_installmenu
 #	dh_installlogrotate
@@ -100,7 +81,7 @@ binary-arch: build install
 #	dh_undocumented
 	dh_installchangelogs
 	dh_link
-	dh_strip
+	dh_strip --dbg-package=tn3270-java-dbg
 	dh_compress
 	dh_fixperms
 	dh_makeshlibs

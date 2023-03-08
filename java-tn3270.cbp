@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="java-tn3270" />
+		<Option makefile_is_custom="1" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output=".bin/Debug/JNI module for pw3270/lib3270" prefix_auto="1" extension_auto="1" />
+				<Option object_output=".obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output=".bin/Release/JNI module for pw3270/lib3270" prefix_auto="1" extension_auto="1" />
+				<Option object_output=".obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="src/Terminal.java" />
+		<Unit filename="src/include/config.h" />
+		<Unit filename="src/include/jni3270.h" />
+		<Unit filename="src/include/private/br_app_pw3270_Terminal.h" />
+		<Unit filename="src/include/private/br_app_pw3270_Terminal_Action.h" />
+		<Unit filename="src/native/action.cc" />
+		<Unit filename="src/native/actions.cc" />
+		<Unit filename="src/native/connect.cc" />
+		<Unit filename="src/native/get.cc" />
+		<Unit filename="src/native/gettext.cc" />
+		<Unit filename="src/native/handler.cc" />
+		<Unit filename="src/native/info.cc" />
+		<Unit filename="src/native/os/windows/init.cc" />
+		<Unit filename="src/native/set.cc" />
+		<Unit filename="src/native/states.cc" />
+		<Unit filename="src/native/tools.cc" />
+		<Unit filename="src/native/wait.cc" />
+		<Unit filename="src/native/workers.cc" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
