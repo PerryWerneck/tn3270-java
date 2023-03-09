@@ -22,7 +22,13 @@ rm -fr ./.build
 mkdir -p ./.build
 
 echo "-----------------------------------------"
-echo "RUNNER_TOOL_CACHE=${RUNNER_TOOL_CACHE}"
+ls -l "${JDK_HOME}/bin"
+
+if [ -d "${JDK_HOME}/bin" ]; then
+	PATH="${PATH}:${JDK_HOME}/bin"
+	export PATH
+fi
+
 set
 
 #
