@@ -26,6 +26,19 @@ if [ -d "${JDK_HOME}/bin" ]; then
 	export PATH
 fi
 
+if [ -d "${JAVA_HOME}/bin" ]; then
+	PATH="${PATH}:${JAVA_HOME}/bin"
+	export PATH
+fi
+
+echo "javac=[$(which javac)]"
+
+which javac
+if [ "$?" != "0" ]; then
+	echo "Cant find javac"
+	exit -1;
+fi
+
 #
 # Build LIB3270
 #
