@@ -26,10 +26,6 @@ if [ -d "${JDK_HOME}/bin" ]; then
 	export PATH
 fi
 
-set
-
-ls -l "${JDK_HOME}/bin"
-
 #
 # Build LIB3270
 #
