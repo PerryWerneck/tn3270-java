@@ -186,17 +186,17 @@ AC_SUBST(jvmjardir)
 AC_ARG_WITH([javadocdir], [AS_HELP_STRING([--with-javadocdir], [Directory for javadoc files])], [ javadocdir="$withval" ],[ javadocdir=\$"{datadir}/javadoc" ])
 AC_SUBST(javadocdir)
 
-AC_PATH_TOOL([JAVAC], [javac], [no], [$JDK_HOME/bin$PATH_SEPARATOR$JRE_HOME/bin$PATH_SEPARATOR$PATH$PATH_SEPARATOR$libdir/jvm/java/bin] )
+AC_PATH_TOOL([JAVAC], [javac], [no], [$JDK_HOME/bin$PATH_SEPARATOR$JRE_HOME/bin$PATH_SEPARATOR$JAVA_HOME/bin$PATH_SEPARATOR$PATH$PATH_SEPARATOR$libdir/jvm/java/bin] )
 if test x$JAVAC = xno; then
        AC_MSG_ERROR("javac not found")
 fi
 
-AC_PATH_TOOL([JAR], [jar], [no], [$JDK_HOME/bin$PATH_SEPARATOR$JRE_HOME/bin$PATH_SEPARATOR$PATH$PATH_SEPARATOR$libdir/jvm/java/bin] )
+AC_PATH_TOOL([JAR], [jar], [no], [$JDK_HOME/bin$PATH_SEPARATOR$JRE_HOME/bin$PATH_SEPARATOR$JAVA_HOME/bin$PATH_SEPARATOR$PATH$PATH_SEPARATOR$libdir/jvm/java/bin] )
 if test x$JAR = xno; then
        AC_MSG_ERROR("jar not found")
 fi
 
-AC_PATH_TOOL([JAVADOC], [javadoc], [no], [$JDK_HOME/bin$PATH_SEPARATOR$JRE_HOME/bin$PATH_SEPARATOR$PATH$PATH_SEPARATOR$libdir/jvm/java/bin] )
+AC_PATH_TOOL([JAVADOC], [javadoc], [no], [$JDK_HOME/bin$PATH_SEPARATOR$JRE_HOME/bin$PATH_SEPARATOR$JAVA_HOME/bin$PATH_SEPARATOR$PATH$PATH_SEPARATOR$libdir/jvm/java/bin] )
 if test x$JAVADOC = xno; then
        AC_MSG_ERROR("javadoc not found")
 fi
