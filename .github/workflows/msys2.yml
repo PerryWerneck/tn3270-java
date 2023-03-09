@@ -24,9 +24,9 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '19'
-          distribution: 'adopt'
+          distribution: 'temurin'
           architecture: x64
       - name: CI-Build
         run: |
-          ./win/ci-build.sh
+          JDK_HOME="/c/hostedtoolcache/windows/Java_Temurin-Hotspot_jdk/11.0.18-10/x64" ./win/ci-build.sh
 
