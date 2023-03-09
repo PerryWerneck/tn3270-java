@@ -21,6 +21,15 @@ cd ${myDIR}
 rm -fr ./.build
 mkdir -p ./.build
 
+if [ -d "${JDK_HOME}/bin" ]; then
+	PATH="${PATH}:${JDK_HOME}/bin"
+	export PATH
+fi
+
+set
+
+ls -l "${JDK_HOME}/bin"
+
 #
 # Build LIB3270
 #
