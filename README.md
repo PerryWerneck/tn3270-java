@@ -11,6 +11,10 @@ Java class for interaction with pw3270 or lib3270.
 
 [<img src="https://raw.githubusercontent.com/PerryWerneck/pw3270/master/branding/obs-badge-en.svg" alt="Download from open build service" height="80px">](https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=tn3270-java)
 
+### Windows
+
+The updated jar file for window can be found on [DropBox](https://www.dropbox.com/s/o14a5mjm02yexig/java-tn3270-5.2.23.3.9-x86_64.zip?dl=0)
+
 ## Building for Linux
 
 ### Requirements
