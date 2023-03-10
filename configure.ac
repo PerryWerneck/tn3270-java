@@ -183,7 +183,7 @@ AC_SUBST(jnidir)
 AC_ARG_WITH([jvmjardir], [AS_HELP_STRING([--with-jvmjardir], [Directory for JAR files])], [ jvmjardir="$withval" ],[ jvmjardir=\$"{libdir}/jvm-exports" ])
 AC_SUBST(jvmjardir)
 
-AC_ARG_WITH([javadocdir], [AS_HELP_STRING([--with-javadocdir], [Directory for javadoc files])], [ javadocdir="$withval" ],[ javadocdir=\$"{datadir}/javadoc" ])
+AC_ARG_WITH([javadocdir], [AS_HELP_STRING([--with-javadocdir], [Directory for javadoc files])], [ javadocdir="$withval" ],[ javadocdir=\$"{datarootdir}/javadoc" ])
 AC_SUBST(javadocdir)
 
 AC_PATH_TOOL([JAVAC], [javac], [no], [$JDK_HOME/bin$PATH_SEPARATOR$JRE_HOME/bin$PATH_SEPARATOR$JAVA_HOME/bin$PATH_SEPARATOR$PATH$PATH_SEPARATOR$libdir/jvm/java/bin] )

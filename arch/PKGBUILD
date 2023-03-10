@@ -9,7 +9,7 @@ url="https://github.com/PerryWerneck/tn3270-java"
 arch=(i686 x86_64)
 license=(GPL)
 depends=()
-makedepends=(autoconf autoconf-archive automake make libtool gzip openssl dbus-glib lib3270 libipc3270)
+makedepends=(autoconf autoconf-archive automake make libtool gzip openssl dbus-glib lib3270 libipc3270 jdk-openjdk)
 checkdepends=()
 
 #groups=(gnome)

@@ -198,10 +198,10 @@ install: \
 install-javadoc: \
 	src/Terminal.java
 
-	@$(MKDIR) $(DESTDIR)$(javadocdir)
+	$(MKDIR) $(DESTDIR)$(javadocdir)
 	@"$(JAVADOC)" \
 		-encoding utf-8 \
-		-d $(DESTDIR)$(javadocdir) \
+		-d "$(DESTDIR)$(javadocdir)/tn3270" \
 		$^
 		
 doc: \
@@ -252,7 +252,7 @@ install-linux: \
 	@$(MKDIR) $(DESTDIR)$(jvmjardir)
 	@$(INSTALL_DATA) \
 		$(BINDIR)/$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar \
-		$(DESTDIR)$(jnidir)/$(PACKAGE_NAME)"-"$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar
+		$(DESTDIR)$(jvmjardir)/$(PACKAGE_NAME)"-"$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar
 
 	@$(MKDIR) $(DESTDIR)$(jnidir)
 	@$(INSTALL_PROGRAM) \
@@ -264,10 +264,9 @@ install-windows: \
 	$(BINDIR/$(LIBNAME).jar
 
 	@$(MKDIR) $(DESTDIR)$(jvmjardir)
-	@$(MKDIR) $(DESTDIR)$(jvmjardir)
 	@$(INSTALL_DATA) \
 		$(BINDIR)/$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar \
-		$(DESTDIR)$(jnidir)/$(PACKAGE_NAME)"-"$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar
+		$(DESTDIR)$(jvmjardir)/$(PACKAGE_NAME)"-"$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar
 
 	@$(MKDIR) $(DESTDIR)$(jnidir)
 	@$(INSTALL_PROGRAM) \
