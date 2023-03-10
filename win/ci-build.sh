@@ -21,14 +21,22 @@ cd ${myDIR}
 rm -fr ./.build
 mkdir -p ./.build
 
-if [ -d "${JDK_HOME}/bin" ]; then
-	PATH="${PATH}:${JDK_HOME}/bin"
-	export PATH
+if [ ! -z "${JAVA_HOME}" ]; then
+	JAVA_HOME=$(echo ${JAVA_HOME} | sed 's@C:\\@/c/@g;s@\\@/@g')
+	echo "JAVA_HOME=${JAVA_HOME}"
+	PATH="${PATH}:${JAVA_HOME}/bin"
 fi
 
-if [ -d "${JAVA_HOME}/bin" ]; then
-	PATH="${PATH}:${JAVA_HOME}/bin"
-	export PATH
+if [ ! -z "${JDK_HOME}" ]; then
+	JDK_HOME=$(echo ${JDK_HOME} | sed 's@C:\\@/c/@g;s@\\@/@g')
+	echo "JDK_HOME=${JDK_HOME}"
+	PATH="${PATH}:${JDK_HOME}/bin"
+fi
+
+if [ ! -z "${JRE_HOME}" ]; then
+	JRE_HOME=$(echo ${JRE_HOME} | sed 's@C:\\@/c/@g;s@\\@/@g')
+	echo "JRE_HOME=${JRE_HOME}"
+	PATH="${PATH}:${JRE_HOME}/bin"
 fi
 
 echo "javac=[$(which javac)]"
