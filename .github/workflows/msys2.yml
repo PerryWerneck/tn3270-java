@@ -44,7 +44,7 @@ jobs:
           tag: 5.2
           artifacts: "*.zip,*.jar"
           allowUpdates: true
-          draft: true
+          draft: false
           makeLatest: true
           omitBody: true
           omitPrereleaseDuringUpdate: true
