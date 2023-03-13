@@ -47,6 +47,8 @@ if [ "$?" != "0" ]; then
 	exit -1;
 fi
 
+ls -l *
+
 #
 # Build LIB3270
 #
