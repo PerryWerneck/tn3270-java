@@ -1,0 +1,40 @@
+# Maintainer: Perry Werneck <perry.werneck@gmail.com>
+
+pkgname=tn3270-java
+
+pkgver=5.4
+pkgrel=0
+pkgdesc="Java TN3270 acess library"
+url="https://github.com/PerryWerneck/tn3270-java"
+arch=(i686 x86_64)
+license=(GPL)
+depends=()
+makedepends=(autoconf autoconf-archive automake make libtool gzip openssl dbus-glib lib3270 libipc3270 jdk-openjdk)
+checkdepends=()
+
+#groups=(gnome)
+
+source=($pkgname-$pkgver.tar.xz)
+sha256sums=('SKIP')
+
+provides=($pkgname)
+conflicts=($pkgname)
+
+prepare() {
+  cd $pkgname-$pkgver
+  mkdir -p scripts
+  touch scripts/config.rpath
+  NOCONFIGURE=1 ./autogen.sh
+  ./configure --prefix=/usr
+}
+
+build() {
+  cd $pkgname-$pkgver
+  make all
+}
+
+package() {
+  cd $pkgname-$pkgver
+  DESTDIR="$pkgdir" make install
+}
+

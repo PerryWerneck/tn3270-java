@@ -198,10 +198,10 @@ install: \
 install-javadoc: \
 	src/Terminal.java
 
-	@$(MKDIR) $(DESTDIR)$(javadocdir)
+	$(MKDIR) $(DESTDIR)$(javadocdir)
 	@"$(JAVADOC)" \
 		-encoding utf-8 \
-		-d $(DESTDIR)$(javadocdir) \
+		-d "$(DESTDIR)$(javadocdir)/tn3270" \
 		$^
 		
 doc: \
@@ -231,20 +231,6 @@ $(BINDIR)/$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar: \
 		-cvf $@ \
 		-C $(BINDIR) br
 
-zip: \
-	$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE)-@host_cpu@.zip
-	
-$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE)-@host_cpu@.zip: \
-	package \
-	doc
-	
-	@"$(ZIP)" \
-		-9 -r \
-		$@ \
-		$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE)-@host_cpu@.jar \
-		LICENSE \
-		doc
-	
 install-linux: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
 	$(BINDIR)/$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar
@@ -252,7 +238,7 @@ install-linux: \
 	@$(MKDIR) $(DESTDIR)$(jvmjardir)
 	@$(INSTALL_DATA) \
 		$(BINDIR)/$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar \
-		$(DESTDIR)$(jnidir)/$(PACKAGE_NAME)"-"$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar
+		$(DESTDIR)$(jvmjardir)/$(PACKAGE_NAME)"-"$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar
 
 	@$(MKDIR) $(DESTDIR)$(jnidir)
 	@$(INSTALL_PROGRAM) \
@@ -264,17 +250,16 @@ install-windows: \
 	$(BINDIR/$(LIBNAME).jar
 
 	@$(MKDIR) $(DESTDIR)$(jvmjardir)
-	@$(MKDIR) $(DESTDIR)$(jvmjardir)
 	@$(INSTALL_DATA) \
 		$(BINDIR)/$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar \
-		$(DESTDIR)$(jnidir)/$(PACKAGE_NAME)"-"$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar
+		$(DESTDIR)$(jvmjardir)/$(PACKAGE_NAME)"-"$(PACKAGE_VERSION).$(PACKAGE_RELEASE).jar
 
 	@$(MKDIR) $(DESTDIR)$(jnidir)
 	@$(INSTALL_PROGRAM) \
 		$(BINRLS)/$(LIBNAME)@DLLEXT@ \
 		$(DESTDIR)$(jnidir)/lib$(LIBNAME)@DLLEXT@		
 
-package: \
+$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE)-@host_cpu@.jar: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
 	src/Terminal.java
 
@@ -295,6 +280,23 @@ package: \
 		-cvf $(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE)-@host_cpu@.jar \
 		-C $(BINDIR) br \
 		-C $(BINDIR) lib
+
+package: \
+	$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE)-@host_cpu@.jar
+
+zip: \
+	$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE)-@host_cpu@.zip
+	
+$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE)-@host_cpu@.zip: \
+	$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE)-@host_cpu@.jar \
+	doc
+	
+	@"$(ZIP)" \
+		-9 -r \
+		$@ \
+		$(PACKAGE_NAME)-$(PACKAGE_VERSION).$(PACKAGE_RELEASE)-@host_cpu@.jar \
+		LICENSE \
+		doc	
 
 #---[ Debug Targets ]--------------------------------------------------------------------
 

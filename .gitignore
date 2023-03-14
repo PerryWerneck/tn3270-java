@@ -69,4 +69,7 @@ ABOUT-NLS
 intl
 po
 notes.txt
+doc
+*.jar
+
 
