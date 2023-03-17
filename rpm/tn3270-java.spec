@@ -72,10 +72,6 @@ make Release
 rm -rf $RPM_BUILD_ROOT
 
 %make_install
-
-mkdir -p %{buildroot}%{_datadir}/appdata
-install --mode=644 metainfo.xml %{buildroot}%{_datadir}/appdata/%{name}.metainfo.xml
-
 %fdupes -s %{buildroot}%{_javadocdir}
 
 %clean

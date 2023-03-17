@@ -118,7 +118,7 @@ case "$host" in
 		app_cv_osname="linux"
 		LOGDIR="/var/log"
 		DLLEXT=".so"
-dnl		AC_CONFIG_FILES(metainfo.xml)
+		AC_CONFIG_FILES(metainfo.xml)
 dnl     AC_SUBST(SONAME,py3270.so.$app_vrs_major.$app_vrs_minor)
 
 esac

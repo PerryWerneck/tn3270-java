@@ -247,9 +247,9 @@ install-linux: \
 		
 	@$(MKDIR) $(DESTDIR)$(datarootdir)/appdata
 
-#	@$(INSTALL_DATA) \
-#		metainfo.xml \
-#		$(DESTDIR)$(datarootdir)/appdata/@PRODUCT_NAME@-java.metainfo.xml
+	@$(INSTALL_DATA) \
+		metainfo.xml \
+		$(DESTDIR)$(datarootdir)/appdata/@PRODUCT_NAME@-java.metainfo.xml
 				
 install-windows: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
