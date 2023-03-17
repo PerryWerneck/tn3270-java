@@ -72,6 +72,10 @@ make Release
 rm -rf $RPM_BUILD_ROOT
 
 %make_install
+
+mkdir -p %{buildroot}%{_datadir}/appdata
+install --mode=644 metainfo.xml %{buildroot}%{_datadir}/appdata/%{name}.metainfo.xml
+
 %fdupes -s %{buildroot}%{_javadocdir}
 
 %clean
@@ -87,17 +91,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_jnidir}/*.so
 %{_jvmjardir}/*.jar
 
+%{_datadir}/appdata/*.metainfo.xml
+
 %files -n tn3270-javadoc
 %defattr(-,root,root)
-%dir %{_javadocdir}/br
-%dir %{_javadocdir}/br/app
-%{_javadocdir}/br/app/*
-
-# Common javadoc files. I'm pretty sure they're available in some package.
-%dir %{_datadir}/javadoc
-%{_datadir}/javadoc/*
-
-
+%dir %{_javadocdir}/tn3270
+%{_javadocdir}/tn3270/*
 
 %changelog
 
