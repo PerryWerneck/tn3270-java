@@ -243,8 +243,14 @@ install-linux: \
 	@$(MKDIR) $(DESTDIR)$(jnidir)
 	@$(INSTALL_PROGRAM) \
 		$(BINRLS)/$(LIBNAME)@DLLEXT@ \
-		$(DESTDIR)$(jnidir)/lib$(LIBNAME)@DLLEXT@		
-			
+		$(DESTDIR)$(jnidir)/lib$(LIBNAME)@DLLEXT@	
+		
+	@$(MKDIR) $(DESTDIR)$(datarootdir)/appdata
+
+	@$(INSTALL_DATA) \
+		metainfo.xml \
+		$(DESTDIR)$(datarootdir)/appdata/@PRODUCT_NAME@-java.metainfo.xml
+				
 install-windows: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
 	$(BINDIR/$(LIBNAME).jar

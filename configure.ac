@@ -118,6 +118,7 @@ case "$host" in
 		app_cv_osname="linux"
 		LOGDIR="/var/log"
 		DLLEXT=".so"
+		AC_CONFIG_FILES(metainfo.xml)
 dnl     AC_SUBST(SONAME,py3270.so.$app_vrs_major.$app_vrs_minor)
 
 esac
@@ -136,6 +137,10 @@ PKG_CHECK_EXISTS
 AC_ARG_WITH([product-name], [AS_HELP_STRING([--with-product-name], [Set product name])], [ app_cv_product="$withval" ],[ app_cv_product=`$PKG_CONFIG --variable=product_name lib3270` ])
 AC_DEFINE_UNQUOTED(PRODUCT_NAME, $app_cv_product,[The product name])
 AC_SUBST(PRODUCT_NAME,$app_cv_product)
+
+AC_ARG_WITH([product-id], [AS_HELP_STRING([--with-product-id], [Set product id])], [ app_cv_product_id="$withval" ],[ app_cv_product_id=`$PKG_CONFIG --variable=product_id lib3270` ])
+AC_DEFINE_UNQUOTED(PRODUCT_ID, $app_cv_product_id,[The product ID])
+AC_SUBST(PRODUCT_ID,$app_cv_product_id)
 
 dnl ---------------------------------------------------------------------------
 dnl Check for IPC3270
