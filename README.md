@@ -15,41 +15,6 @@ Java class for interaction with pw3270 or lib3270.
 
 The jar and zip files for windows can be found on [Releases](../../releases)
 
-## Building for Linux
-
-### Requirements
-
- * [libipc3270](../../../libipc3270)
-
-## Building for windows
-
-### Windows native with MSYS2
-
-[OUTDATED]
-
-1. Install java sdk
-
-2. Get the lastest 'glue' library release for msvc: [msvc-libipc3270.zip](../../../libipc3270/releases)
-
-3. Get sources from git
-
-	```shell
-	git clone https://github.com/PerryWerneck/tn3270-java.git ./tn3270-java
-	```
-
-4. Build package using the mingw shell
-
-	```shell
-	cd tn3270-java
-	./autogen.sh
-	make zip
-	```
-5. Install
-
-	```shell
-	make install
-	```
-
 ## Examples
 
 Getting versions of jni module and loaded lib3270
@@ -112,4 +77,46 @@ public class Sample {
     
 }
 ```
+
+## Building for Linux
+
+### Requirements
+
+ * [libipc3270](../../../libipc3270)
+
+## Building for windows
+
+### Windows native with MSYS2
+
+1. Install java sdk
+
+2. Get the latest protocol library release for mingw: [mingw-lib3270.tar.xz](../../../lib3270/releases)
+
+3. Get the latest 'glue' library release for mingw: [mingw-libipc3270.tar.xz](../../../libipc3270/releases)
+
+4. Install the required libraries on mingw shell
+
+	```shell
+	tar -C / -Jxvf mingw-lib3270.tar.xz
+	tar -C / -Jxvf mingw-libipc3270.tar.xz
+	```
+
+3. Get sources from git
+
+	```shell
+	git clone https://github.com/PerryWerneck/tn3270-java.git ./tn3270-java
+	```
+
+4. Build package using the mingw shell
+
+	```shell
+	cd tn3270-java
+	./autogen.sh
+	make zip
+	```
+5. Install
+
+	```shell
+	make install
+	```
 
