@@ -113,11 +113,12 @@ public class Sample {
 	```shell
 	cd tn3270-java
 	./autogen.sh
-	make zip
+	make all
 	```
-5. Install
+	
+5. Make jar
 
 	```shell
-	make install
+	make package
 	```
 
