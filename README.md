@@ -29,7 +29,7 @@ The jar and zip files for windows can be found on [Releases](../../releases)
 
 1. Install java sdk
 
-2. Get the lastest 'glue' library release for msvc: [msvc-libipc3270.zip](../../libipc3270/releases)
+2. Get the lastest 'glue' library release for msvc: [msvc-libipc3270.zip](../../../libipc3270/releases)
 
 3. Get sources from git
 
