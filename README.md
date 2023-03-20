@@ -13,7 +13,7 @@ Java class for interaction with pw3270 or lib3270.
 
 ### Windows
 
-The jar and zip files for windows can be found on [Releases](./releases)
+The jar and zip files for windows can be found on [Releases](../../releases)
 
 ## Building for Linux
 
