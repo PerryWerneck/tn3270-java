@@ -13,7 +13,7 @@ Java class for interaction with pw3270 or lib3270.
 
 ### Windows
 
-The updated jar file for window can be found on [DropBox](https://www.dropbox.com/s/o14a5mjm02yexig/java-tn3270-5.2.23.3.9-x86_64.zip?dl=0)
+The jar and zip files for windows can be found on [Releases](./releases)
 
 ## Building for Linux
 
@@ -25,9 +25,11 @@ The updated jar file for window can be found on [DropBox](https://www.dropbox.co
 
 ### Windows native with MSYS2
 
+[OUTDATED]
+
 1. Install java sdk
 
-2. Build and install [libipc3270](../../../libipc3270)
+2. Get the lastest 'glue' library release for msvc: [msvc-libipc3270.zip](../libipc3270/releases)
 
 3. Get sources from git
 
