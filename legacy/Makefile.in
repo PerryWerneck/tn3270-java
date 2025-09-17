@@ -100,7 +100,7 @@ LIBS= \
 
 $(OBJDBG)/%.o: \
 	%.cc \
-	src/include/private/br_app_pw3270_Terminal.h
+	src/include/br_app_pw3270_Terminal.h
 
 	@echo $< ...
 	@$(MKDIR) $(@D)
@@ -129,7 +129,7 @@ $(OBJDBG)/%.o: \
 
 $(OBJRLS)/%.o: \
 	%.cc \
-	src/include/private/br_app_pw3270_Terminal.h
+	src/include/br_app_pw3270_Terminal.h
 
 	@echo $< ...
 	@$(MKDIR) $(@D)
@@ -176,7 +176,7 @@ $(BINRLS)/$(LIBNAME)@DLLEXT@: \
 
 #---[ Misc Targets ]--------------------------------------------------------------------
 
-src/include/private/br_app_pw3270_Terminal.h: \
+src/include/br_app_pw3270_Terminal.h: \
 	src/Terminal.java
 	
 	@$(MKDIR) $(BINDIR)
@@ -352,7 +352,7 @@ clean: \
 	cleanDebug \
 	cleanRelease
 
-	@rm -f src/include/private/br_app_pw3270_Terminal.h
+	@rm -f src/include/br_app_pw3270_Terminal.h
 	@rm -fr doc
 	@rm -f *.zip
 	@rm -f *.jar

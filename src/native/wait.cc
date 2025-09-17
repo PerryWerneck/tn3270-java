@@ -21,7 +21,7 @@
  #include <jni.h>
  #include <jni3270.h>
  #include <lib3270/ipc/session.h>
- #include <private/br_app_pw3270_Terminal.h>
+ #include <br_app_pw3270_Terminal.h>
  #include <stdexcept>
 
  JNIEXPORT void JNICALL Java_br_app_pw3270_Terminal_wait__Ljava_lang_String_2I(JNIEnv *env, jobject obj, jstring text, jint timeout) {

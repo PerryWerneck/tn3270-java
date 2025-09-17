@@ -21,7 +21,7 @@
  #include <jni.h>
  #include <jni3270.h>
  #include <lib3270/ipc/session.h>
- #include <private/br_app_pw3270_Terminal.h>
+ #include <br_app_pw3270_Terminal.h>
  #include <stdexcept>
 
  using namespace std;

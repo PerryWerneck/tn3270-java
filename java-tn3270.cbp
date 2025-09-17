@@ -35,7 +35,7 @@
 		<Unit filename="src/Terminal.java" />
 		<Unit filename="src/include/config.h" />
 		<Unit filename="src/include/jni3270.h" />
-		<Unit filename="src/include/private/br_app_pw3270_Terminal.h" />
+		<Unit filename="src/include/br_app_pw3270_Terminal.h" />
 		<Unit filename="src/include/private/br_app_pw3270_Terminal_Action.h" />
 		<Unit filename="src/native/action.cc" />
 		<Unit filename="src/native/actions.cc" />

@@ -22,7 +22,7 @@
  #include <jni3270.h>
  #include <lib3270/ipc/action.h>
  #include <lib3270/ipc/session.h>
- #include <private/br_app_pw3270_Terminal_Action.h>
+ #include <br_app_pw3270_Terminal_Action.h>
  #include <stdexcept>
 
  using namespace std;

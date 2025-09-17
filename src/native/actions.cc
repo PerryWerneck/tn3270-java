@@ -22,7 +22,7 @@
  #include <jni3270.h>
  #include <lib3270/ipc/action.h>
  #include <lib3270/ipc/session.h>
- #include <private/br_app_pw3270_Terminal.h>
+ #include <br_app_pw3270_Terminal.h>
  #include <stdexcept>
 
  JNIEXPORT void JNICALL Java_br_app_pw3270_Terminal_activate(JNIEnv *env, jobject obj, jstring action) {
