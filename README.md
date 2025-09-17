@@ -8,13 +8,8 @@ Java class for interaction with pw3270 or lib3270.
 
 ## Instalation
 
-### Linux
-
 [<img src="https://raw.githubusercontent.com/PerryWerneck/pw3270/master/branding/obs-badge-en.svg" alt="Download from open build service" height="80px">](https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=tn3270-java)
-
-### Windows
-
-The jar and zip files for windows can be found on [Releases](../../releases)
+[<img src="https://github.com/PerryWerneck/pw3270/blob/develop/branding/release-badge-en.svg" alt="Download from github releases" height="80px">](../../releases)
 
 ## Examples
 
