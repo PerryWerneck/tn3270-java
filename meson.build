@@ -138,40 +138,50 @@ generated_headers = jmod.native_headers(
   classes: [ 'Terminal' ],
 )
 
-# sources += include_directories('.')
-
-#jdkjava = shared_module(
-#  'jdkjava',
-#  [native_header_includes, other_sources],
-#  dependencies : [jdk],
-#  include_directories : [native_header_includes]
-#
-
 #
 # Targets
 #
 if cxx.get_id() == 'msvc'
 
-  shared_library(
+  native_lib = shared_library(
     meson.project_name(), 
     sources,
-    install: true,
+    install: false,
     dependencies: lib_deps,
     include_directories: includes_dir
   )
 
 else
 
-  shared_library(
+  native_lib = shared_library(
     meson.project_name(), 
     sources + [ generated_headers ],
-    install: true,
+    install: false,
     cpp_args: [ '-ffat-lto-objects' ],
     gnu_symbol_visibility: 'hidden',
     dependencies: lib_deps,
-    soversion: libversion,
     include_directories: includes_dir
   )
   
 endif
 
+# https://mesonbuild.com/Reference-manual_functions.html#jar
+jar(
+  'java-part', 
+  [ 'src/Terminal.java', native_lib ],
+  install: true,
+)
+
+#custom_target(
+#    'final_jar_with_native',
+#    output: 'my_app_with_native.jar',
+#    input: [java_jar, native_lib],
+#    command: [
+#        'jar',
+#        'uf',
+#        '@INPUT0@', # The JAR file from the previous step
+#        native_lib.full_path()
+#    ],
+#    install: true,
+#    install_dir: get_option('prefix') / 'share' / 'my_mixed_project'
+#)
