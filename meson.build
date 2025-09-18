@@ -138,6 +138,13 @@ generated_headers = jmod.native_headers(
   classes: [ 'Terminal' ],
 )
 
+java_jar = jar(
+  'java-tn3270-@0@'.format(meson.project_version()), 
+  [ 'src/Terminal.java' ],
+  install: host_machine.system() != 'windows',
+  install_dir: '@0@/jvm-exports'.format(get_option('libdir'))
+)
+
 #
 # Targets
 #
@@ -156,32 +163,33 @@ else
   native_lib = shared_library(
     meson.project_name(), 
     sources + [ generated_headers ],
-    install: false,
+    install: host_machine.system() != 'windows',
     cpp_args: [ '-ffat-lto-objects' ],
     gnu_symbol_visibility: 'hidden',
     dependencies: lib_deps,
-    include_directories: includes_dir
+    include_directories: includes_dir,
+    install_dir: '@0@/java'.format(get_option('libdir')),
   )
   
 endif
 
-# https://mesonbuild.com/Reference-manual_functions.html#jar
-jar(
-  'java-part', 
-  [ 'src/Terminal.java', native_lib ],
-  install: true,
-)
+jar_compress = find_program('jar', required: true)
 
-#custom_target(
-#    'final_jar_with_native',
-#    output: 'my_app_with_native.jar',
+#if host_machine.system() == 'windows'
+#
+#  custom_target(
+#    'bundle',
+#    output: 'java-tn3270-bundle-@0@'.format(meson.project_version()), 
 #    input: [java_jar, native_lib],
 #    command: [
-#        'jar',
+#        jar_compress,
 #        'uf',
 #        '@INPUT0@', # The JAR file from the previous step
 #        native_lib.full_path()
 #    ],
 #    install: true,
-#    install_dir: get_option('prefix') / 'share' / 'my_mixed_project'
-#)
+#    install_dir: '@0@/java'.format(get_option('bindir')),
+#    install_tag: 'devel',
+#  )
+#
+#endif
