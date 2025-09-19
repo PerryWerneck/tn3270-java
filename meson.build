@@ -64,15 +64,17 @@ add_project_arguments(cxx.get_supported_arguments(compiler_flags_common), langua
 #
 jni = dependency('jni')
 
-lib_deps = [
-  dependency(
+ipc3270 = dependency(
+  'libipc3270', 
+  required: true,
+  fallback: [ 
     'libipc3270', 
-    required: true,
-    fallback: [ 
-      'libipc3270', 
-      'static_library'
-    ]
-  ),
+    'static_library'
+  ]
+)
+
+lib_deps = [
+  ipc3270,
   jni
 ]
 
@@ -88,8 +90,8 @@ app_conf.set('PACKAGE_VERSION_MINOR', pkg_minor_version)
 app_conf.set('PACKAGE_VERSION_MICRO', pkg_micro_version)
 app_conf.set('HAVE_GNUC_VISIBILITY', 1)
 
-#app_conf.set('PRODUCT_ID', lib3270.get_variable('product_id'))
-#app_conf.set('PRODUCT_NAME', lib3270.get_variable('product_name'))
+app_conf.set('PRODUCT_ID', ipc3270.get_variable('product_id'))
+app_conf.set('PRODUCT_NAME', ipc3270.get_variable('product_name'))
 #app_conf.set('PRODUCT_VERSION',lib3270.get_variable('sdk_version'))
 
 config_src = [
@@ -163,7 +165,7 @@ else
   native_lib = shared_library(
     meson.project_name(), 
     sources + [ generated_headers ],
-    install: host_machine.system() != 'windows',
+    install: true,
     cpp_args: [ '-ffat-lto-objects' ],
     gnu_symbol_visibility: 'hidden',
     dependencies: lib_deps,
@@ -193,3 +195,11 @@ jar_compress = find_program('jar', required: true)
 #  )
 #
 #endif
+
+configure_file(
+  input : 'branding/metainfo.xml.in',
+  output : ipc3270.get_variable('product_id') + '.metainfo.xml',
+  install_dir: get_option('datadir') / 'metainfo',
+  install: host_machine.system() != 'windows',
+  configuration : app_conf
+)
