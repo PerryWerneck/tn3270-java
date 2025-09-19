@@ -175,7 +175,7 @@ else
   
 endif
 
-jar_compress = find_program('jar', required: true)
+# jar_compress = find_program('jar', required: true)
 
 #if host_machine.system() == 'windows'
 #
@@ -202,4 +202,20 @@ configure_file(
   install_dir: get_option('datadir') / 'metainfo',
   install: host_machine.system() != 'windows',
   configuration : app_conf
+)
+
+javadoc = find_program('javadoc', required: true)
+
+custom_target(
+  'javadoc',
+  input: [ 'src/Terminal.java' ],
+  output: 'tn3270',
+  install: true,
+  install_dir: '@0@/javadoc'.format(get_option('datadir')),
+  command: [
+    javadoc,
+    '-encoding', 'utf-8',
+    '-d', '@OUTPUT@',
+    '@INPUT@',
+  ],  
 )
