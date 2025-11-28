@@ -1,10 +1,10 @@
 Format: 1.0
 Source: tn3270-java
-Version: 5.5-0
+Version: 5.2+git20251128-0
 Binary: tn3270-java
 Maintainer: Perry Werneck <perry.werneck@gmail.com>
 Architecture: any
-Build-Depends: debhelper (>= 7), autotools-dev, autoconf, automake, gettext, libssl-dev, pkg-config, lib3270-dev, libipc3270-dev, java-dev
+Build-Depends: debhelper (>= 7), autotools-dev, autoconf, automake, gettext, libssl-dev, pkg-config, libipc3270-dev, default-jdk
 Standards-Version: 3.9.1.0
 DEBTRANSFORM-RELEASE: 0
 Files: 

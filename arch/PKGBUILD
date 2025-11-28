@@ -2,7 +2,7 @@
 
 pkgname=tn3270-java
 
-pkgver=5.4
+pkgver=5.2+git20251128
 pkgrel=0
 pkgdesc="Java TN3270 acess library"
 url="https://github.com/PerryWerneck/tn3270-java"

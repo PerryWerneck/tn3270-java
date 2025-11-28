@@ -1,0 +1,4 @@
+<servicedata>
+<service name="tar_scm">
+                <param name="url">https://github.com/PerryWerneck/tn3270-java.git</param>
+              <param name="changesrevision">b975004fabe6478568847cfd3dfbd7d655c525ad</param></service></servicedata>
