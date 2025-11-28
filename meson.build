@@ -20,7 +20,7 @@
 project(
 	'jni3270', 
 	['cpp', 'java'],
-  default_options : ['c_std=c11', 'cpp_std=c++17'],
+  default_options : ['c_std=c11', 'cpp_std=c++17', 'buildtype=release' ],
   meson_version: '>=1.0.0',
 	version: '5.3.0',
 	license: 'GPL-3.0-or-later',
@@ -198,7 +198,7 @@ endif
 
 configure_file(
   input : 'branding/metainfo.xml.in',
-  output : ipc3270.get_variable('product_id') + '.metainfo.xml',
+  output : ipc3270.get_variable('product_id') + '.java.metainfo.xml',
   install_dir: get_option('datadir') / 'metainfo',
   install: host_machine.system() != 'windows',
   configuration : app_conf
